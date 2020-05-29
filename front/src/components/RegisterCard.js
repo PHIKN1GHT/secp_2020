@@ -3,9 +3,8 @@ import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 
 import '../css/LoginCard.css'
-import history from 'react-router-pro/lib/public/history';
 
-export default function LoginCard() {
+export default function RegisterCard() {
     const [captchaURL, setCaptchaURL] = useState('')
 
     const handleChangeCaptcha = (event) => {
@@ -24,7 +23,7 @@ export default function LoginCard() {
             password: password,
             captcha: captcha
         })
-        const url = '/api/account/login'
+        const url = '/api/account/registery'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -50,7 +49,7 @@ export default function LoginCard() {
     return (
         <div className='root'>
             <div className='card-content'>
-                <div className='header'>Login</div>
+                <div className='header'>Register</div>
                 <form className='login-wrapper'>
                     <div className='username-input'>
                         <TextField fullWidth name='username' label='USERNAME'></TextField>
@@ -67,13 +66,13 @@ export default function LoginCard() {
                     </div>
                     <div className='login-btn'>
                         <Button fullWidth className='login-btn-' onClick={handleLogin}>
-                            Login
+                            Register
                         </Button>
                     </div>
                 </form>
             </div>
             <div className='card-action'>
-                Don't Have Account? <a href='/Register' className='reg'>Register</a>
+                Already Have Account? <a href='/Login' className='reg'>Login</a>
             </div>
         </div>)
 }

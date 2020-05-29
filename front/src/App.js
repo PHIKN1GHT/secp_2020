@@ -1,9 +1,8 @@
 import React from 'react';
-import Login from './pages/Login.js'
-
+import RouteP from './Router'
 function App() {
   return (
-    <Login />
+    <RouteP />
   );
 }
 
