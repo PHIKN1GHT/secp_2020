@@ -1,9 +1,9 @@
 import React from 'react';
-import LoginCard from './components/loginCard';
+import Login from './pages/Login.js'
 
 function App() {
   return (
-    <LoginCard />
+    <Login />
   );
 }
 
