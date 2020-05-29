@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card } from '@material-ui/core';
 import { useState } from 'react';
 
 export default function UserInfoCard(props) {
@@ -11,19 +10,17 @@ export default function UserInfoCard(props) {
             <div className='user-info-card'>
                 <div className='header'>
                     <div className='user-information'>
-                        <img className='avatar' src={avaterURL} />
+                        <div className='avater-con'>
+                            <img className='avater' src={avaterURL} />
+                        </div>
                         <div className='username'>{username}</div>
                     </div>
                 </div>
                 <div className='order-entry'>
-                    <Card className='order-entry-'>
-                        我的订单
-                </Card>
+                    我的订单
                 </div>
                 <div className='address-entry'>
-                    <Card className='order-entry-'>
-                        收货地址
-                </Card>
+                    收货地址
                 </div>
             </div>
         </div>

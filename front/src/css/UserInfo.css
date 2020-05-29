@@ -7,31 +7,46 @@
     height: 100%;
 }
 .user-info .user-info-card .header{
-    padding: 10px 10px;
-    border :1px solid;
+    padding: 20px 10px;
+    box-shadow: 1px 1px 3px #AAAAAA;
 }
 .user-info .user-info-card .header .user-information{
     display: flex;
 }
-.user-info .user-info-card .header .user-information .avater{
-    width: 30px;
-    height: 30px;
-    border: 1px solid;
-    border-radius: 1px;
+.user-info .user-info-card .header .user-information .avater-con{
+    display: flex;
+    justify-content: space-evenly;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 30px;
+}
+.user-info .user-info-card .header .user-information .avater-con .avater{
+    width: 60px;
+    
 }
 .user-info .user-info-card .header .user-information .username{
-    font-size: 20px;
+    padding: 13px 20px;
+    font-size: 18px;
     text-align: center;
 }
 .user-info .user-info-card .order-entry{
-    
+    font-size: 14px;
+    margin-top: 20px;
+    padding: 10px;
+    box-shadow: 1px 1px 1px #CCCCCC;
 }
-.user-info .user-info-card .order-entry .order-entry-{
-    
+.user-info .user-info-card .order-entry:hover{
+    cursor: pointer;
+    background-color: #AAAAAA;
 }
 .user-info .user-info-card .address-entry{
-    
+    font-size: 14px;
+    margin-top: 0px;
+    padding: 10px;
+    box-shadow: 1px 1px 1px #CCCCCC;
 }
-.user-info .user-info-card .address-entry .address-entry-{
-    
+.user-info .user-info-card .address-entry:hover{
+    cursor: pointer;
+    background-color: #AAAAAA;
 }
