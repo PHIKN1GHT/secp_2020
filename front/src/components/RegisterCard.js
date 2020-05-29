@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
-
+import Toast from './Toast'
 import '../css/LoginCard.css'
 
+// 和logincard共用css
 export default function RegisterCard() {
     const [captchaURL, setCaptchaURL] = useState('')
 
@@ -14,7 +15,9 @@ export default function RegisterCard() {
                 setCaptchaURL(URL.createObjectURL(imgData))
             })
     }
-    const handleLogin = (event) => {
+
+
+    const handleRegister = (event) => {
         const username = document.getElementsByName('username')[0].value
         const password = document.getElementsByName('password')[0].value
         const captcha = document.getElementsByName('captcha')[0].value
@@ -39,12 +42,15 @@ export default function RegisterCard() {
         }).then(response => response.json()) // parses response to JSON 
             .then(json => {
                 if (json['result']) {
-                    // 成功登录
+                    // 成功注册
+                    localStorage.setItem('token', json['token'])
+                    Toast('注册成功', 500)
                 }
                 else {
                     //失败
+                    Toast('注册失败', 500)
                 }
-            })
+            }).catch(Toast('访问服务器失败', 500))
     }
     return (
         <div className='root'>
@@ -65,7 +71,7 @@ export default function RegisterCard() {
                         </div>
                     </div>
                     <div className='login-btn'>
-                        <Button fullWidth className='login-btn-' onClick={handleLogin}>
+                        <Button fullWidth className='login-btn-' onClick={handleRegister}>
                             Register
                         </Button>
                     </div>

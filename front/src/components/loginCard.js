@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
-
+import Toast from './Toast'
 import '../css/LoginCard.css'
 import history from 'react-router-pro/lib/public/history';
 
@@ -41,11 +41,14 @@ export default function LoginCard() {
             .then(json => {
                 if (json['result']) {
                     // 成功登录
+                    Toast('登陆成功', 500)
+                    localStorage.setItem('token', json['token'])
                 }
                 else {
                     //失败
+                    Toast('登陆失败，请检查用户名和密码是否正确', 500)
                 }
-            })
+            }).catch(Toast('访问服务器失败', 500))
     }
     return (
         <div className='root'>
