@@ -1,0 +1,41 @@
+.root{
+}
+
+.root .card-content{
+    padding: 20px;
+}
+.root .card-content .header{
+    font-size: 40px;
+    text-align: center;
+    padding-top: 30px;
+}
+.root .login-wrapper{
+   padding: 20px;
+}
+.root .login-wrapper .username-input{
+    padding-top: 30px;
+}
+.root .login-wrapper .password-input{
+    padding-top: 20px;
+}
+.root .login-wrapper .captcha{
+    padding-top: 35px;
+    display: flex;
+    justify-content: space-between;
+}
+.root .login-wrapper .captcha .captcha-img{
+    flex: 9;
+}
+.root .login-wrapper .captcha .captcha-input{
+    padding-left: 10px;
+    flex: 8;
+
+}
+.root .card-action{
+    font-size: 16px;
+    text-align: center;
+    padding-bottom: 40px;
+}
+.root .card-action .reg{
+    text-decoration-line: none;
+}

@@ -1,10 +1,9 @@
 import React from 'react';
+import LoginCard from './components/loginCard';
 
 function App() {
   return (
-    <div>
-      This
-    </div>
+    <LoginCard />
   );
 }
 
