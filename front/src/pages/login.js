@@ -86,6 +86,7 @@ export default function LoginPage(props) {
                 <div className='card-action'>
                     Don't Have Account? <a href='/Register' className='reg'>Register</a>
                 </div>
+                <a href='/UserInfo'></a>
             </div>
         </div>)
 }
