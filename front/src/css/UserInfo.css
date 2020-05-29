@@ -3,11 +3,13 @@
     min-height: 100%;
 }
 .user-info .user-info-card{
-    width: 100%;
-    height: 100%;
+    
 }
 .user-info .user-info-card .header{
-    padding: 20px 10px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 20px 15px;
     box-shadow: 1px 1px 3px #AAAAAA;
 }
 .user-info .user-info-card .header .user-information{
@@ -30,23 +32,26 @@
     font-size: 18px;
     text-align: center;
 }
-.user-info .user-info-card .order-entry{
+.user-info .user-info-card .cards{
+    margin: 100px 10px;
+}
+.user-info .user-info-card .cards .order-entry{
+    margin-top: 10px;
     font-size: 14px;
-    margin-top: 20px;
-    padding: 10px;
+    padding: 15px 20px;
     box-shadow: 1px 1px 1px #CCCCCC;
 }
-.user-info .user-info-card .order-entry:hover{
+.user-info .user-info-card .cards  .order-entry:hover{
     cursor: pointer;
     background-color: #AAAAAA;
 }
-.user-info .user-info-card .address-entry{
+.user-info .user-info-card .cards  .address-entry{
+    margin-top: 10px;
     font-size: 14px;
-    margin-top: 0px;
-    padding: 10px;
+    padding: 15px 20px;
     box-shadow: 1px 1px 1px #CCCCCC;
 }
-.user-info .user-info-card .address-entry:hover{
+.user-info .user-info-card .cards  .address-entry:hover{
     cursor: pointer;
     background-color: #AAAAAA;
 }

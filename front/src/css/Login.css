@@ -29,28 +29,36 @@
     padding: 15px;
 }
 .login .login-card .login-wrapper .username-input{
-    padding-top: 30px;
+    margin-top: 30px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 .login .login-card .login-wrapper .password-input{
-    padding-top: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 .login .login-card .login-wrapper .captcha{
     position: relative;
     margin-top: 35px;
+    
 }
 .login .login-card .login-wrapper .captcha .captcha-img{
     position: absolute;
     height: 100%;
 }
 .login .login-card .login-wrapper .captcha .captcha-input{
-    padding-left: 45%;
+    margin-left: 45%;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
 }
 .login .login-card .login-wrapper .login-btn{
     padding: 30px 0 20px 0;
  }
 .login .login-card .login-wrapper .login-btn .login-btn-{
+    color: aliceblue;
     padding: 10px 0 10px 0;
-    background:rgba(160, 160, 160,0.5);
+    background:rgba(108, 233, 241, 0.5);
  }
 .login .login-card .card-action{
     font-size: 16px;
@@ -58,6 +66,6 @@
     padding-bottom: 20px;
 }
 .login .login-card .card-action .reg{
-    color: aqua;
+color: rgb(64, 227, 238);
     text-decoration-line: none;
 }

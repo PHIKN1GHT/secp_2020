@@ -64,10 +64,12 @@ export default function LoginPage(props) {
                     <div className='header'>Login</div>
                     <form className='login-wrapper'>
                         <div className='username-input'>
-                            <TextField fullWidth variant='outlined' name='username' label='USERNAME'></TextField>
+                            <TextField fullWidth variant='outlined'
+                                name='username' label='USERNAME'></TextField>
                         </div>
                         <div className='password-input'>
-                            <TextField fullWidth variant='outlined' name='password' label='PASSWORD'></TextField>
+                            <TextField fullWidth
+                                variant='outlined' name='password' label='PASSWORD'></TextField>
                         </div>
                         <div className='captcha'>
                             <img className='captcha-img' onClick={handleChangeCaptcha}

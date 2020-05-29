@@ -18,11 +18,13 @@ export default function UserInfoCard(props) {
                         <div className='username'>{username}</div>
                     </div>
                 </div>
-                <div className='order-entry'>
-                    我的订单
+                <div className='cards'>
+                    <div className='order-entry'>
+                        我的订单
                 </div>
-                <div className='address-entry'>
-                    收货地址
+                    <div className='address-entry'>
+                        收货地址
+                </div>
                 </div>
             </div>
         </div>
