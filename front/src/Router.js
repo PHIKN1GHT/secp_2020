@@ -2,7 +2,6 @@ import { RouterPro } from "react-router-pro";
 import React from 'react';
 import Login from "./pages/Login";
 import Register from './pages/Register';
-
 export default function RouterP() {
     let data = [{
         name: "登录",
@@ -13,7 +12,9 @@ export default function RouterP() {
         path: "/Register",
         component: Register,
     }];
-    return (<RouterPro data={data} />)
+    return (
+        <RouterPro data={data} />
+    )
 }
 
 

@@ -53,7 +53,7 @@ export default function RegisterCard() {
             }).catch(Toast('访问服务器失败', 500))
     }
     return (
-        <div className='root'>
+        <div className='login-card'>
             <div className='card-content'>
                 <div className='header'>Register</div>
                 <form className='login-wrapper'>

@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
-import Toast from './Toast'
-import '../css/LoginCard.css'
-import history from 'react-router-pro/lib/public/history';
+import Toast from './Toast';
 
 export default function LoginCard() {
     const [captchaURL, setCaptchaURL] = useState('')
@@ -43,6 +41,15 @@ export default function LoginCard() {
                     // 成功登录
                     Toast('登陆成功', 500)
                     localStorage.setItem('token', json['token'])
+
+                    // 检验账号类型
+                    // TODO
+                    switch (json['type']) {
+                        case '':
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 else {
                     //失败
@@ -51,7 +58,7 @@ export default function LoginCard() {
             }).catch(Toast('访问服务器失败', 500))
     }
     return (
-        <div className='root'>
+        <div className='login-card'>
             <div className='card-content'>
                 <div className='header'>Login</div>
                 <form className='login-wrapper'>
