@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
-import Toast from './Toast'
-import '../css/LoginCard.css'
+import Toast from './Toast';
+
 
 // 和logincard共用css
 export default function RegisterCard() {
