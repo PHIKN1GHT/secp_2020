@@ -4,7 +4,7 @@ import { Button } from '@material-ui/core';
 import Toast from '../components/Toast';
 
 export default function LoginPage(props) {
-    const [captchaURL, setCaptchaURL] = useState('')
+    const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
 
     const handleChangeCaptcha = (event) => {
         const url = '/api/account/captcha'
@@ -64,16 +64,16 @@ export default function LoginPage(props) {
                     <div className='header'>Login</div>
                     <form className='login-wrapper'>
                         <div className='username-input'>
-                            <TextField fullWidth name='username' label='USERNAME'></TextField>
+                            <TextField fullWidth variant='outlined' name='username' label='USERNAME'></TextField>
                         </div>
                         <div className='password-input'>
-                            <TextField fullWidth name='password' label='PASSWORD'></TextField>
+                            <TextField fullWidth variant='outlined' name='password' label='PASSWORD'></TextField>
                         </div>
                         <div className='captcha'>
                             <img className='captcha-img' onClick={handleChangeCaptcha}
                                 src={captchaURL} name='captcha-img' />
                             <div className='captcha-input'>
-                                <TextField fullWidth name='captcha' label='CAPTCHA'></TextField>
+                                <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
                             </div>
                         </div>
                         <div className='login-btn'>

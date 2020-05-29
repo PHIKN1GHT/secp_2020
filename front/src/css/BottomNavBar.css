@@ -1,0 +1,18 @@
+.bottom-nav-bar{
+    position: fixed;
+    bottom: 0;
+}
+.bottom-nav-bar .items-con{
+    border: 1px solid;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+.bottom-nav-bar .items-con .item{
+    padding: 0 10px;    
+}
+.bottom-nav-bar .items-con .item .icon{
+    
+}
+.bottom-nav-bar .items-con .item .text{
+}

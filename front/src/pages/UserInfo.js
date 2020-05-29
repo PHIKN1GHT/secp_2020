@@ -1,11 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
+import BottomNavBar from '../components/BottomNavBar';
 
 export default function UserInfoCard(props) {
     const [username, setUsername] = useState('default')
-    const [avaterURL, setAvaterURL] = useState('none')
+    const [avaterURL, setAvaterURL] = useState(
+        'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
 
-    return (
+    return (<>
         <div className='user-info'>
             <div className='user-info-card'>
                 <div className='header'>
@@ -24,5 +26,6 @@ export default function UserInfoCard(props) {
                 </div>
             </div>
         </div>
-    )
+        <BottomNavBar />
+    </>)
 }
