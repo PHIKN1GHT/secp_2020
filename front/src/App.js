@@ -3,9 +3,8 @@ import RouteP from './Router';
 
 
 import './css/Login.css';
-import './css/LoginCard.css';
 import './css/PicTxtCard.css';
-
+import './css/UserInfo.css'
 
 function App() {
   return (
