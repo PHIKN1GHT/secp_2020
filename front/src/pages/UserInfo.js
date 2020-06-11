@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import BottomNavBar from '../components/BottomNavBar';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import DehazeIcon from '@material-ui/icons/Dehaze';
 import HomeIcon from '@material-ui/icons/Home';
@@ -58,7 +58,7 @@ export default function UserInfoCard(props) {
             { icon: <HomeIcon />, text: '首页' },
             { icon: <DehazeIcon />, text: '分类 ' },
             { icon: <ShoppingCartIcon />, text: ' 购物车 ' },
-            { icon: <AccountCircleIcon />, text: '我的' }
+            { icon: <AccountCircleOutlinedIcon />, text: '我的' }
         ]} />
     </>)
 }
