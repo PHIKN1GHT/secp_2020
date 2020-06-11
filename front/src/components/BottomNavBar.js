@@ -9,7 +9,7 @@ export default function BottomNavBar(props) {
                 {
                     props['props'].map(val =>
                         <div className='item'>
-                            <Link to={val['url']}>
+                            <Link className='link' to={val['url']}>
                                 <div className='icon'>
                                     <div className='img'>{val['icon']}</ div>
                                     <div className='text'>{val['text']}</div>

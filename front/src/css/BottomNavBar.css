@@ -16,6 +16,9 @@
     flex-direction: column;
     align-items: center;
 }
+.bottom-nav-bar .items-con .item .link{
+    text-decoration: none;
+}
 .bottom-nav-bar .items-con .item:hover{
     box-shadow: 1px 1px 1px #CCCCCC;
     border-radius: 5px;
