@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import BottomNavBar from '../components/BottomNavBar';
+import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
@@ -54,11 +54,8 @@ export default function UserInfoCard(props) {
                 </div>
             </div>
         </div>
-        <BottomNavBar props={[
-            { icon: <HomeIcon />, text: '首页' },
-            { icon: <DehazeIcon />, text: '分类 ' },
-            { icon: <ShoppingCartIcon />, text: ' 购物车 ' },
-            { icon: <AccountCircleOutlinedIcon />, text: '我的' }
-        ]} />
+        
+
+        <BottomNavBarForCustomer />
     </>)
 }
