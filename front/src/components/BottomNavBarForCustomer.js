@@ -9,10 +9,10 @@ export default function BottomNavBarForCustomer(props) {
     const tmp = 'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture'
     return (
         <BottomNavBar props={[
-            { icon: <HomeIcon />, text: '首页', url: '/mainpage'},
-            { icon: <DehazeIcon />, text: '分类 ', url: '/product/catalogs'},
+            { icon: <HomeIcon />, text: '首页', url: '/mainpage' },
+            { icon: <DehazeIcon />, text: '分类 ', url: '/product/catalogs' },
             { icon: <ShoppingCartIcon />, text: ' 购物车 ', url: '/shoppingCart' },
-            { icon: <AccountCircleIcon />, text: '我的', url:'/userInfo' }
+            { icon: <AccountCircleIcon />, text: '我的', url: '/user-info' }
         ]} />
     )
 }
