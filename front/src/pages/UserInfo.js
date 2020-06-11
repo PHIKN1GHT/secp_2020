@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import BottomNavBar from '../components/BottomNavBar';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 export default function UserInfoCard(props) {
     const [username, setUsername] = useState('default')
@@ -20,8 +21,16 @@ export default function UserInfoCard(props) {
                 </div>
                 <div className='cards'>
                     <div className='order-entry'>
-                        我的订单
-                </div>
+                        <div className='head'>
+                            <div className='main'>我的订单</div>
+                            <div className='script'>查看所有订单<ChevronRightIcon className='icon' /></div>
+                        </div>
+                        <div className='body'>
+                            <div className='item'>待付款</div>
+                            <div className='item'>待发货</div>
+                            <div className='item'>待收货</div>
+                        </div>
+                    </div>
                     <div className='address-entry'>
                         收货地址
                 </div>
