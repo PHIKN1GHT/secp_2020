@@ -28,6 +28,11 @@ export default function UserInfoCard(props) {
                 </div>
             </div>
         </div>
-        <BottomNavBar />
+        <BottomNavBar props={[
+            { img: '', text: '首页' },
+            { img: '', text: '分类 ' },
+            { img: '', text: ' 购物车 ' },
+            { img: '', text: '我的' }
+        ]} />
     </>)
 }

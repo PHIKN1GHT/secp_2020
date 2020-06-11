@@ -13,9 +13,9 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path='/Login' component={LoginPage} ></Route>
-        <Route path='/Register' component={RegisterPage} ></Route>
-        <Route path='/UserInfo' component={UserInfoPage} ></Route>
+        <Route path='/login' component={LoginPage} ></Route>
+        <Route path='/register' component={RegisterPage} ></Route>
+        <Route path='/user-info' component={UserInfoPage} ></Route>
         <Route path="/" component={RegisterPage}></Route>
       </Switch>
     </Router>
