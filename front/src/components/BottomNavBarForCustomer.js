@@ -6,7 +6,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import BottomNavBar from './BottomNavBar';
 
 export default function BottomNavBarForCustomer(props) {
-    const tmp = 'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture'
     return (
         <BottomNavBar props={[
             { icon: <HomeIcon />, text: '首页', url: '/mainpage' },

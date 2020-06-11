@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 export default function BottomNavBar(props) {
-    const tmp = 'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture'
     return (
         <div className='bottom-nav-bar'>
             <div className='items-con'>
