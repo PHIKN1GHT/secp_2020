@@ -9,13 +9,16 @@ import './css/BottomNavBar.css';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import UserInfoPage from './pages/UserInfo';
+import ProductView from './pages/ProductView';
 function App() {
   return (
     <Router>
       <Switch>
-        <Route path='/Login' component={LoginPage} ></Route>
-        <Route path='/Register' component={RegisterPage} ></Route>
-        <Route path='/UserInfo' component={UserInfoPage} ></Route>
+        <Route path='/product/catalogs' component={ProductView} ></Route>
+        {/* url一般小写 */}
+        <Route path='/login' component={LoginPage} ></Route>
+        <Route path='/register' component={RegisterPage} ></Route>
+        <Route path='/userInfo' component={UserInfoPage} ></Route>
         <Route path="/" component={RegisterPage}></Route>
       </Switch>
     </Router>
