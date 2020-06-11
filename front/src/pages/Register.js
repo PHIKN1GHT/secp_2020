@@ -79,7 +79,7 @@ export default function RegisterPage(props) {
                     </form>
                 </div>
                 <div className='card-action'>
-                    Already Have Account? <a href='/Login' className='reg'>Login</a>
+                    Already Have Account? <a href='/login' className='reg'>Login</a>
                 </div>
             </div>
         </div>)
