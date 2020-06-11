@@ -6,29 +6,16 @@ export default function BottomNavBar(props) {
     return (
         <div className='bottom-nav-bar'>
             <div className='items-con'>
-                <div className='item'>
-                    <div className='icon'>
-                        <img className='img' src={tmp} /></div>
-                    <div className='text'>首页</div>
-                </div>
-
-                <div className='item'>
-                    <div className='icon'>
-                        <img className='img' src={tmp} /></div>
-                    <div className='text'>分类</div>
-                </div>
-
-                <div className='item'>
-                    <div className='icon'>
-                        <img className='img' src={tmp} /></div>
-                    <div className='text'>购物车</div>
-                </div>
-
-                <div className='item'>
-                    <div className='icon'>
-                        <img className='img' src={tmp} /></div>
-                    <div className='text'>我的</div>
-                </div >
+                {
+                    props['props'].map(val =>
+                        <div className='item'>
+                            <div className='icon'>
+                                <div className='img'>{val['icon']}</ div>
+                                <div className='text'>{val['text']}</div>
+                            </div>
+                        </div>
+                    )
+                }
             </div >
         </div >
     )

@@ -3,12 +3,15 @@
     min-height: 100%;
 }
 .user-info .user-info-card{
-    
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    justify-items: stretch;
 }
 .user-info .user-info-card .header{
-    position: fixed;
-    top: 0;
-    width: 100%;
+    background-color: ghostwhite;
+    position: relative;
     padding: 20px 15px;
     box-shadow: 1px 1px 3px #AAAAAA;
 }
@@ -25,7 +28,6 @@
 }
 .user-info .user-info-card .header .user-information .avater-con .avater{
     width: 60px;
-    
 }
 .user-info .user-info-card .header .user-information .username{
     padding: 13px 20px;
@@ -33,23 +35,68 @@
     text-align: center;
 }
 .user-info .user-info-card .cards{
-    margin: 100px 10px;
+    background-color: lavender;
+    flex: 1;
 }
 .user-info .user-info-card .cards .order-entry{
+    background-color: ghostwhite;
     margin-top: 10px;
     font-size: 14px;
     padding: 15px 20px;
+    margin: 10px 10px;
     box-shadow: 1px 1px 1px #CCCCCC;
+}
+.user-info .user-info-card .cards .order-entry .baseline{
+    margin:5px 0;
+    height: 1px;
+    background-color: #CCCCCC;
+}
+.user-info .user-info-card .cards .order-entry .head{
+    display: flex;
+    justify-content: space-between;
+}
+.user-info .user-info-card .cards .order-entry .head .main{
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.user-info .user-info-card .cards .order-entry .head .icon{
+    font-size: medium;
+}
+.user-info .user-info-card .cards .order-entry .body{
+    display: flex;
+    justify-content: space-around;
+}
+.user-info .user-info-card .cards .order-entry .body .item{
+    padding: 2px;
+    text-align: center;
+}
+.user-info .user-info-card .cards .order-entry .body .item .icon{
+    font-size: x-large;
+    margin-bottom: 1px;
+    color: indianred;
+}
+.user-info .user-info-card .cards .order-entry .body .item .text{
+    font-size: 11px;
 }
 .user-info .user-info-card .cards  .order-entry:hover{
     cursor: pointer;
     background-color: #AAAAAA;
 }
 .user-info .user-info-card .cards  .address-entry{
-    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 10px;
     font-size: 14px;
     padding: 15px 20px;
     box-shadow: 1px 1px 1px #CCCCCC;
+    background-color: ghostwhite;
+}
+.user-info .user-info-card .cards  .address-entry .main{
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.user-info .user-info-card .cards  .address-entry .icon{
+    font-size: medium;
 }
 .user-info .user-info-card .cards  .address-entry:hover{
     cursor: pointer;
