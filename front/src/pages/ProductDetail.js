@@ -53,11 +53,8 @@ class ProductDetail extends Component {
     //
     
     //事件监听
-    handleFoo() { 
-
-    }
-    handleBar() { 
-
+    handleReturn(){ 
+        this.props.history.goBack();
     }
     //
 
@@ -77,6 +74,7 @@ class ProductDetail extends Component {
 
         return (
             <>
+                <a onClick={this.handleReturn}>返回</a>
                 
                 
             </>

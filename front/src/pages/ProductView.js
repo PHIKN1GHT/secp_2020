@@ -4,10 +4,15 @@ import { ReactDOM } from 'react-dom';
 import ProductContainer from '../components/ProductContainer';
 import ProductSideBar from '../components/ProductSideBar';
 import ProductDetail from './ProductDetail';
+import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer';
 //--
 //--material-ui--
 import { withStyles } from "@material-ui/core/styles";
 import { Grid, Container } from '@material-ui/core';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import DehazeIcon from '@material-ui/icons/Dehaze';
+import HomeIcon from '@material-ui/icons/Home';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 //--
 //--样式--
 const styles = theme => ({
@@ -231,7 +236,9 @@ class ProductView extends Component {
                                     <>
                                         <ProductDetail onClick={this.handleBackClick.bind(this)}/>
                                     </>
-                            }
+                        }
+                        <BottomNavBarForCustomer />
+                        
                         </Grid>
           
             <Grid item xs={0}>

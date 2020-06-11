@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 export default function BottomNavBar(props) {
     const tmp = 'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture'
@@ -9,10 +9,12 @@ export default function BottomNavBar(props) {
                 {
                     props['props'].map(val =>
                         <div className='item'>
-                            <div className='icon'>
-                                <div className='img'>{val['icon']}</ div>
-                                <div className='text'>{val['text']}</div>
-                            </div>
+                            <Link to={props.url}>
+                                <div className='icon'>
+                                    <div className='img'>{val['icon']}</ div>
+                                    <div className='text'>{val['text']}</div>
+                                </div>
+                            </Link>
                         </div>
                     )
                 }
