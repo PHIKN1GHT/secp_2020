@@ -10,8 +10,9 @@ export default function BottomNavBar(props) {
                     props['props'].map(val =>
                         <div className='item'>
                             <div className='icon'>
-                                <img className='img' src={tmp} /></div>
-                            <div className='text'>{val['text']}</div>
+                                <div className='img'>{val['icon']}</ div>
+                                <div className='text'>{val['text']}</div>
+                            </div>
                         </div>
                     )
                 }

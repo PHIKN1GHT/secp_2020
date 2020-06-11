@@ -3,6 +3,7 @@
     position: fixed;
     bottom: 0;
     box-shadow: 1px 1px 5px black;
+    background-color: ghostwhite;
 }
 .bottom-nav-bar .items-con{
     padding: 1px 0;
@@ -24,9 +25,8 @@
     overflow: hidden;
 }
 .bottom-nav-bar .items-con .item .icon .img{
-    width: 25px;
-    height: 25px;
-    border-radius: 7px;
+    text-align: center;
+    color: lightcoral;
 }
 .bottom-nav-bar .items-con .item .text{
     font-size: 11px;

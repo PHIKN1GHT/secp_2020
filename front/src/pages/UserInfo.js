@@ -2,7 +2,13 @@ import React from 'react';
 import { useState } from 'react';
 import BottomNavBar from '../components/BottomNavBar';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import DehazeIcon from '@material-ui/icons/Dehaze';
+import HomeIcon from '@material-ui/icons/Home';
+import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
+import AllInboxIcon from '@material-ui/icons/AllInbox';
 export default function UserInfoCard(props) {
     const [username, setUsername] = useState('default')
     const [avaterURL, setAvaterURL] = useState(
@@ -23,25 +29,36 @@ export default function UserInfoCard(props) {
                     <div className='order-entry'>
                         <div className='head'>
                             <div className='main'>我的订单</div>
-                            <div className='script'>查看所有订单<ChevronRightIcon className='icon' /></div>
+                            <ChevronRightIcon className='icon' />
                         </div>
+                        <div className='baseline'></div>
                         <div className='body'>
-                            <div className='item'>待付款</div>
-                            <div className='item'>待发货</div>
-                            <div className='item'>待收货</div>
+                            <div className='item'>
+                                <ShoppingBasketIcon className='icon' />
+                                <div className='text'>待付款</div>
+                            </div>
+                            <div className='item'>
+                                <AllInboxIcon className='icon' />
+                                <div className='text'>待发货</div>
+                            </div>
+                            <div className='item'>
+                                <AirportShuttleIcon className='icon' />
+                                <div className='text'>待收货</div>
+                            </div>
                         </div>
                     </div>
                     <div className='address-entry'>
-                        收货地址
-                </div>
+                        <div className='main'>收货地址</div>
+                        <ChevronRightIcon className='icon' />
+                    </div>
                 </div>
             </div>
         </div>
         <BottomNavBar props={[
-            { img: '', text: '首页' },
-            { img: '', text: '分类 ' },
-            { img: '', text: ' 购物车 ' },
-            { img: '', text: '我的' }
+            { icon: <HomeIcon />, text: '首页' },
+            { icon: <DehazeIcon />, text: '分类 ' },
+            { icon: <ShoppingCartIcon />, text: ' 购物车 ' },
+            { icon: <AccountCircleIcon />, text: '我的' }
         ]} />
     </>)
 }
