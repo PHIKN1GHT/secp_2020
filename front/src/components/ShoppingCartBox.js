@@ -19,8 +19,7 @@ const styles = theme => ({
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: 'lavender',
-        flex: '1 1',
-        height: '100vh',
+        flex: '1',
     },
     rowBox: {
         display: 'flex',
