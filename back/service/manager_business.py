@@ -9,7 +9,7 @@ import datetime
 bp = Blueprint('consumption',__name__)
 
 # 经理端的商品列表
-@bp.route("/product", methods=['POST'])
+@bp.route("/manager/product", methods=['POST'])
 @jwt_required
 def allProduct():
     current_user = get_jwt_identity()

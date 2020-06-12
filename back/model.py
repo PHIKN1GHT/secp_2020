@@ -34,6 +34,46 @@ class User(db.Model):
     def __repr__(self):
         return '<User [%r] (%r)>' % (self.name, self.stuId)
 
+class Storehouse(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    name = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    address = db.Column(db.String(64), unique=True, index=True, nullable=False)
+    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+
+    def __init__(self, name, address, phoneNumber):
+        self.name = name
+        self.address = address
+        self.phoneNumber = phoneNumber
+
+    def __repr__(self):
+        return '<Storehouse [%r] (%r)>' % (self.name)
+
+class Manager(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    managerId = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    name = db.Column(db.String(16), unique=False, index=True, nullable=False)
+    password = db.Column(db.String(32), unique=False, index=False, nullable=False)
+    email = db.Column(db.String(32), unique=True, nullable=False)
+    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    # balance = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    storehouse = db.relationship('Storehouse', foreign_keys = 'Manager.storehouse_id')
+    
+    def __init__(self, managerId, name, email, phoneNumber, storehouse_id):
+        self.managerId = managerId
+        self.name = name
+        self.email = email
+        self.phoneNumber = phoneNumber
+        # self.balance = balance
+        self.storehouse_id = storehouse_id
+
+    def setPassword(self, pswd):
+        self.password = encodePswd(pswd)
+        return self
+
+    def __repr__(self):
+        return '<User [%r] (%r)>' % (self.name, self.managerId)
+
 class Permission(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(64), unique=True, index=True, nullable=False)
@@ -46,17 +86,21 @@ class Permission(db.Model):
 
 class Product(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
-    category = db.Column(db.BigInteger, nullable=False,default=0)
+    name = db.Column(db.String(64), unique=False)
+    category = db.Column(db.BigInteger, nullable=False, default=0)
     # 是否上架
     shelved = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     # 是否归档（无效化）
     archived = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    removed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    storehouse = db.relationship('Storehouse', foreign_keys = 'Product.storehouse_id')
 
-    def __init__(self, name, category):
+    def __init__(self, name, category, storehouse_id):
         self.name = name
+        self.storehouse_id = storehouse_id
         self.category = category
-
+    
     def __repr__(self):
         return '<Product %r>' % (self.name)
 
@@ -166,46 +210,6 @@ class Payment(db.Model):
 
     def __repr__(self):
         return '<Payment %r>' % (self.createTime)
-
-class Storehouse(db.Model):
-    id = db.Column(db.BigInteger, primary_key=True)
-    name = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    address = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
-
-    def __init__(self, name, address, phoneNumber):
-        self.name = name
-        self.address = address
-        self.phoneNumber = phoneNumber
-
-    def __repr__(self):
-        return '<Storehouse [%r] (%r)>' % (self.name)
-
-class Manager(db.Model):
-    id = db.Column(db.BigInteger, primary_key=True)
-    managerId = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    name = db.Column(db.String(16), unique=False, index=True, nullable=False)
-    password = db.Column(db.String(32), unique=False, index=False, nullable=False)
-    email = db.Column(db.String(32), unique=True, nullable=False)
-    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    # balance = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
-    storehouse = db.relationship('Storehouse', foreign_keys = 'Manager.storehouse_id')
-    
-    def __init__(self, managerId, name, email, phoneNumber, storehouse_id):
-        self.managerId = managerId
-        self.name = name
-        self.email = email
-        self.phoneNumber = phoneNumber
-        # self.balance = balance
-        self.storehouse_id = storehouse_id
-
-    def setPassword(self, pswd):
-        self.password = encodePswd(pswd)
-        return self
-
-    def __repr__(self):
-        return '<User [%r] (%r)>' % (self.name, self.managerId)
 
 class SupplierOrder(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
