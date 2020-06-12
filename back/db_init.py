@@ -26,7 +26,7 @@ def add_test_product():
 
 if __name__ == '__main__':
     create_initial_accounts()
-    add_test_product()
+    #add_test_product()
 
 
 
