@@ -1,6 +1,8 @@
 puts = lambda x : (print("\033[1;32m",end=""), print(x), print("\033[0m",end=""))
 putserr = lambda x : (print("\033[1;31m",end=""), print(x), print("\033[0m",end=""))
 
+REMOTE_REPO_DIR = '~/secp_2020'
+
 import paramiko, time
 
 start = time.perf_counter()
@@ -53,11 +55,11 @@ else:
         client.exec_cmd("sudo fuser -k -n tcp %s" % PRODUCTION_ENV['port'], silent=True)
 
 puts("正在从Github上同步项目源代码...")
-client.exec_cmd("cd ~/secp_2020 && git pull")
+client.exec_cmd("cd " + REMOTE_REPO_DIR + " && git pull")
 puts("源代码同步完成，开始对前端进行构建...")
-client.exec_cmd("cd ~/secp_2020 && python build.py")
+client.exec_cmd("cd " + REMOTE_REPO_DIR + "/back && python build.py")
 puts("前端构建完成，正在重新启动服务器...")
-client.exec_cmd("cd ~/secp_2020 && nohup python -u serve.py >> ~/ecust_axw/server.log 2>&1 &", wait=False)
+client.exec_cmd("cd " + REMOTE_REPO_DIR + "/back && nohup python -u serve.py >> " + REMOTE_REPO_DIR + "/server.log 2>&1 &", wait=False)
 
 time.sleep(5)
 result = client.exec_cmd("curl localhost:%s/ping" % PRODUCTION_ENV['port'], silent=True)
