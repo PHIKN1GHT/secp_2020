@@ -1,8 +1,8 @@
 import React from 'react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { Tab, Tabs } from '@material-ui/core';
+import { Tab, Tabs, IconButton } from '@material-ui/core';
 import OrderCards from '../components/OrderCards';
-
+import SearchIcon from '@material-ui/icons/Search';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -38,6 +38,9 @@ export default function OrdersPage(props) {
                 <div className='search-bar'>
                     <ArrowBackIosIcon className='backicon' onClick={handleGoBack} />
                     <div className='input-box'><input className='search-input' /></div>
+                    <IconButton className='s-btn' color='primary'>
+                        <SearchIcon className='btn' />
+                    </IconButton>
                 </div>
                 <div className='baseline'></div>
                 <Tabs className='tabs'
