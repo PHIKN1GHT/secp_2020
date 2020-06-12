@@ -1,38 +1,48 @@
+from model.account import *
+
 from server import db
 from utils import encodePswd, tryLookUp
 import datetime
 
-class User(db.Model):
+class Storehouse(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    stuId = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    name = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    address = db.Column(db.String(64), unique=True, index=True, nullable=False)
+    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+
+    def __init__(self, name, address, phoneNumber):
+        self.name = name
+        self.address = address
+        self.phoneNumber = phoneNumber
+
+    def __repr__(self):
+        return '<Storehouse [%r] (%r)>' % (self.name)
+
+class Manager(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    managerId = db.Column(db.String(16), unique=True, index=True, nullable=False)
     name = db.Column(db.String(16), unique=False, index=True, nullable=False)
     password = db.Column(db.String(32), unique=False, index=False, nullable=False)
     email = db.Column(db.String(32), unique=True, nullable=False)
-    citizenId = db.Column(db.String(32), unique=True, index=True, nullable=False)
-    balance = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    visible = db.Column(db.Boolean, unique=False, nullable=False, default=True)
-    createTime = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self, stuId, name, email, citizenId, balance):
-        self.stuId = stuId
+    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    # balance = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    storehouse = db.relationship('Storehouse', foreign_keys = 'Manager.storehouse_id')
+    
+    def __init__(self, managerId, name, email, phoneNumber, storehouse_id):
+        self.managerId = managerId
         self.name = name
         self.email = email
-        self.citizenId = citizenId
-        self.balance = balance
-        self.createTime = datetime.datetime.now()
-        self.setPassword("")
-        self.setVisible(True)
+        self.phoneNumber = phoneNumber
+        # self.balance = balance
+        self.storehouse_id = storehouse_id
 
     def setPassword(self, pswd):
         self.password = encodePswd(pswd)
         return self
 
-    def setVisible(self, visible):
-        self.visible = visible
-        return self
-
     def __repr__(self):
-        return '<User [%r] (%r)>' % (self.name, self.stuId)
+        return '<User [%r] (%r)>' % (self.name, self.managerId)
 
 class Permission(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
@@ -46,17 +56,21 @@ class Permission(db.Model):
 
 class Product(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
-    category = db.Column(db.BigInteger, nullable=False,default=0)
+    name = db.Column(db.String(64), unique=False)
+    category = db.Column(db.BigInteger, nullable=False, default=0)
     # 是否上架
     shelved = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     # 是否归档（无效化）
     archived = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    removed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    storehouse = db.relationship('Storehouse', foreign_keys = 'Product.storehouse_id')
 
-    def __init__(self, name, category):
+    def __init__(self, name, category, storehouse_id):
         self.name = name
+        self.storehouse_id = storehouse_id
         self.category = category
-
+    
     def __repr__(self):
         return '<Product %r>' % (self.name)
 
@@ -167,6 +181,45 @@ class Payment(db.Model):
     def __repr__(self):
         return '<Payment %r>' % (self.createTime)
 
+class SupplierOrder(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    creator_id = db.Column(db.BigInteger, db.ForeignKey(Manager.id), nullable=False)
+    creator = db.relationship('Manager', foreign_keys='SupplierOrder.creator_id')
+    product_id = db.Column(db.BigInteger, db.ForeignKey(Product.id), nullable=False)
+    product = db.relationship('Product', foreign_keys='SupplierOrder.product_id')
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    storehouse = db.relationship('Storehouse', foreign_keys='SupplierOrder.storehouse_id')
+    count = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
+    # monoprice = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
+    # receiver = db.Column(db.String(16), unique=False, nullable=False)
+    # phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    #是否是父订单
+    # virtual = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    createTime = db.Column(db.DateTime)
+    paid = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    accepted = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    delivered = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    confirmed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    rejected = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    # belonging_id = db.Column(db.BigInteger, db.ForeignKey("SupplierOrder.id"), nullable=True)
+    # belonging = db.relationship('SupplierOrder', foreign_keys='SupplierOrder.belonging_id')
+
+    def __init__(self, creator_id):
+        self.creator_id = creator_id
+        # self.virtual = virtual
+        self.createTime = datetime.datetime.now()
+    
+    def fill(self, product_id, storehouse_id, count):
+        # self.virtual = False
+        self.product_id = product_id
+        self.storehouse_id = storehouse_id
+        self.count = count
+        # self.monoprice = monoprice
+        # self.receiver = receiver
+        # self.phoneNumber = phoneNumber
+        # self.belonging_id = belonging_id
+
 '''
 
 '''
@@ -269,3 +322,4 @@ class UPermission(db.Model):
 | product | 整数型 | 查看的商品条目 |
 
 '''
+

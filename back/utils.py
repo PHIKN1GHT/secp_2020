@@ -77,7 +77,7 @@ def getAllFilenamesWithPath(dirpath):
 
 def loadBlueprint(app, service, prefix=""):
     service_module = importlib.import_module(service)
-    app.register_blueprint(service_module.bp,url_prefix='/'+prefix)
+    app.register_blueprint(service_module.bp, url_prefix='/api/'+prefix)
 
 FONT = ImageFont.truetype(os.path.join('resource', 'Courier.ttf'), 28)
 SOURCE = list(string.ascii_letters)

@@ -1,7 +1,7 @@
 import os, utils, xlwt, io, xlrd
 from server import db, app, inDebugging
 from flask import request, send_from_directory, make_response, Blueprint, jsonify, send_file
-from model import User, Product, Description
+#from model import User, Product, Description
 from utils import Pipeline, ensureParam, ensureJson
 
 bp = Blueprint('admin',__name__)

@@ -30,7 +30,7 @@ services = [
     "service.admin",
     "service.indexing",
 #    "service.fake",
-    "service.consumption"
+#    "service.consumption"
     "service.manager_business"
 ]
 
