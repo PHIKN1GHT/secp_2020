@@ -2,8 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+
+import ChangeQuantity from './components/ChangeQuantity';
+
 ReactDOM.render(
   <App />,
+  //<ChangeQuantity />,
   document.getElementById('root')
 );
 
