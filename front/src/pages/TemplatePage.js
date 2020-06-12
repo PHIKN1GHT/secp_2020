@@ -7,6 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
     colBox: {
+        height: '100vh',
         display: 'flex',
         flexDirection: 'column', 
     },

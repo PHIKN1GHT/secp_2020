@@ -15,6 +15,7 @@ import OrdersPage from './pages/Orders';
 import ProductView from './pages/ProductView';
 import ProductDetail from './pages/ProductDetail';
 import ShoppingCart from './pages/ShoppingCart';
+import MainPage from './pages/MainPage'
 function App() {
   return (
     <Router>
@@ -27,8 +28,8 @@ function App() {
         <Route path='/user-info' component={UserInfoPage} ></Route>
         <Route path='/orders' component={OrdersPage}></Route>
 
-        <Route path="/" component={ShoppingCart}></Route>
-        {/* <Route path="/" component={RegisterPage}></Route> */}
+        {/* <Route path="/" component={ShoppingCart}></Route> */}
+        <Route path="/" component={MainPage}></Route>
       </Switch>
     </Router>
   );

@@ -121,11 +121,14 @@ class ShoppingCart extends Component {
         const { classes } = this.props;
 
         return (<>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <ShoppingCartBox update={this.handleSetRenderDelete.bind(this)} products={this.state.products} />
-                <FunctionBarForShoppingCart renderDelete={this.state.renderDelete} />
+            <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ flex:1, backgroundColor: 'lavender', borderStyle:'none'}}>
+                    <ShoppingCartBox update={this.handleSetRenderDelete.bind(this)} products={this.state.products} />
+                </div>
+                <div style={{backgroundColor: 'lavender', borderStyle: 'none'}}>
+                    <FunctionBarForShoppingCart renderDelete={this.state.renderDelete} />
+                </div>
                 <BottomNavBarForCustomer/>
-                
             </div>
         </>);
     }
