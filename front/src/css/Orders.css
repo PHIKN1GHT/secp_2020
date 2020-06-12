@@ -1,0 +1,42 @@
+.orders{
+
+}
+.orders .head{
+}
+.orders .head .baseline{
+    margin: 0 5px;
+    height: 1px;
+    background-color: #CCCCCC;
+}
+.orders .head .search-bar{
+    display: flex;
+    justify-content: space-evenly;
+    margin: 10px 20px;
+}
+.orders .head .search-bar .input-box{
+    height: 25px;
+    width: 80%;
+    border-radius: 20px;
+    border: mediumaquamarine 1px solid;
+    overflow: hidden;
+}
+.orders .head .search-bar .input-box .search-input{
+    margin-left: 10px;
+    width: 90%;
+    border: none;
+    outline: none;
+    overflow: hidden;
+}
+.orders .head .search-bar .backicon{
+    font-size: medium;
+    padding-top: 5px;
+}
+.orders .head .tabs{
+}
+.orders .head .tabs .item{
+    font-size: 12px;
+}
+.orders .card-wrapper{
+    background-color: #CCDDFF;
+    height: 85.5vh;
+}
