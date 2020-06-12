@@ -1,24 +1,17 @@
-import React from 'react';
-import { ListItemText, ListItem } from '@material-ui/core';
-import { FixedSizeList } from 'react-window';
+import React, { useState } from 'react';
+import { ListItem, List } from '@material-ui/core';
 
 
-function renderRow(props) {
-    const { index, style } = props;
-
-    return (
-        <ListItem button style={style} key={index}>
-            <ListItemText primary={`Item ${index + 1}`} />
-        </ListItem>
-    );
-}
 export default function OrderCards(props) {
 
+    const [orders, setOrders] = useState(['a', 'ok', 'shit', 'shit', 'shit', 'shit'])
     return (<>
         <div className='order-cards'>
-            <FixedSizeList height={400} width={300} itemSize={46} itemCount={200}>
-                {renderRow}
-            </FixedSizeList><div></div>
+            <List className='list'>
+                {orders.map((val, ind) =>
+                    <ListItem className='item' button>{val}</ListItem>
+                )}
+            </List>
         </div>
     </>)
 }

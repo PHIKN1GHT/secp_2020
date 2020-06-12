@@ -1,3 +1,13 @@
 .order-cards{
+
+}
+.order-cards .order-list{
     
+}
+.order-cards .order-list .item{
+    margin: 0;
+}
+.order-cards .order-list .item .order-card{
+    width: 100%;
+    background-color: thistle;
 }
