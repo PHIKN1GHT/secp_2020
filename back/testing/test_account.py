@@ -17,7 +17,7 @@ def login(client, username, password):
     _, code = loadCaptcha(client)
     response = client.post('/api/account/login', json={
         'captcha': code,
-        "stuId": username,
+        "username": username,
         "password": password
     })
     return response.json['access_token'] if 'access_token' in response.json.keys() else response
@@ -64,7 +64,7 @@ def test_login_failed_wrong_username_or_password(client):
     _, code = loadCaptcha(client)
     response = client.post('/api/account/login', json={
         'captcha': code,
-        "stuId": "BAD STUID",
+        "username": "BAD username",
         "password": "BAD PASSWORD"
     })
     print(code)
@@ -77,7 +77,7 @@ def test_login_succeed(client):
     _, code = loadCaptcha(client)
     response = client.post('/api/account/login', json={
         'captcha': code,
-        "stuId": OPERATORNAME,
+        "username": OPERATORNAME,
         "password": OPERATORPSWD
     })
     assert response.json['result'] == True
@@ -122,14 +122,14 @@ def test_chgpswd_after_login(client):
     token = login_as_op(client)
 
     response = with_token(client.post, token)('/api/account/changepswd',json={
-        "stuId": OPERATORNAME,
+        "username": OPERATORNAME,
         "oripswd": temppswd,
         "newpswd": temppswd,
     })
     assert b'Bad username or password' in response.data
 
     response = with_token(client.post, token)('/api/account/changepswd',json={
-        "stuId": OPERATORNAME,
+        "username": OPERATORNAME,
         "oripswd": OPERATORPSWD,
         "newpswd": temppswd,
     })
@@ -142,7 +142,7 @@ def test_chgpswd_after_login(client):
     assert isinstance(token, str)
 
     response = with_token(client.post, token)('/api/account/changepswd',json={
-        "stuId": OPERATORNAME,
+        "username": OPERATORNAME,
         "oripswd": temppswd,
         "newpswd": OPERATORPSWD,
     })

@@ -6,8 +6,8 @@ from model import User, Product, Description
 import random
 
 def create_initial_accounts():
-    db.session.add(User('SYSTEM','SYSTEM','SYSTEM','SYSTEM', 0).setPassword(SECRETKEY).setVisible(False))
-    db.session.add(User(OPERATORNAME,'OPERATOR','OPERATOR','OPERATOR', 0).setPassword(OPERATORPSWD).setVisible(False))
+    db.session.add(User('SYSTEM').setPassword(SECRETKEY).setVisible(False))
+    db.session.add(User(OPERATORNAME).setPassword(OPERATORPSWD).setVisible(False))
     db.session.commit()
 
 def add_test_product():

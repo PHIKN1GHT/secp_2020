@@ -1,5 +1,4 @@
 from model.account import *
-from model.address import *
 
 from server import db
 from utils import encodePswd, tryLookUp

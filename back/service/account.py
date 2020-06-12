@@ -46,16 +46,16 @@ def login():
     pipeline = Pipeline(request)
     pipeline.add(ensureJson)
     pipeline.add(ensureCaptcha, [request, session])
-    pipeline.add(ensureParam, [request, 'stuId', lambda: invalidateSession(session, 'captcha')])
+    pipeline.add(ensureParam, [request, 'username', lambda: invalidateSession(session, 'captcha')])
     pipeline.add(ensureParam, [request, 'password',lambda: invalidateSession(session, 'captcha')])
 
     broken, retvs = pipeline.run()
     if broken:
         return retvs
     
-    _, _, stuId, password = retvs
+    _, _, username, password = retvs
 
-    user = User.query.filter_by(stuId=stuId).first()
+    user = User.query.filter_by(username=username).first()
 
     if not user or not cmparePswd(password, user.password):
         session['captcha'] = None
@@ -72,15 +72,15 @@ def loginAs():
         return 'FORBIDDEN'
     pipeline = Pipeline(request)
     pipeline.add(ensureJson)
-    pipeline.add(ensureParam, [request, 'stuId', lambda: invalidateSession(session, 'captcha')])
+    pipeline.add(ensureParam, [request, 'username', lambda: invalidateSession(session, 'captcha')])
 
     broken, retvs = pipeline.run()
     if broken:
         return retvs
     
-    _, stuId = retvs
+    _, username = retvs
 
-    user = User.query.filter_by(stuId=stuId).first()
+    user = User.query.filter_by(username=username).first()
     token = create_access_token(identity=user.id)
     return jsonify(msg="Login successfully as "+user.name,access_token=token), 200
 
@@ -112,7 +112,7 @@ def changepswd():
 
     pipeline = Pipeline(request)
     pipeline.add(ensureJson)
-    pipeline.add(ensureParam, [request, 'stuId'])
+    pipeline.add(ensureParam, [request, 'username'])
     pipeline.add(ensureParam, [request, 'oripswd'])
     pipeline.add(ensureParam, [request, 'newpswd'])
 
@@ -120,9 +120,9 @@ def changepswd():
     if broken:
         return retvs
     
-    _, stuId, oripswd, newpswd = retvs
+    _, username, oripswd, newpswd = retvs
 
-    user = User.query.filter_by(stuId=stuId).first()
+    user = User.query.filter_by(username=username).first()
 
     if not user or not cmparePswd(oripswd, user.password) or not user.id == current_user:
         return jsonify({"msg": "Bad username or password"}), 401
