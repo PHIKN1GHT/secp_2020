@@ -3,8 +3,11 @@ import { ReactDOM } from 'react-dom';
 import { withStyles } from "@material-ui/core/styles";
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 //项目组件引入
+import ChangeQuantity from './ChangeQuantity';
 //
 //material-ui 引入
+import { Checkbox } from '@material-ui/core';
+
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -22,6 +25,41 @@ import Box from '@material-ui/core/Box';
 //样式
 
 const styles = theme => ({
+    rowBox: {
+        display: 'flex',
+        flexGrow: '1',
+    },
+    colBox: {
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: '1',
+    },
+    image: {
+        // width: String(16) + 'vh',
+        // height: String(16) + 'vh',
+        width: 'auto',
+        height: '80%',
+        margin: 'auto 0 auto 10px',
+        borderRadius:'5px',
+    },
+    card: {
+        display: 'flex',
+        boxShadow: '1px 1px 1px #CCCCCC',
+        backgroundColor: 'ghostwhite',
+        flexGrow:'1',
+        //borderRadius:'5px',
+        height: '15vh',
+        margin: '1px 1px 1px 1px',
+        // backgroundColor: '#fff',
+        // boxShadow: '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
+    },
+    marginAround: {
+        margin:'auto 10px auto 10px',
+    },
+    rbCorner: {
+        marginLeft: 'auto',
+        marginTop: 'auto',
+    },
     root: {
         display: 'flex',
         height: String(20) + 'vh'
@@ -88,7 +126,7 @@ const styles = theme => ({
 props:
 product:{id:int, name:string, price:float, unit:str}
 */
-class ProductCard extends Component { 
+class ShoppingCartCard extends Component { 
     //类型检查
     // static propTypes = {
     //     receivedProps: PropTypes.object.isRequired,
@@ -134,8 +172,15 @@ class ProductCard extends Component {
         }
 
     }
-    handleBar() {
-
+    handleChangeQuantity(e, quantity) {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+        let product_new = Object.assign({}, this.state.product)
+        product_new.quantity = quantity
+        this.setState({ product: product_new })
+    }
+    handleRenderDelete() { 
+        
     }
     //
 
@@ -151,45 +196,31 @@ class ProductCard extends Component {
 
     //渲染函数
     render() {
-
         const { classes } = this.props;
-        return (<>
-            <Card className={classes.root}>
-                <CardActionArea onClick={(e) => { this.handleClick(this.props.product.id)}} className={classes.actionArea} >
-                    <CardMedia
-                        className={classes.cover}
-                        //image={this.props.product.cover}
-                        image="https://material-ui.com/static/images/cards/live-from-space.jpg"
-                        title="product image"
-                    />
-                    <div className={classes.details}>
-                        <CardContent className={classes.content}>
-                            <Typography className={classes.tpContent} component="div">
-                                <Box style={{margin: '0'}} textAlign="left" fontWeight="fontWeightMedium" m={1}>
-                                    {this.props.product.name}
-                                </Box>
-                                <Box>
-                                    <Box display="table-cell" color="#ff5252" textAlign="left" fontWeight="fontWeightRegular" m={1}>
-                                            ￥{this.props.product.price}
-                                    </Box>
-                                    <Box display="table-cell" color="#bdbdbd" textAlign="left" fontWeight="fontWeightRegular" m={1}>
-                                            /{this.props.product.unit}
-                                    </Box>
-                                </Box> 
-                                
-                                <Box className={classes.shoppingBox}>
-                                    <AddShoppingCartIcon className={classes.shoppingIcon}/>
-                                </Box>
-                            
-                            </Typography>
-                        </CardContent>
+        return(
+            <div className={classes.card}>
+
+            <div className={classes.rowBox} onClick={(e) => { this.handleClick(this.props.product.id) }}>
+              
+                    <Checkbox onClick={this.props.update} name='checkbox' id={this.props.product.id} />
+            
+                <img className={classes.image} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
+                <div className={classes.colBox+" "+classes.marginAround}>
+                    <span>{this.props.product.name}</span>
+                    <div>
+                        <span>￥{this.props.product.price}</span>
+                        <span>/{this.props.product.unit}</span>
+                        </div>
+                    <div className={classes.rbCorner}>
+                    <ChangeQuantity onChange={this.handleChangeQuantity.bind(this)} />
                     </div>
-                </CardActionArea>
-            </Card>
-        </>);
+                        </div>
+
+            </div>
+        </div>
+        );
     }
-    //
 
 
 }
-export default withStyles(styles, { withTheme: true })(ProductCard);
+export default withStyles(styles, { withTheme: true })(ShoppingCartCard);

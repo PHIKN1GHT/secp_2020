@@ -15,6 +15,23 @@ import Typography from '@material-ui/core/Typography';
 //--
 //--样式--
 const styles = theme => ({
+    page: {
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: 'lavender',
+        flex: '1 1',
+        height: '100vh',
+    },
+    rowBox: {
+        display: 'flex',
+    },
+    flexGrow: {
+        flexGrow:'1',
+    },
+    colBox: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
     root: {
       //backgroundColor: "red",
       maxWidth: '100%',
@@ -30,7 +47,7 @@ onClick: (product_id:int){}
 
 //--
 
-class ProductContainer extends Component {
+class ShoppingCartBox extends Component {
     //静态内容
     // static propTypes = {
     //     receivedProps: PropTypes.object.isRequired,
@@ -77,6 +94,7 @@ class ProductContainer extends Component {
     handleBar() { 
 
     }
+   
     //
 
 
@@ -93,12 +111,14 @@ class ProductContainer extends Component {
     render() { 
         const { classes } = this.props;
         return (
-            <div className="productContainer">
+            <div className={classes.page}>
                 {
                     this.props.products.map((product) => {
                         return (
-                            <ShoppingCard onClick={this.handleClick.bind(this)} key={product.id} product={product} onClick={this.handleClick.bind(this)} />
-                        )
+                            <div className={classes.rowBox}>
+                                
+                                <ShoppingCard update={this.props.update} onClick={this.handleClick.bind(this)} key={product.id} product={product} />
+                        </div>)
                     })
                 }
             </div>
@@ -108,4 +128,4 @@ class ProductContainer extends Component {
 
 
 }
-export default withStyles(styles, { withTheme: true })(ProductContainer);
+export default withStyles(styles, { withTheme: true })(ShoppingCartBox);
