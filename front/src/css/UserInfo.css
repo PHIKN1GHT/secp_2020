@@ -1,10 +1,11 @@
 .user-info{
-    min-width: 100%;
-    min-height: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 .user-info .user-info-card{
+    flex: 1;
     display: flex;
-    height: 100vh;
     flex-direction: column;
     justify-content: flex-start;
     justify-items: stretch;
@@ -40,7 +41,6 @@
 }
 .user-info .user-info-card .cards .order-entry{
     background-color: ghostwhite;
-    margin-top: 10px;
     font-size: 14px;
     padding: 15px 20px;
     margin: 10px 10px;
@@ -72,7 +72,7 @@
 }
 .user-info .user-info-card .cards .order-entry .body .item .icon{
     font-size: x-large;
-    margin-bottom: 1px;
+    padding-bottom: 1px;
     color: indianred;
 }
 .user-info .user-info-card .cards .order-entry .body .item .text{
@@ -101,4 +101,6 @@
 .user-info .user-info-card .cards  .address-entry:hover{
     cursor: pointer;
     background-color: #AAAAAA;
+}
+.user-info .bottom{
 }

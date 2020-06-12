@@ -6,8 +6,8 @@ import * as serviceWorker from './serviceWorker';
 import ChangeQuantity from './components/ChangQuantity';
 
 ReactDOM.render(
-  // <App />,
-  <ChangeQuantity />,
+  <App />,
+  //<ChangeQuantity />,
   document.getElementById('root')
 );
 

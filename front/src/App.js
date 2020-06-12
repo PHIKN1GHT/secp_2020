@@ -7,6 +7,7 @@ import './css/PicTxtCard.css';
 import './css/UserInfo.css';
 import './css/BottomNavBar.css';
 import './css/Orders.css';
+import './css/OrderCards.css';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import UserInfoPage from './pages/UserInfo';
