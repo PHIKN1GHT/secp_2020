@@ -13,18 +13,21 @@ import UserInfoPage from './pages/UserInfo';
 import OrdersPage from './pages/Orders';
 import ProductView from './pages/ProductView';
 import ProductDetail from './pages/ProductDetail';
+import ShoppingCart from './pages/ShoppingCart';
 function App() {
   return (
     <Router>
       <Switch>
         <Route path='/product/catalogs' component={ProductView} ></Route>
-        <Route path='/shoppingCart' component={ProductDetail} ></Route>
+        <Route path='/shoppingCart' component={ShoppingCart} ></Route>
         <Route path='/product/detail/:product_id' component={ProductView} ></Route>
         <Route path='/login' component={LoginPage} ></Route>
         <Route path='/register' component={RegisterPage} ></Route>
         <Route path='/user-info' component={UserInfoPage} ></Route>
         <Route path='/orders' component={OrdersPage}></Route>
-        <Route path="/" component={RegisterPage}></Route>
+
+        <Route path="/" component={ShoppingCart}></Route>
+        {/* <Route path="/" component={RegisterPage}></Route> */}
       </Switch>
     </Router>
   );

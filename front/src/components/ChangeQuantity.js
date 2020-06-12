@@ -19,38 +19,26 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //--
 //--样式--
 const styles = theme => ({
+    input: {
+        height: '15px',
+        width:'15px',
+
+    },
+    rowBox: {
+        display:'flex',
+        alignItems:'center',
+    },
+    removePadding: {
+        padding:"0",
+    },
     root: {
-      //backgroundColor: "red"
+      display:'flex',
     }
 });
 //--
 
 
 
-function InputDialog(props) {
-    const [open, setOpen] = React.useState(props.open);
-    
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    };
-    //传递该组件给父组件
-    useEffect(() => { 
-        if (props.onRef) { 
-            props.onRef(this)
-        }
-    });
-
-  return (
-    <div>
-      
-    </div>
-  );
-}
 
 
 /*
@@ -59,7 +47,7 @@ quantity->从服务端读取的商品的选择数量
 onChange->向服务端更新
 */
 
-class ChangQuantity extends Component { 
+class ChangeQuantity extends Component { 
     //静态内容
     // static propTypes = {
     //     receivedProps: PropTypes.object.isRequired,
@@ -72,11 +60,18 @@ class ChangQuantity extends Component {
     //构造函数
     constructor(props) { 
         super(props)
-        this.dialog = undefined
-        this.state = {
-            quantity: 1,
-            open: false,
+        if (this.props.quantity) {
+            this.state = {
+                quantity: this.props.quantity,
+                open: false,
+            }
+        } else {
+            this.state = {
+                quantity: 1,
+                open: false,
+            }
         }
+        
     }
     //
 
@@ -97,31 +92,38 @@ class ChangQuantity extends Component {
     _privateFunc() { 
 
     }
-    _updateQuantity() { 
+    _updateQuantity(e) {
         if (this.props.onChange) { 
-            this.props.onChange(this.state.quantity);
+            this.props.onChange(e, this.state.quantity);
         }
     }
     //
     
     //事件监听
-    handleAdd() {
+    handleAdd(e) {
+        //e.nativeEvent.stopImmediatePropagation();
+        //e.nativeEvent.stopPropagation();
         if (this.state.quantity < 99) {
             this.setState((prevState) => { return { quantity: prevState.quantity + 1 } })
         }
-        this._updateQuantity();
+        this._updateQuantity(e);
 
     }
-    handleSub() {
+    handleSub(e) {
         if (this.state.quantity > 1) {
             this.setState((prevState) => {return  { quantity: prevState.quantity - 1 }})
         }
-        this._updateQuantity();
+        this._updateQuantity(e);
     }
     handleChange(e) { 
+        let quantity = Number(e.target.value)
+        if (quantity > 99) { 
+            quantity = 99
+        }
         this.setState({
-            quantity: e.target.value,
+            quantity,
         })
+        this._updateQuantity(e);
     }
     handleClickOpen() {
         this.setState({open:true})   
@@ -142,10 +144,7 @@ class ChangQuantity extends Component {
     render() { 
         const { classes } = this.props;
 
-        return (<>
-            <IconButton>
-                <AddIcon onClick={this.handleAdd.bind(this)}/>
-            </IconButton>
+        return (<div className={classes.root}>
             <Dialog
                 open={this.state.open}
                 onClose={this.handleClose}
@@ -165,11 +164,18 @@ class ChangQuantity extends Component {
                 </Button>
                 </DialogActions>
             </Dialog>
-            <TextField onClick={this.handleClickOpen.bind(this)} InputLabelProps={{ shrink: true }} value={this.state.quantity}/>
-            <IconButton>
+            <div className={classes.rowBox}>
+                <IconButton className={classes.removePadding}>
+                <AddIcon onClick={this.handleAdd.bind(this)}/>
+            </IconButton>
+            
+                <input onChange={this.handleChange.bind(this)} value={this.state.quantity} className={classes.input}/>
+            {/* <TextField onClick={this.handleClickOpen.bind(this)} InputLabelProps={{ shrink: true }} value={this.state.quantity}/> */}
+            <IconButton className={classes.removePadding}>
                 <RemoveIcon onClick={this.handleSub.bind(this)}/>
             </IconButton>
-        </>);
+            </div>
+    </div>);
     }
 }
-export default withStyles(styles, { withTheme: true })(ChangQuantity);
+export default withStyles(styles, { withTheme: true })(ChangeQuantity);
