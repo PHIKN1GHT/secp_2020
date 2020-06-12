@@ -14,7 +14,7 @@ def ensureCaptcha(request, session):
     captcha = request.json.get('captcha', None)
     if not captcha or session['captcha'] != captcha:
         session['captcha'] = None
-        return False, [jsonify({"msg": "Wrong captcha"}), 400]
+        return False, [jsonify(result=False,reason="Wrong captcha"), 400]
     return True, []
 
 # GET: 请求验证码图片，并在 login 的 POST 请求里进行验证
@@ -41,7 +41,7 @@ def cheat():
 @bp.route("/login", methods=['POST'])
 def login():
     if (not 'captcha' in session.keys()) or (session['captcha'] == None):
-        return jsonify({"msg": "Please reload captcha first"}), 400
+        return jsonify(result=False,reason="Please reload captcha first"), 400
 
     pipeline = Pipeline(request)
     pipeline.add(ensureJson)
@@ -59,11 +59,11 @@ def login():
 
     if not user or not cmparePswd(password, user.password):
         session['captcha'] = None
-        return jsonify({"msg": "Bad username or password"}), 401
+        return jsonify(result=False,reason="Bad username or password"), 401
     
     token = create_access_token(identity=user.id)
     session['captcha'] = None
-    return jsonify(msg="Login successfully",access_token=token), 200
+    return jsonify(result=True,access_token=token), 200
 
 # Tested by Postman
 @bp.route("/loginAs", methods=['POST'])

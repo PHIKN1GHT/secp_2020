@@ -6,7 +6,7 @@ DRIVER = 'pymysql'
 USERNAME = 'root'
 PASSWORD = '!P8ssw0rd_'
 HOST = '127.0.0.1'
-PORT = '2330'
+PORT = '3306'
 DATABASE = 'secp_2020'
 
 SQLALCHEMY_DATABASE_URI = '{}+{}://{}:{}@{}:{}/{}?charset=utf8'.format(
