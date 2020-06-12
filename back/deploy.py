@@ -59,7 +59,7 @@ client.exec_cmd("cd " + REMOTE_REPO_DIR + " && git pull")
 puts("源代码同步完成，开始对前端进行构建...")
 client.exec_cmd("cd " + REMOTE_REPO_DIR + "/back && python build.py")
 puts("前端构建完成，正在重新启动服务器...")
-client.exec_cmd("cd " + REMOTE_REPO_DIR + "/back && nohup python -u serve.py >> " + REMOTE_REPO_DIR + "/server.log 2>&1 &", wait=False)
+client.exec_cmd("cd " + REMOTE_REPO_DIR + "/back && nohup python -u server.py -m PRODUCTION_ENV >> " + REMOTE_REPO_DIR + "/back/server.log 2>&1 &", wait=False)
 
 time.sleep(5)
 result = client.exec_cmd("curl localhost:%s/ping" % PRODUCTION_ENV['port'], silent=True)
