@@ -17,6 +17,7 @@ import ShoppingCart from './pages/ShoppingCart';
 import MainPage from './pages/MainPage'
 import SearchResultPage from './pages/SearchResultPage'
 import SearchPage from './pages/SearchPage'
+import CatalogsPage from './pages/CatalogsPage'
 function App() {
   return (
     <Router>
@@ -25,7 +26,7 @@ function App() {
 
         <Route path='/product/search' component={SearchPage} ></Route>
 
-        <Route path='/product/catalogs' component={ProductView} ></Route>
+        <Route path='/product/catalogs' component={CatalogsPage} ></Route>
         <Route path='/shoppingCart' component={ShoppingCart} ></Route>
         <Route path='/product/detail/:product_id' component={ProductView} ></Route>
         <Route path='/login' component={LoginPage} ></Route>
