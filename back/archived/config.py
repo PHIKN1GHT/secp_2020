@@ -7,7 +7,7 @@ USERNAME = 'root'
 PASSWORD = '!P8ssw0rd_'
 HOST = '127.0.0.1'
 PORT = '2330'
-DATABASE = 'secp_2020'
+DATABASE = 'ecust_axw'
 
 SQLALCHEMY_DATABASE_URI = '{}+{}://{}:{}@{}:{}/{}?charset=utf8'.format(
     DIALECT,DRIVER,USERNAME,PASSWORD,HOST,PORT,DATABASE

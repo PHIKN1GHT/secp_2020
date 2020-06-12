@@ -1,11 +1,11 @@
 import argparse, sys, os
 from flask_sqlalchemy import SQLAlchemy
-from flask_cors import CORS
+#from flask_cors import CORS
 from flask import Flask
 from config import PRODUCTION_ENV, DEVELOPMENT_ENV, SECRETKEY
 from utils import loadBlueprint
 
-app = Flask(__name__, static_folder=os.path.join("..","dist","static"), template_folder=os.path.join("..","dist"))
+app = Flask(__name__, static_folder=os.path.join("dist","static"), template_folder=os.path.join("dist"))
 app.config.from_object('config')
 
 #app.secret_key = SECRETKEY
@@ -14,7 +14,7 @@ app.config['SECRET_KEY']=os.urandom(24)
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access']
 app.config['JWT_SECRET_KEY'] = SECRETKEY
-
+    
 @app.after_request
 def cors(environ):
     environ.headers['Access-Control-Allow-Origin']='*'
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     loadBlueprints(app)
     
     jwt.init_app(app)
-    cors = CORS(app, resources={r"/.*": {"origins": "*"}})
+    #cors = CORS(app, resources={r"/.*": {"origins": "*"}})
 
     if ENV == PRODUCTION_ENV:
         from waitress import serve
