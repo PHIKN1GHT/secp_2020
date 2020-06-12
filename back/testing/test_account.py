@@ -48,6 +48,7 @@ def test_login_failed_without_verify(client):
 def test_login_failed_no_json(client):
     _, code = loadCaptcha(client)
     response = client.post('/api/account/login')
+    print(response.data)
     assert b'Missing JSON in request' in response.data
 
 def test_login_failed_wrong_captcha(client):
@@ -55,6 +56,8 @@ def test_login_failed_wrong_captcha(client):
     response = client.post('/api/account/login', json={
         'captcha': 'BAD CAPTCHA'
     })
+    print(response.json)
+    assert response.json['result'] == False
     assert b'Wrong captcha' in response.data
 
 def test_login_failed_wrong_username_or_password(client):
@@ -65,6 +68,7 @@ def test_login_failed_wrong_username_or_password(client):
         "password": "BAD PASSWORD"
     })
     print(code)
+    assert response.json['result'] == False
     assert b'Bad username or password' in response.data
 
 token = ''
@@ -76,7 +80,7 @@ def test_login_succeed(client):
         "stuId": OPERATORNAME,
         "password": OPERATORPSWD
     })
-    assert b'Login successfully' in response.data
+    assert response.json['result'] == True
     token = response.json['access_token']
 
 def test_after_login_succeed(client):

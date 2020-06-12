@@ -1,8 +1,11 @@
 from model.account import *
+from model.address import *
 
 from server import db
 from utils import encodePswd, tryLookUp
 import datetime
+
+
 
 class Storehouse(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
