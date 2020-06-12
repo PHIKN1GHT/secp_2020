@@ -9,6 +9,14 @@ import FunctionBarForShoppingCart from '../components/FunctionBarForShoppingCart
 import { withStyles } from "@material-ui/core/styles";
 //--
 //--样式--
+
+
+/*****
+ * 待完成
+ * 商品删除功能
+*****/
+
+
 const styles = theme => ({
         
     page: {
@@ -38,6 +46,7 @@ class ShoppingCart extends Component {
     constructor(props) { 
         super(props)
         this.state = {
+            renderDelete:false,
             products: [
                 { id: 0, name: '山东莱阳秋月梨', price: 25.9, unit: '箱', cover:'', quantity:12},
                 { id: 1, name: '云南红心木瓜', price: 29.9, unit: '箱', cover:'',qauntity:1 },
@@ -74,6 +83,19 @@ class ShoppingCart extends Component {
     handleBar() { 
 
     }
+    handleSetRenderDelete() { 
+        const checks = Array.from(document.getElementsByName('checkbox'))
+        console.log(checks)
+        let flag = false
+        for (let i = 0; i < checks.length; ++i) { 
+            if (checks[i].checked) { 
+                flag = true
+                break
+            }
+        }
+        this.setState({ renderDelete: flag })
+    }
+
     //
 
 
@@ -92,8 +114,8 @@ class ShoppingCart extends Component {
 
         return (<>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <ShoppingCartBox products={this.state.products} />
-                <FunctionBarForShoppingCart />
+                <ShoppingCartBox update={this.handleSetRenderDelete.bind(this)} products={this.state.products} />
+                <FunctionBarForShoppingCart renderDelete={this.state.renderDelete}/>
             </div>
             <BottomNavBarForCustomer/>
         </>);

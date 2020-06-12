@@ -94,6 +94,7 @@ class ShoppingCartBox extends Component {
     handleBar() { 
 
     }
+   
     //
 
 
@@ -116,7 +117,7 @@ class ShoppingCartBox extends Component {
                         return (
                             <div className={classes.rowBox}>
                                 
-                            <ShoppingCard onClick={this.handleClick.bind(this)} key={product.id} product={product} onClick={this.handleClick.bind(this)} />
+                                <ShoppingCard update={this.props.update} onClick={this.handleClick.bind(this)} key={product.id} product={product} />
                         </div>)
                     })
                 }
