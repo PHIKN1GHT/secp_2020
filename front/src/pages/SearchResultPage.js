@@ -4,7 +4,8 @@ import { ReactDOM } from 'react-dom';
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
 
 import { withStyles } from "@material-ui/core/styles";
-import IconButton from '@material-ui/core/IconButton';
+import { IconButton } from '@material-ui/core';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import SearchIcon from '@material-ui/icons/Search';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 
@@ -29,61 +30,48 @@ const styles = theme => ({
 });
 
 
-class MainPage extends Component { 
+class SearchResultPage extends Component { 
     constructor(props) { 
         super(props)
         this.state = {
-            catalogs: [],
             products:[],
         }
     }
     componentWillMount() { 
-        let catalogs = []
-        for (let i = 1; i <= 10; ++i){
-            catalogs.push({id:i, name:'catalog-'+i})
-        }
+       
         let products = []
         for (let i = 1; i <= 20; ++i){
             products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
         }
         this.setState({
-            catalogs,
             products,
 
         })
     }
+    handleGoBack(){
+        this.props.history.push({ pathname: '/mainpage',})
+    }
     handleSearch(e) { 
-        //const searchInput = document.getElementsByName('searchInput')[0]
-        //const keyword = searchInput.value
         this.props.history.push({ pathname: '/product/search',})
     }
     render() {
         const { classes } = this.props;
-        return (<div className={classes.colBox} style={{}}>
+        return (<div className={classes.colBox}>
             {/* 搜索框 */}
             <div className={classes.searchBar}>
+                <IconButton style={{'justifySelf':"flex-start"}} >
+                    <ArrowBackIosIcon onClick={this.handleGoBack.bind(this)} />
+                </IconButton>
                 <input onClick={this.handleSearch.bind(this)} readonly="readonly" style={{ width: '60%', height: '70%', }} />
                 <div style={{ margin: '0' }}>
                     <IconButton onClick={this.handleSearch.bind(this)} >
                         <SearchIcon />
                     </IconButton>
                 </div>
+                {this.props.location.state['keyword']}
             </div>
             <div style={{overflowY:'auto'}}>
-                {/* 目录展示 */}
-                <div className={classes.rowBox} style={{flexWrap:'wrap'}}>
-                    {this.state.catalogs.map((catalog) => { 
-                        return (
-                            <div style={{ width: '20vw', height: '20vw', display: 'flex', flexDirection: 'column', alignItems:'center'}}>
-                                <img style={{borderRadius:'20vw',width:'80%', height:'80%'}} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
-                                <span>
-                                    {catalog.name}
-                                </span>    
-                            </div>
-                        )
-                    })}
-                </div>
-                {/* 推荐商品 */}
+            {/* 推荐商品 */}
                 <div className={classes.rowBox} style={{justifyContent: 'space-evenly',flexWrap:'wrap'}}>
                 {this.state.products.map((product) => { 
                     return (
@@ -110,7 +98,8 @@ class MainPage extends Component {
             </div>
             </div>
             <BottomNavBarForCustomer />
+            
         </div>);
     }
 }
-export default withStyles(styles, { withTheme: true })(MainPage);
+export default withStyles(styles, { withTheme: true })(SearchResultPage);
