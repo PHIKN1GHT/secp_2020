@@ -6,7 +6,7 @@ import io
 from model import Storehouse, User, Product, Description, SupplierOrder, Order
 import datetime
 
-bp = Blueprint('api/manager_business',__name__)
+bp = Blueprint('manager_business',__name__)
 
 # 经理端的商品列表
 @bp.route("/product", methods=['POST'])

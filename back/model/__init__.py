@@ -11,7 +11,7 @@ class Storehouse(db.Model):
     address = db.Column(db.String(64), unique=True, index=True, nullable=False)
     phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
     manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
-    manager = db.relationship('Manager', foreign_keys = 'Storehouse.manager_id')
+    manager = db.relationship('User', foreign_keys = 'Storehouse.manager_id')
 
     def __init__(self, name, address, phoneNumber):
         self.name = name
@@ -107,7 +107,7 @@ class Order(db.Model):
     product_id = db.Column(db.BigInteger, db.ForeignKey(Product.id), nullable=True)
     product = db.relationship('Product', foreign_keys='Order.product_id')
     storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
-    storehouse = db.relationship('Storehouse', foreign_keys='SupplierOrder.storehouse_id')
+    storehouse = db.relationship('Storehouse', foreign_keys='Order.storehouse_id')
     count = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     monoprice = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     virtual = db.Column(db.Boolean, unique=False, nullable=False, default=False)
@@ -164,7 +164,7 @@ class Payment(db.Model):
 class SupplierOrder(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     creator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
-    creator = db.relationship('Manager', foreign_keys='SupplierOrder.creator_id')
+    creator = db.relationship('User', foreign_keys='SupplierOrder.creator_id')
     product_id = db.Column(db.BigInteger, db.ForeignKey(Product.id), nullable=False)
     product = db.relationship('Product', foreign_keys='SupplierOrder.product_id')
     storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
