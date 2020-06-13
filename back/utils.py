@@ -53,7 +53,7 @@ def ensureParam(request, paramName, trigger=None):
     if not param:
         if trigger:
             trigger()
-        return False, [jsonify(reason="Missing parameter %s" % paramName), 400]
+        return False, [jsonify(result=False,reason="Missing parameter %s" % paramName), 400]
     return True, param
 
 def encodePswd(str):

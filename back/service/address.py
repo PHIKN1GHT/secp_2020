@@ -7,32 +7,88 @@ from model import *
 
 bp = Blueprint('address',__name__)
 
-@jwt_required
-@bp.route("/add")
-def add():
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(id=current_user).first()
-    if user.default_address_id is None:
-        print("no address")
-    return jsonify(result=False), 200
-
-@jwt_required
 @bp.route("/all")
+@jwt_required
 def all():
     current_user = get_jwt_identity()
-    #user = User.query.filter_by(id=current_user).first()
     addresses = Address.query.filter_by(owner_id=current_user).all()
-    pass
+    addresses = [{'receiver':addr.receiver, 'phonenumber': addr.phonenumber, 'address':addr.address, 'id':addr.id } for addr in addresses]
+    return jsonify(addresses), 200
 
+@bp.route("/add")
 @jwt_required
-@bp.route("/update")
-def update():
-    pass
+def add():
+    current_user = get_jwt_identity()
 
-@jwt_required
+    pipeline = Pipeline(request)
+    pipeline.add(ensureJson)
+    pipeline.add(ensureParam, [request, 'receiver'])
+    pipeline.add(ensureParam, [request, 'phonenumber'])
+    pipeline.add(ensureParam, [request, 'address'])
+
+    broken, retvs = pipeline.run()
+    if broken:
+        return retvs
+    _, receiver, phonenumber, address = retvs
+    addr = Address(current_user, receiver, phonenumber, address)
+    db.session.add(addr)
+    db.session.commit()
+
+    user = User.query.filter_by(id=current_user).first()
+    if user.default_address_id is None:
+        user.default_address_id = addr.id
+        db.session.commit()
+    return jsonify(result=True,id=addr.id), 200
+
 @bp.route("/del")
+@jwt_required
 def delete():
-    pass
+    current_user = get_jwt_identity()
 
+    pipeline = Pipeline(request)
+    pipeline.add(ensureJson)
+    pipeline.add(ensureParam, [request, 'id'])
 
+    broken, retvs = pipeline.run()
+    if broken:
+        return retvs
+    _, _id = retvs
 
+    addr = Address.query.filter_by(id=_id).first()
+
+    user = User.query.filter_by(id=current_user).first()
+    if (addr != None) and (addr.owner_id == current_user):
+        if user.default_address_id == addr.id:
+            user.default_address_id = None
+            db.session.commit()
+        db.session.delete(addr)
+        db.session.commit()
+        return jsonify(result=True), 200
+    return jsonify(result=False,reson="BAD ADDRESS ID"), 200
+
+@bp.route("/update")
+@jwt_required
+def update():
+    current_user = get_jwt_identity()
+
+    pipeline = Pipeline(request)
+    pipeline.add(ensureJson)
+    pipeline.add(ensureParam, [request, 'id'])
+    pipeline.add(ensureParam, [request, 'receiver'])
+    pipeline.add(ensureParam, [request, 'phonenumber'])
+    pipeline.add(ensureParam, [request, 'address'])
+
+    broken, retvs = pipeline.run()
+    if broken:
+        return retvs
+    _, _id, receiver, phonenumber, address = retvs
+
+    addr = Address.query.filter_by(id=_id).first()
+    user = User.query.filter_by(id=current_user).first()
+    if (addr != None) and (addr.owner_id == current_user):
+        addr.receiver = receiver
+        addr.phonenumber = phonenumber
+        addr.address = address
+        db.session.commit()
+        return jsonify(result=True), 200
+    return jsonify(result=False,reson="BAD ADDRESS ID"), 200

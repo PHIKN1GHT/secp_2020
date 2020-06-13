@@ -47,7 +47,7 @@ def login():
     pipeline.add(ensureJson)
     pipeline.add(ensureCaptcha, [request, session])
     pipeline.add(ensureParam, [request, 'username', lambda: invalidateSession(session, 'captcha')])
-    pipeline.add(ensureParam, [request, 'password',lambda: invalidateSession(session, 'captcha')])
+    pipeline.add(ensureParam, [request, 'password', lambda: invalidateSession(session, 'captcha')])
 
     broken, retvs = pipeline.run()
     if broken:
@@ -95,8 +95,6 @@ def logout():
 def identity():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as_user=current_user), 200
-
-
 
 @bp.route('/state', methods=['GET'])
 @jwt_optional
