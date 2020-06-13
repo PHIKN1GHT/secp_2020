@@ -6,10 +6,10 @@ import io
 from model import Storehouse, Manager, Product, Description, SupplierOrder, Order
 import datetime
 
-bp = Blueprint('consumption',__name__)
+bp = Blueprint('manager_business',__name__)
 
 # 经理端的商品列表
-@bp.route("/manager/product", methods=['POST'])
+@bp.route("/product", methods=['POST'])
 @jwt_required
 def allProduct():
     current_user = get_jwt_identity()
