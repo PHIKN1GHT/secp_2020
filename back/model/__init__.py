@@ -5,7 +5,6 @@ from utils import encodePswd, tryLookUp
 import datetime
 
 
-
 class Storehouse(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(16), unique=True, index=True, nullable=False)
@@ -19,32 +18,6 @@ class Storehouse(db.Model):
 
     def __repr__(self):
         return '<Storehouse [%r] (%r)>' % (self.name)
-
-class Manager(db.Model):
-    id = db.Column(db.BigInteger, primary_key=True)
-    managerId = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    name = db.Column(db.String(16), unique=False, index=True, nullable=False)
-    password = db.Column(db.String(32), unique=False, index=False, nullable=False)
-    # email = db.Column(db.String(32), unique=True, nullable=False)
-    # phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    # balance = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
-    storehouse = db.relationship('Storehouse', foreign_keys = 'Manager.storehouse_id')
-    
-    def __init__(self, managerId, name, storehouse_id):
-        self.managerId = managerId
-        self.name = name
-        # self.email = email
-        # self.phoneNumber = phoneNumber
-        # self.balance = balance
-        self.storehouse_id = storehouse_id
-
-    def setPassword(self, pswd):
-        self.password = encodePswd(pswd)
-        return self
-
-    def __repr__(self):
-        return '<User [%r] (%r)>' % (self.name, self.managerId)
 
 class Permission(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
@@ -231,6 +204,32 @@ class SupplierOrder(db.Model):
 
 
 '''
+class Manager(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    managerId = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    name = db.Column(db.String(16), unique=False, index=True, nullable=False)
+    password = db.Column(db.String(32), unique=False, index=False, nullable=False)
+    # email = db.Column(db.String(32), unique=True, nullable=False)
+    # phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    # balance = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    storehouse = db.relationship('Storehouse', foreign_keys = 'Manager.storehouse_id')
+    
+    def __init__(self, managerId, name, storehouse_id):
+        self.managerId = managerId
+        self.name = name
+        # self.email = email
+        # self.phoneNumber = phoneNumber
+        # self.balance = balance
+        self.storehouse_id = storehouse_id
+
+    def setPassword(self, pswd):
+        self.password = encodePswd(pswd)
+        return self
+
+    def __repr__(self):
+        return '<User [%r] (%r)>' % (self.name, self.managerId)
+
 class Volunteering(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     stuId = db.Column(db.String(512))
