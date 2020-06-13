@@ -21,6 +21,9 @@ export default function UserInfoCard(props) {
         //event.cancelBubble = true
         event.stopPropagation()
     }
+    const handleJumptoAddressPage = (event) => {
+        props.history.push({ pathname: '/address', state: { mes: 'a' } })
+    }
     return (<>
         <div className='user-info'>
             <div className='user-info-card'>
@@ -58,7 +61,7 @@ export default function UserInfoCard(props) {
                             </div>
                         </div>
                     </div>
-                    <div className='address-entry'>
+                    <div className='address-entry' onClick={handleJumptoAddressPage}>
                         <div className='main'>收货地址</div>
                         <ChevronRightIcon className='icon' />
                     </div>
