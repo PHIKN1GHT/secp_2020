@@ -82,7 +82,7 @@ def loginAs():
 
     user = User.query.filter_by(username=username).first()
     token = create_access_token(identity=user.id)
-    return jsonify(msg="Login successfully as "+user.name,access_token=token), 200
+    return jsonify(msg="Login successfully as "+user.username,access_token=token), 200
 
 @bp.route("/logout", methods=['POST'])
 @jwt_required

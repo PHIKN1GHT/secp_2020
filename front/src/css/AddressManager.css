@@ -1,0 +1,74 @@
+.address-manager{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.address-manager .backicon-con{
+    padding: 15px 0px;
+    background-color: white;
+    box-shadow: 1px 1px 1px #CCCCCC;
+    display: flex;
+}
+.address-manager .backicon-con .head{
+    flex: 1;
+    text-align: center;
+    font-size: medium;
+    letter-spacing: 10px;
+    padding-right: 6%;
+}
+.address-manager .backicon-con .backicon{
+    font-size: medium;
+    padding-left: 15px;
+    align-self: center;
+}
+.address-manager .content{
+    flex:1;
+    overflow: auto;
+    background-color: #DCDFFF;
+}
+.address-manager .content .list-con{
+    background-color: rgba(255, 255, 255, 0);
+}
+.address-manager .content .list-con .list{
+    background-color: rgba(255, 255, 255, 0);
+    margin: 10px 10px;
+}
+.address-manager .content .list-con .list .item{
+    background-color: rgba(255, 255, 255, 0.7);
+    margin: 10px 0;
+    box-shadow: 1px 1px 1px #DDDDDD;
+    width: 100%;
+    display: flex;
+}
+.address-manager .content .list-con .list .item .texts{
+    flex: 1;
+}
+.address-manager .content .list-con .list .item .texts .receiver{
+    font-size: 14px;
+    margin: 2px 0;
+    font-weight: bold;
+}
+
+.address-manager .content .list-con .list .item .texts .phone{
+    font-size: small;
+    margin: 3px 0;
+}
+.address-manager .content .list-con .list .item .texts .addr{
+    font-size: x-small;
+    margin: 3px 0;
+}
+.address-manager .content .list-con .list .item .icons{
+    display: flex;
+}
+.address-manager .add-icon-con{
+    position: fixed;
+    bottom: 2%;
+    right: 5%;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 90px;
+   
+}
+.address-manager .add-icon-con .add-icon{
+    width: 45px;
+   height: 45px;
+}
