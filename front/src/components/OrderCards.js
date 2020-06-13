@@ -1,31 +1,49 @@
 import React, { useState } from 'react';
-import { ListItem, List, Button, IconButton } from '@material-ui/core';
+import { ListItem, List, IconButton } from '@material-ui/core';
 
 
 export default function OrderCards(props) {
-    let tmp = []
-    for (let i = 0; i < 20; ++i)tmp.push({
-        orderID: 0,
-        products: [],
+    let orders = []
+    let products = []
+    for (let i = 0; i < 20; ++i) {
+        products.push({
+            name: '牛腩',
+            count: 4,
+            unit: '斤',
+            unitprice: 20.4,
+            price: 81.6
+        })
+    }
+    for (let i = 0; i < 20; ++i)orders.push({
+        orderID: String(i),
+        products: products,
         receiver: '张三',
         phone: '12345678910',
         address: '上海市奉贤区xx路xx号',
         status: props['type'] === '全部' ? '' : props['type'],
         price: Math.ceil(Math.random() * 100) * 0.89,
     })
-    const [ordersInfo, setOrderInfo] = useState(tmp)
+    const [ordersInfo, setOrderInfo] = useState(orders)
     const handleChangeOrderStatus = (event) => {
         event.stopPropagation()
     }
     const handleJumptoOrderDetail = (event) => {
-        alert('a')
-        //props.history.push({ path: '/order-detail', state: { orderID: 0 } })
+        let i = 0
+        for (i = 0; i < orders.length; ++i) {
+            if (orders[i].orderID === event.currentTarget.getAttribute('name'))
+                break
+        }
+        props.history.push({
+            pathname: '/order-detail',
+            state: { order: orders[i] }
+        })
     }
     return (<>
-        <div className='order-cards' onClick={handleJumptoOrderDetail}>
+        <div className='order-cards'>
             <List className='order-list'>
                 {ordersInfo.map((val, ind) =>
-                    <ListItem className='item' name={`item-${ind}`} button>
+                    <ListItem className='item' name={val.orderID}
+                        onClick={handleJumptoOrderDetail}>
                         <div className='order-card'>
                             <div className='head'>
                                 <div className='head-text'>订单号:{val.orderID}</div>

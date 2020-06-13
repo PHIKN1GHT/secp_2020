@@ -14,12 +14,16 @@
     box-shadow: 1px 1px 3px rgb(214, 191, 191);
     margin: 5px;
     background-color: white;
-    
+}
+.order-cards .order-list .item:hover{
+    background-color: #CCCCCC;
+    cursor: pointer;
 }
 .order-cards .order-list .item .order-card{
     width: 100%;
     letter-spacing: 0.2px;
 }
+
 .order-cards .order-list .item .order-card .head{
     display: flex;
     justify-content: space-between;
@@ -48,7 +52,6 @@
 .order-cards .order-list .item .order-card .content{
     font-size: small;
     line-height: 22px;
-    
 }
 .order-cards .order-list .item .order-card .content .text-add{
 }

@@ -61,6 +61,7 @@
 }
 .user-info .user-info-card .cards .order-entry .head .icon{
     font-size: medium;
+    align-self: center;
 }
 .user-info .user-info-card .cards .order-entry .body{
     display: flex;
@@ -97,6 +98,7 @@
 }
 .user-info .user-info-card .cards  .address-entry .icon{
     font-size: medium;
+    align-self: center;
 }
 .user-info .user-info-card .cards  .address-entry:hover{
     cursor: pointer;
