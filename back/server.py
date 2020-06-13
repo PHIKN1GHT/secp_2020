@@ -31,7 +31,9 @@ services = [
     "service.indexing",
 #    "service.fake",
 #    "service.consumption"
-    "service.manager_business"
+    # "service.manager_business"
+    "server.product"
+    "server.supplierOrder"
 ]
 
 from utils import jwt
