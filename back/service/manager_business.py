@@ -16,18 +16,34 @@ def allProduct():
     manager = User.query.filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
-    
+
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
+    
+    storehouse_id = request.json.get('storehouse_id')
+    if not storehouse_id:
+        return jsonify({"msg": "Missing storehouse_id parameter"}), 400
+    
+    storehouse = Storehouse.query.filter_by(id=storehouse_id).first()
+    if not storehouse:
+        return jsonify({"msg": "Bad storehouseId"}), 401
 
-    products = Product.query.filter_by(storehouse_id=manager.storehouse_id).all()
+    products = Product.query.filter_by(storehouse_id=storehouse_id).all()
     all_products = [(product.id, product.name, product.shelved, product.category) for product in products]
     return jsonify(products=all_products), 200
 
 # 经理端查看商品详情
 @bp.route("/product/detail", methods=['POST'])
 @jwt_required
-def productDatail():  
+def productDatail():
+    current_user = get_jwt_identity()
+    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    if not manager:
+        return jsonify({"msg": "Bad manager_id"}), 401
+      
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
     product_id = request.json.get('product_id')
     if not product_id:
         return jsonify({"msg": "Missing product_id parameter"}), 400
@@ -67,7 +83,11 @@ def createProduct():
     if not all_description:
         return jsonify({"msg": "Missing description parameter"}), 400
 
-    product = Product(name,category,manager.storehouse_id)
+    storehouse_id = request.json.get('storehouse_id')
+    if not storehouse_id:
+        return jsonify({"msg": "Missing storehouse_id parameter"}), 400
+
+    product = Product(name,category,storehouse_id)
     db.session.add(product)
     db.session.commit()
     
@@ -80,6 +100,11 @@ def createProduct():
 @bp.route("/product/update", methods=['POST'])
 @jwt_required
 def updateProduct():
+    current_user = get_jwt_identity()
+    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    if not manager:
+        return jsonify({"msg": "Bad manager_id"}), 401
+
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
     
@@ -94,6 +119,14 @@ def updateProduct():
     shelved = request.json.get('shelved')
     if not shelved:
         return jsonify({"msg": "Missing shelved parameter"}), 400
+    
+    archived = request.json.get('archived')
+    if not archived:
+        return jsonify({"msg": "Missing archived parameter"}), 400
+
+    removed = request.json.get('removed')
+    if not removed:
+        return jsonify({"msg": "Missing removed parameter"}), 400
 
     all_description = request.json.get('description')
     if not all_description:
@@ -109,6 +142,8 @@ def updateProduct():
 
     product.category=category
     product.shelved=shelved
+    product.archived=archived
+    product.removed=removed
     db.session.commit()
 
     description.modify(all_description)
@@ -119,6 +154,11 @@ def updateProduct():
 @bp.route("/product/remove", methods=['POST'])
 @jwt_required
 def removeProduct():
+    current_user = get_jwt_identity()
+    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    if not manager:
+        return jsonify({"msg": "Bad manager_id"}), 401
+
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
     
@@ -137,7 +177,6 @@ def removeProduct():
     product.removed=True
     description.removed=True
     return jsonify(isRemoved=True), 200
-    
 
 # 经理端查看销售统计
 @bp.route("/statistics", methods=['POST'])
@@ -148,8 +187,12 @@ def statistics():
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
 
+    storehouse_id = request.json.get('storehouse_id')
+    if not storehouse_id:
+        return jsonify({"msg": "Missing storehouse_id parameter"}), 400
+
     nowTime = datetime.datetime.now()
-    orders = Order.query.filter_by(storehouse_id=manager.storehouse_id).all()
+    orders = Order.query.filter_by(storehouse_id=storehouse_id, product_id=True).all()
     product_count={}
     for order in orders:
         #product = Product.query.filter_by(id=order.product_id).first()
@@ -167,6 +210,9 @@ def statistics():
 @jwt_required
 def allSupplierOrder():
     current_user = get_jwt_identity()
+    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    if not manager:
+        return jsonify({"msg": "Bad manager_id"}), 401
     
     supplierOrders = SupplierOrder.query.filter_by(creator_id=current_user).all()
     all_supplierOrders = []
@@ -196,13 +242,17 @@ def createSupplierOrder():
     if not count:
         return jsonify({"msg": "Missing count parameter"}), 400
 
+    storehouse_id = request.json.get('storehouse_id')
+    if not storehouse_id:
+        return jsonify({"msg": "Missing storehouse_id parameter"}), 400
+
     product = Product.query.filter_by(id=product_id).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
 
-    storehouse = Storehouse.query.filter_by(id=manager.storehouse_id).first()
+    storehouse = Storehouse.query.filter_by(id=storehouse_id).first()
     supplierOrder = SupplierOrder(current_user)
-    supplierOrder.fill(product_id,storehouse.id,count)
+    supplierOrder.fill(product_id,storehouse_id,count)
     db.session.add(supplierOrder)
     db.session.commit()
     return jsonify(supplierOrderId=supplierOrder.id), 200

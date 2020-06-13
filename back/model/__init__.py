@@ -9,12 +9,14 @@ class Storehouse(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(16), unique=True, index=True, nullable=False)
     address = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    # phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
+    manager = db.relationship('Manager', foreign_keys = 'Storehouse.manager_id')
 
-    def __init__(self, name, address):
+    def __init__(self, name, address, phoneNumber):
         self.name = name
         self.address = address
-        # self.phoneNumber = phoneNumber
+        self.phoneNumber = phoneNumber
 
     def __repr__(self):
         return '<Storehouse [%r] (%r)>' % (self.name)
@@ -104,6 +106,8 @@ class Order(db.Model):
     creator = db.relationship('User', foreign_keys='Order.creator_id')
     product_id = db.Column(db.BigInteger, db.ForeignKey(Product.id), nullable=True)
     product = db.relationship('Product', foreign_keys='Order.product_id')
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    storehouse = db.relationship('Storehouse', foreign_keys='SupplierOrder.storehouse_id')
     count = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     monoprice = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     virtual = db.Column(db.Boolean, unique=False, nullable=False, default=False)
@@ -120,11 +124,12 @@ class Order(db.Model):
         self.virtual = virtual
         self.createTime = datetime.datetime.now()
     
-    def fill(self, product_id, count, monoprice, belonging_id=None):
+    def fill(self, product_id, count, monoprice, storehouse_id, belonging_id=None):
         self.virtual = False
         self.product_id = product_id
         self.count = count
         self.monoprice = monoprice
+        self.storehouse_id = storehouse_id
         self.belonging_id = belonging_id
 
     def cost(self):
@@ -158,7 +163,7 @@ class Payment(db.Model):
 
 class SupplierOrder(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    creator_id = db.Column(db.BigInteger, db.ForeignKey(Manager.id), nullable=False)
+    creator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
     creator = db.relationship('Manager', foreign_keys='SupplierOrder.creator_id')
     product_id = db.Column(db.BigInteger, db.ForeignKey(Product.id), nullable=False)
     product = db.relationship('Product', foreign_keys='SupplierOrder.product_id')
