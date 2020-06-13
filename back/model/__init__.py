@@ -170,11 +170,6 @@ class SupplierOrder(db.Model):
     storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
     storehouse = db.relationship('Storehouse', foreign_keys='SupplierOrder.storehouse_id')
     count = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    # monoprice = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    # receiver = db.Column(db.String(16), unique=False, nullable=False)
-    # phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    #是否是父订单
-    # virtual = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     createTime = db.Column(db.DateTime)
     paid = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     accepted = db.Column(db.Boolean, unique=False, nullable=False, default=False)
@@ -182,23 +177,15 @@ class SupplierOrder(db.Model):
     confirmed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     rejected = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    # belonging_id = db.Column(db.BigInteger, db.ForeignKey("SupplierOrder.id"), nullable=True)
-    # belonging = db.relationship('SupplierOrder', foreign_keys='SupplierOrder.belonging_id')
 
     def __init__(self, creator_id):
         self.creator_id = creator_id
-        # self.virtual = virtual
         self.createTime = datetime.datetime.now()
     
     def fill(self, product_id, storehouse_id, count):
-        # self.virtual = False
         self.product_id = product_id
         self.storehouse_id = storehouse_id
         self.count = count
-        # self.monoprice = monoprice
-        # self.receiver = receiver
-        # self.phoneNumber = phoneNumber
-        # self.belonging_id = belonging_id
 
 '''
 

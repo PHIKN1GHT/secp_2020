@@ -192,15 +192,16 @@ def statistics():
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
 
     nowTime = datetime.datetime.now()
-    orders = Order.query.filter_by(storehouse_id=storehouse_id, product_id=True).all()
+    virtual_orders = Order.query.filter_by(storehouse_id=storehouse_id,virtual=True,cancelled=False).all()
     product_count={}
-    for order in orders:
-        #product = Product.query.filter_by(id=order.product_id).first()
-        if(order.createTime.__rsub__(nowTime).days<=10):
-            if(order.product_id in product_count):
-                product_count[order.product_id] = product_count[order.product_id] + order.count
-            else:
-                product_count[order.product_id] = order.count
+    for virorder in virtual_orders:
+        orders = Order.query.filter_by(storehouse_id=storehouse_id,belonging_id=virorder.id,virtual=False).all()
+        for order in orders:
+            if(order.createTime.__rsub__(nowTime).days<=10):
+                if(order.product_id in product_count):
+                    product_count[order.product_id] = product_count[order.product_id] + order.count
+                else:
+                    product_count[order.product_id] = order.count
     # 按字典集合中，每一个元组的第二个元素排列。
     product_count_order=sorted(product_count.items(),key=lambda x:x[1],reverse=True)
     return jsonify(product_count_order=product_count_order), 200
