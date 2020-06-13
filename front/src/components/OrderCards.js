@@ -1,15 +1,62 @@
 import React, { useState } from 'react';
-import { ListItem, List } from '@material-ui/core';
+import { ListItem, List, Button, IconButton } from '@material-ui/core';
 
 
 export default function OrderCards(props) {
-
-    const [orders, setOrders] = useState(['a', 'ok', 'shit', 'shit', 'shit', 'shit'])
+    let tmp = []
+    for (let i = 0; i < 20; ++i)tmp.push({
+        orderID: 0,
+        products: [],
+        receiver: '张三',
+        phone: '12345678910',
+        address: '上海市奉贤区xx路xx号',
+        status: props['type'] === '全部' ? '' : props['type'],
+        price: Math.ceil(Math.random() * 100) * 0.89,
+    })
+    const [ordersInfo, setOrderInfo] = useState(tmp)
+    const handleChangeOrderStatus = (event) => {
+        event.stopPropagation()
+    }
+    const handleJumptoOrderDetail = (event) => {
+        alert('a')
+        //props.history.push({ path: '/order-detail', state: { orderID: 0 } })
+    }
     return (<>
-        <div className='order-cards'>
-            <List className='list'>
-                {orders.map((val, ind) =>
-                    <ListItem className='item' button>{val}</ListItem>
+        <div className='order-cards' onClick={handleJumptoOrderDetail}>
+            <List className='order-list'>
+                {ordersInfo.map((val, ind) =>
+                    <ListItem className='item' name={`item-${ind}`} button>
+                        <div className='order-card'>
+                            <div className='head'>
+                                <div className='head-text'>订单号:{val.orderID}</div>
+                                <div className='head-text'>{val.status}</div>
+                                <div className='head-text'>￥{val.price}</div>
+                                {
+                                    ['待付款', '待发货', '待收货'].includes(val.status) ?
+                                        <div className='button-box'>
+                                            <IconButton className='button'
+                                                variant='text' size='small'
+                                                onClick={handleChangeOrderStatus}>
+                                                {
+                                                    val.status === '待付款' ?
+                                                        '立即付款' : val.status === '待发货' ?
+                                                            '催催发货' : '确认收货'
+                                                }
+                                            </IconButton>
+                                        </div> :
+                                        <div className='button-box'></div>
+                                }
+                            </div>
+                            <div className='baseline'></div>
+                            <div className='content'>
+                                <div className='text-add'>收货地:{val.address}</div>
+                                <div className='line2'>
+                                    <div className='text-rec'>收货人:{val.receiver}</div>
+                                    <div className='text-phone'>手机:{val.phone}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </ListItem>
                 )}
             </List>
         </div>

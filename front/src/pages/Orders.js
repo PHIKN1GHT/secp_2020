@@ -50,16 +50,28 @@ export default function OrdersPage(props) {
                     variant='fullWidth'
                     indicatorColor='primary'
                 >
-                    <Tab value='all' label='全部' className='item'></Tab>
-                    <Tab value='topay' label='待付款' className='item'></Tab>
-                    <Tab value='tosend' label='待发货' className='item'></Tab>
-                    <Tab value='torec' label='待收货' className='item'></Tab>
+                    <Tab value='全部' label='全部' className='item'></Tab>
+                    <Tab value='待付款' label='待付款' className='item'></Tab>
+                    <Tab value='待发货' label='待发货' className='item'></Tab>
+                    <Tab value='待收货' label='待收货' className='item'></Tab>
+                    <Tab value='已收货' label='已收货' className='item'></Tab>
                 </Tabs>
             </div>
-            <TabPanel value={value} index='all' className='card-wrapper'><OrderCards type={'all'} /></TabPanel>
-            <TabPanel value={value} index='topay' className='card-wrapper'><OrderCards type={'topay'} /></TabPanel>
-            <TabPanel value={value} index='tosend' className='card-wrapper'><OrderCards type={'tosend'} /></TabPanel>
-            <TabPanel value={value} index='torec' className='card-wrapper'><OrderCards type={'torec'} /></TabPanel>
+            <TabPanel value={value} index='全部' className='card-wrapper'>
+                <OrderCards type='全部' />
+            </TabPanel>
+            <TabPanel value={value} index='待付款' className='card-wrapper'>
+                <OrderCards type='待付款' />
+            </TabPanel>
+            <TabPanel value={value} index='待发货' className='card-wrapper'>
+                <OrderCards type='待发货' />
+            </TabPanel>
+            <TabPanel value={value} index='待收货' className='card-wrapper'>
+                <OrderCards type='待收货' />
+            </TabPanel>
+            <TabPanel value={value} index='已收货' className='card-wrapper'>
+                <OrderCards type='已收货' />
+            </TabPanel>
         </div>
     </>)
 }

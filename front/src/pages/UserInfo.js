@@ -5,6 +5,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 export default function UserInfoCard(props) {
     const [username, setUsername] = useState('default')
     const [avaterURL, setAvaterURL] = useState(
@@ -32,24 +33,28 @@ export default function UserInfoCard(props) {
                     </div>
                 </div>
                 <div className='cards'>
-                    <div className='order-entry' type='all' onClick={handleJumptoOrdersPage}>
+                    <div className='order-entry' type='全部' onClick={handleJumptoOrdersPage}>
                         <div className='head'>
                             <div className='main'>我的订单</div>
                             <ChevronRightIcon className='icon' />
                         </div>
                         <div className='baseline'></div>
                         <div className='body'>
-                            <div className='item' type='topay' onClick={handleJumptoOrdersPage}>
+                            <div className='item' type='待付款' onClick={handleJumptoOrdersPage}>
                                 <ShoppingBasketIcon className='icon' />
                                 <div className='text'>待付款</div>
                             </div>
-                            <div className='item' type='tosend' onClick={handleJumptoOrdersPage}>
+                            <div className='item' type='待发货' onClick={handleJumptoOrdersPage}>
                                 <AllInboxIcon className='icon' />
                                 <div className='text'>待发货</div>
                             </div>
-                            <div className='item' type='torec' onClick={handleJumptoOrdersPage}>
+                            <div className='item' type='待收货' onClick={handleJumptoOrdersPage}>
                                 <AirportShuttleIcon className='icon' />
                                 <div className='text'>待收货</div>
+                            </div>
+                            <div className='item' type='已收货' onClick={handleJumptoOrdersPage}>
+                                <CheckCircleRoundedIcon className='icon' />
+                                <div className='text'>已收货</div>
                             </div>
                         </div>
                     </div>
