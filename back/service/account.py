@@ -14,7 +14,7 @@ def ensureCaptcha(request, session):
     captcha = request.json.get('captcha', None)
     if not captcha or session['captcha'] != captcha:
         session['captcha'] = None
-        return False, [jsonify({"msg": "Wrong captcha"}), 400]
+        return False, [jsonify(result=False,reason="Wrong captcha"), 400]
     return True, []
 
 # GET: 请求验证码图片，并在 login 的 POST 请求里进行验证
@@ -41,29 +41,29 @@ def cheat():
 @bp.route("/login", methods=['POST'])
 def login():
     if (not 'captcha' in session.keys()) or (session['captcha'] == None):
-        return jsonify({"msg": "Please reload captcha first"}), 400
+        return jsonify(result=False,reason="Please reload captcha first"), 400
 
     pipeline = Pipeline(request)
     pipeline.add(ensureJson)
     pipeline.add(ensureCaptcha, [request, session])
-    pipeline.add(ensureParam, [request, 'stuId', lambda: invalidateSession(session, 'captcha')])
+    pipeline.add(ensureParam, [request, 'username', lambda: invalidateSession(session, 'captcha')])
     pipeline.add(ensureParam, [request, 'password',lambda: invalidateSession(session, 'captcha')])
 
     broken, retvs = pipeline.run()
     if broken:
         return retvs
     
-    _, _, stuId, password = retvs
+    _, _, username, password = retvs
 
-    user = User.query.filter_by(stuId=stuId).first()
+    user = User.query.filter_by(username=username).first()
 
     if not user or not cmparePswd(password, user.password):
         session['captcha'] = None
-        return jsonify({"msg": "Bad username or password"}), 401
+        return jsonify(result=False,reason="Bad username or password"), 401
     
     token = create_access_token(identity=user.id)
     session['captcha'] = None
-    return jsonify(msg="Login successfully",access_token=token), 200
+    return jsonify(result=True,access_token=token), 200
 
 # Tested by Postman
 @bp.route("/loginAs", methods=['POST'])
@@ -72,15 +72,15 @@ def loginAs():
         return 'FORBIDDEN'
     pipeline = Pipeline(request)
     pipeline.add(ensureJson)
-    pipeline.add(ensureParam, [request, 'stuId', lambda: invalidateSession(session, 'captcha')])
+    pipeline.add(ensureParam, [request, 'username', lambda: invalidateSession(session, 'captcha')])
 
     broken, retvs = pipeline.run()
     if broken:
         return retvs
     
-    _, stuId = retvs
+    _, username = retvs
 
-    user = User.query.filter_by(stuId=stuId).first()
+    user = User.query.filter_by(username=username).first()
     token = create_access_token(identity=user.id)
     return jsonify(msg="Login successfully as "+user.name,access_token=token), 200
 
@@ -112,7 +112,7 @@ def changepswd():
 
     pipeline = Pipeline(request)
     pipeline.add(ensureJson)
-    pipeline.add(ensureParam, [request, 'stuId'])
+    pipeline.add(ensureParam, [request, 'username'])
     pipeline.add(ensureParam, [request, 'oripswd'])
     pipeline.add(ensureParam, [request, 'newpswd'])
 
@@ -120,9 +120,9 @@ def changepswd():
     if broken:
         return retvs
     
-    _, stuId, oripswd, newpswd = retvs
+    _, username, oripswd, newpswd = retvs
 
-    user = User.query.filter_by(stuId=stuId).first()
+    user = User.query.filter_by(username=username).first()
 
     if not user or not cmparePswd(oripswd, user.password) or not user.id == current_user:
         return jsonify({"msg": "Bad username or password"}), 401

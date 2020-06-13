@@ -4,6 +4,8 @@ from server import db
 from utils import encodePswd, tryLookUp
 import datetime
 
+
+
 class Storehouse(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(16), unique=True, index=True, nullable=False)
