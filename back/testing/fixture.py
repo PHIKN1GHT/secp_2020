@@ -10,3 +10,6 @@ def client():
     loadBlueprints(app)
     with app.test_client() as client:
         yield client
+
+def check(client):
+    return client.get('/api/account/state')

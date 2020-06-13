@@ -96,6 +96,8 @@ def identity():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as_user=current_user), 200
 
+
+
 @bp.route('/state', methods=['GET'])
 @jwt_optional
 def state():
@@ -104,6 +106,7 @@ def state():
         return jsonify(logged_in_as_user=current_user), 200
     else:
         return jsonify(logged_in_as_anonymous='anonymous user'), 200
+
 
 @bp.route("/changepswd", methods=['POST'])
 @jwt_required
@@ -132,3 +135,7 @@ def changepswd():
 
     invalidate(get_raw_jwt())
     return jsonify(msg="Change password successfully, please relogin"), 200
+
+
+
+

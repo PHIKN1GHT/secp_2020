@@ -1,10 +1,13 @@
-from testing.fixture import client
+from testing.fixture import client, check
 from config import OPERATORNAME, OPERATORPSWD
 from flask import jsonify
 from functools import partial
 
-def check(client):
-    return client.get('/api/account/state')
+
+
+class TestServiceAccount:
+    
+    pass
 
 def loadCaptcha(client):
     response = client.get('/api/account/verify')

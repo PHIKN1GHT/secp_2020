@@ -27,6 +27,7 @@ db = SQLAlchemy(app)
 services = [
     "service.resource",
     "service.account",
+    "service.address",
     "service.admin",
     "service.indexing",
 #    "service.fake",
