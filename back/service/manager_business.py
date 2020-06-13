@@ -3,17 +3,17 @@ from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
 import io
-from model import Storehouse, Manager, Product, Description, SupplierOrder, Order
+from model import Storehouse, User, Product, Description, SupplierOrder, Order
 import datetime
 
-bp = Blueprint('manager_business',__name__)
+bp = Blueprint('api/manager_business',__name__)
 
 # 经理端的商品列表
 @bp.route("/product", methods=['POST'])
 @jwt_required
 def allProduct():
     current_user = get_jwt_identity()
-    manager = Manager.query.filter_by(id=current_user).first()
+    manager = User.query.filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
     
@@ -48,7 +48,7 @@ def productDatail():
 @jwt_required
 def createProduct():
     current_user = get_jwt_identity()
-    manager = Manager.query.filter_by(id=current_user).first()
+    manager = User.query.filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
 
@@ -144,7 +144,7 @@ def removeProduct():
 @jwt_required
 def statistics():
     current_user = get_jwt_identity()
-    manager = Manager.query.filter_by(id=current_user).first()
+    manager = User.query.filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
 
@@ -181,7 +181,7 @@ def allSupplierOrder():
 @jwt_required
 def createSupplierOrder():
     current_user = get_jwt_identity()
-    manager = Manager.query.filter_by(id=current_user).first()
+    manager = User.query.filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
     
