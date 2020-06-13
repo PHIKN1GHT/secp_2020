@@ -6,9 +6,9 @@ import io
 from model import Storehouse, User, Product, Description, SupplierOrder, Order
 import datetime
 
-bp = Blueprint('manager_business',__name__)
+bp = Blueprint('product',__name__)
 
-# 经理端的商品列表
+# 目前只包含了经理端查看商品列表
 # Tested by Postman
 @bp.route("/product", methods=['POST'])
 @jwt_required
@@ -181,7 +181,7 @@ def removeProduct():
     description.removed=True
     return jsonify(isRemoved=True), 200
 
-# 经理端查看销售统计
+# 经理端查看销售统计，不知道放哪儿先放这儿了
 @bp.route("/statistics", methods=['POST'])
 @jwt_required
 def statistics():
@@ -208,55 +208,3 @@ def statistics():
     # 按字典集合中，每一个元组的第二个元素排列。
     product_count_order=sorted(product_count.items(),key=lambda x:x[1],reverse=True)
     return jsonify(product_count_order=product_count_order), 200
-
-# 经理端进货订单列表                                                           
-@bp.route("/supplierOrder/all", methods=['POST'])
-@jwt_required
-def allSupplierOrder():
-    current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
-    if not manager:
-        return jsonify({"msg": "Bad manager_id"}), 401
-    
-    supplierOrders = SupplierOrder.query.filter_by(creator_id=current_user).all()
-    all_supplierOrders = []
-    for supplierOrder in supplierOrders:
-        # storehouse = Storehouse.query.filter_by(id=supplierOrder.storehouse_id).first()
-        product = [supplierOrder.product_id, supplierOrder.count]        
-        all_supplierOrders.append([supplierOrder.id, product, supplierOrder.createTime, supplierOrder.paid, supplierOrder.accepted, supplierOrder.delivered, supplierOrder.confirmed, supplierOrder.rejected, supplierOrder.cancelled])
-    return jsonify(supplierOrders=all_supplierOrders), 200
-
-# 经理端创建新的进货订单
-@bp.route("/supplierOrder/create", methods=['POST'])
-@jwt_required
-def createSupplierOrder():
-    current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
-    if not manager:
-        return jsonify({"msg": "Bad manager_id"}), 401
-    
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
-    
-    product_id = request.json.get('product_id')
-    if not product_id:
-        return jsonify({"msg": "Missing product_id parameter"}), 400
-
-    count = request.json.get('count')
-    if not count:
-        return jsonify({"msg": "Missing count parameter"}), 400
-
-    storehouse_id = request.json.get('storehouse_id')
-    if not storehouse_id:
-        return jsonify({"msg": "Missing storehouse_id parameter"}), 400
-
-    product = Product.query.filter_by(id=product_id).first()
-    if not product:
-        return jsonify({"msg": "Bad productId"}), 401
-
-    supplierOrder = SupplierOrder(current_user)
-    supplierOrder.fill(product_id,storehouse_id,count)
-    db.session.add(supplierOrder)
-    db.session.commit()
-    return jsonify(supplierOrderId=supplierOrder.id), 200
- 
