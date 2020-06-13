@@ -9,6 +9,7 @@ import datetime
 bp = Blueprint('manager_business',__name__)
 
 # 经理端的商品列表
+# Tested by Postman
 @bp.route("/product", methods=['POST'])
 @jwt_required
 def allProduct():
@@ -33,6 +34,7 @@ def allProduct():
     return jsonify(products=all_products), 200
 
 # 经理端查看商品详情
+# Tested by Postman
 @bp.route("/product/detail", methods=['POST'])
 @jwt_required
 def productDatail():
@@ -60,6 +62,7 @@ def productDatail():
     return jsonify(name=product.name, shelved=product.shelved, category=product.category, description=description_json), 200
 
 # 经理端创建新产品
+# Tested by Postman
 @bp.route("/product/create", methods=['POST'])
 @jwt_required
 def createProduct():
