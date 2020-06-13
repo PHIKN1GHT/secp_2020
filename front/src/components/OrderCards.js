@@ -4,9 +4,19 @@ import { ListItem, List, IconButton } from '@material-ui/core';
 
 export default function OrderCards(props) {
     let orders = []
+    let products = []
+    for (let i = 0; i < 20; ++i) {
+        products.push({
+            name: '牛腩',
+            count: 4,
+            unit: '斤',
+            unitprice: 20.4,
+            price: 81.6
+        })
+    }
     for (let i = 0; i < 20; ++i)orders.push({
         orderID: String(i),
-        products: [],
+        products: products,
         receiver: '张三',
         phone: '12345678910',
         address: '上海市奉贤区xx路xx号',

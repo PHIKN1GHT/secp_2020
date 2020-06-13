@@ -1,5 +1,5 @@
 .order-detail{
-    background-color: blanchedalmond;
+    background-color: #CCDFFF;
     height: 100vh;
     max-height: 100vh;
     display: flex;
@@ -70,10 +70,30 @@
 
 .order-detail .order-card .content .line2 .text-phone{
 }
-
+.order-detail .header{
+    display: flex;
+    justify-content: space-around;
+    background-color: white;
+    margin: 0px 10px;
+    padding: 10px 0px;
+}
+.order-detail  .header .text{
+    font-size: small;
+}
 .order-detail .products{
     flex:1;
-    background-color: white;
     margin: 0 10px 5px 10px;
-    box-shadow: 1px 1px 1px #CCCCCC;
+    max-height: 100%;
+    overflow: auto;
+}
+.order-detail .products .product{
+    background-color: white;
+    
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    margin: 5px 0;
+}
+.order-detail .products .product .text{
+    font-size: small;
 }

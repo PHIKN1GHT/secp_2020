@@ -27,8 +27,30 @@ export default function OrderDetailPage(props) {
                     </div>
                 </div>
             </div>
+            <div className='header'>
+                <div className='text'>商品</div>
+                <div className='text'>数量</div>
+                <div className='text'>单位</div>
+                <div className='text'>单价</div>
+                <div className='text'>总价</div>
+            </div>
             <div className='products'>
-
+                {
+                    orderData.products.map((val, ind) =>
+                        <div className='product'>
+                            <div className='text'>{val.name}</div>
+                            <div className='text'>{val.count}</div>
+                            <div className='text'>{val.unit}</div>
+                            <div className='text'>{val.unitprice}</div>
+                            <div className='text'>{val.price}</div>
+                            {/* <div className='name'>{val.name}</div>
+                            <div className='count'>{val.count}</div>
+                            <div className='unit'>{val.unit}</div>
+                            <div className='unitprice'>{val.unitprice}</div>
+                            <div className='price'>{val.price}</div> */}
+                        </div>
+                    )
+                }
             </div>
         </div>
     </>);
