@@ -2,11 +2,13 @@ from server import db
 from utils import encodePswd, tryLookUp
 import datetime
 
+
 class User(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     username = db.Column(db.String(16), unique=True, index=True, nullable=False)
     password = db.Column(db.String(32), unique=False, index=False, nullable=False)
     createTime = db.Column(db.DateTime, nullable=False)
+    isManager = db.Column(db.Boolean, unique=False, nullable=False, default=False)  
 
     def __init__(self, username):
         self.username = username

@@ -5,12 +5,13 @@ from utils import encodePswd, tryLookUp
 import datetime
 
 
-
 class Storehouse(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(16), unique=True, index=True, nullable=False)
     address = db.Column(db.String(64), unique=True, index=True, nullable=False)
     phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
+    manager = db.relationship('User', foreign_keys = 'Storehouse.manager_id')
 
     def __init__(self, name, address, phoneNumber):
         self.name = name
@@ -19,32 +20,6 @@ class Storehouse(db.Model):
 
     def __repr__(self):
         return '<Storehouse [%r] (%r)>' % (self.name)
-
-class Manager(db.Model):
-    id = db.Column(db.BigInteger, primary_key=True)
-    managerId = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    name = db.Column(db.String(16), unique=False, index=True, nullable=False)
-    password = db.Column(db.String(32), unique=False, index=False, nullable=False)
-    email = db.Column(db.String(32), unique=True, nullable=False)
-    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    # balance = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
-    storehouse = db.relationship('Storehouse', foreign_keys = 'Manager.storehouse_id')
-    
-    def __init__(self, managerId, name, email, phoneNumber, storehouse_id):
-        self.managerId = managerId
-        self.name = name
-        self.email = email
-        self.phoneNumber = phoneNumber
-        # self.balance = balance
-        self.storehouse_id = storehouse_id
-
-    def setPassword(self, pswd):
-        self.password = encodePswd(pswd)
-        return self
-
-    def __repr__(self):
-        return '<User [%r] (%r)>' % (self.name, self.managerId)
 
 class Permission(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
@@ -131,6 +106,8 @@ class Order(db.Model):
     creator = db.relationship('User', foreign_keys='Order.creator_id')
     product_id = db.Column(db.BigInteger, db.ForeignKey(Product.id), nullable=True)
     product = db.relationship('Product', foreign_keys='Order.product_id')
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    storehouse = db.relationship('Storehouse', foreign_keys='Order.storehouse_id')
     count = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     monoprice = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     virtual = db.Column(db.Boolean, unique=False, nullable=False, default=False)
@@ -147,11 +124,12 @@ class Order(db.Model):
         self.virtual = virtual
         self.createTime = datetime.datetime.now()
     
-    def fill(self, product_id, count, monoprice, belonging_id=None):
+    def fill(self, product_id, count, monoprice, storehouse_id, belonging_id=None):
         self.virtual = False
         self.product_id = product_id
         self.count = count
         self.monoprice = monoprice
+        self.storehouse_id = storehouse_id
         self.belonging_id = belonging_id
 
     def cost(self):
@@ -185,18 +163,13 @@ class Payment(db.Model):
 
 class SupplierOrder(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    creator_id = db.Column(db.BigInteger, db.ForeignKey(Manager.id), nullable=False)
-    creator = db.relationship('Manager', foreign_keys='SupplierOrder.creator_id')
+    creator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
+    creator = db.relationship('User', foreign_keys='SupplierOrder.creator_id')
     product_id = db.Column(db.BigInteger, db.ForeignKey(Product.id), nullable=False)
     product = db.relationship('Product', foreign_keys='SupplierOrder.product_id')
     storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
     storehouse = db.relationship('Storehouse', foreign_keys='SupplierOrder.storehouse_id')
     count = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    # monoprice = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    # receiver = db.Column(db.String(16), unique=False, nullable=False)
-    # phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    #是否是父订单
-    # virtual = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     createTime = db.Column(db.DateTime)
     paid = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     accepted = db.Column(db.Boolean, unique=False, nullable=False, default=False)
@@ -204,33 +177,51 @@ class SupplierOrder(db.Model):
     confirmed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     rejected = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    # belonging_id = db.Column(db.BigInteger, db.ForeignKey("SupplierOrder.id"), nullable=True)
-    # belonging = db.relationship('SupplierOrder', foreign_keys='SupplierOrder.belonging_id')
 
     def __init__(self, creator_id):
         self.creator_id = creator_id
-        # self.virtual = virtual
         self.createTime = datetime.datetime.now()
     
     def fill(self, product_id, storehouse_id, count):
-        # self.virtual = False
         self.product_id = product_id
         self.storehouse_id = storehouse_id
         self.count = count
-        # self.monoprice = monoprice
-        # self.receiver = receiver
+
+'''
+
+'''
+'''
+
+'''
+
+
+'''
+class Manager(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    managerId = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    name = db.Column(db.String(16), unique=False, index=True, nullable=False)
+    password = db.Column(db.String(32), unique=False, index=False, nullable=False)
+    # email = db.Column(db.String(32), unique=True, nullable=False)
+    # phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    # balance = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    storehouse = db.relationship('Storehouse', foreign_keys = 'Manager.storehouse_id')
+    
+    def __init__(self, managerId, name, storehouse_id):
+        self.managerId = managerId
+        self.name = name
+        # self.email = email
         # self.phoneNumber = phoneNumber
-        # self.belonging_id = belonging_id
+        # self.balance = balance
+        self.storehouse_id = storehouse_id
 
-'''
+    def setPassword(self, pswd):
+        self.password = encodePswd(pswd)
+        return self
 
-'''
-'''
+    def __repr__(self):
+        return '<User [%r] (%r)>' % (self.name, self.managerId)
 
-'''
-
-
-'''
 class Volunteering(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     stuId = db.Column(db.String(512))
