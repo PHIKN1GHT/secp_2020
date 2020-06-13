@@ -58,19 +58,19 @@ export default function OrdersPage(props) {
                 </Tabs>
             </div>
             <TabPanel value={value} index='全部' className='card-wrapper'>
-                <OrderCards type='全部' />
+                <OrderCards type='全部' history={props.history} />
             </TabPanel>
             <TabPanel value={value} index='待付款' className='card-wrapper'>
-                <OrderCards type='待付款' />
+                <OrderCards type='待付款' history={props.history} />
             </TabPanel>
             <TabPanel value={value} index='待发货' className='card-wrapper'>
-                <OrderCards type='待发货' />
+                <OrderCards type='待发货' history={props.history} />
             </TabPanel>
             <TabPanel value={value} index='待收货' className='card-wrapper'>
-                <OrderCards type='待收货' />
+                <OrderCards type='待收货' history={props.history} />
             </TabPanel>
             <TabPanel value={value} index='已收货' className='card-wrapper'>
-                <OrderCards type='已收货' />
+                <OrderCards type='已收货' history={props.history} />
             </TabPanel>
         </div>
     </>)
