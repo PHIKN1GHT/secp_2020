@@ -9,7 +9,7 @@ import datetime
 bp = Blueprint('supplierOrder',__name__)
 
 # 经理端进货订单列表                                                           
-@bp.route("/supplierOrder/all", methods=['POST'])
+@bp.route("/all", methods=['POST'])
 @jwt_required
 def allSupplierOrder():
     current_user = get_jwt_identity()
@@ -26,7 +26,7 @@ def allSupplierOrder():
     return jsonify(supplierOrders=all_supplierOrders), 200
 
 # 经理端创建新的进货订单
-@bp.route("/supplierOrder/create", methods=['POST'])
+@bp.route("/create", methods=['POST'])
 @jwt_required
 def createSupplierOrder():
     current_user = get_jwt_identity()

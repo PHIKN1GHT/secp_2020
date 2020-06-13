@@ -10,7 +10,7 @@ bp = Blueprint('product',__name__)
 
 # 目前只包含了经理端查看商品列表
 # Tested by Postman
-@bp.route("/product", methods=['POST'])
+@bp.route("/all", methods=['POST'])
 @jwt_required
 def allProduct():
     current_user = get_jwt_identity()
@@ -35,7 +35,7 @@ def allProduct():
 
 # 经理端查看商品详情
 # Tested by Postman
-@bp.route("/product/detail", methods=['POST'])
+@bp.route("/detail", methods=['POST'])
 @jwt_required
 def productDatail():
     current_user = get_jwt_identity()
@@ -63,7 +63,7 @@ def productDatail():
 
 # 经理端创建新产品
 # Tested by Postman
-@bp.route("/product/create", methods=['POST'])
+@bp.route("/create", methods=['POST'])
 @jwt_required
 def createProduct():
     current_user = get_jwt_identity()
@@ -100,7 +100,7 @@ def createProduct():
     return jsonify(isCreated=True, productID=product.id)
 
 # 经理端更改商品信息
-@bp.route("/product/update", methods=['POST'])
+@bp.route("/update", methods=['POST'])
 @jwt_required
 def updateProduct():
     current_user = get_jwt_identity()
@@ -154,7 +154,7 @@ def updateProduct():
     return jsonify(isUpdated=True), 200
 
 # 经理删除商品
-@bp.route("/product/remove", methods=['POST'])
+@bp.route("/remove", methods=['POST'])
 @jwt_required
 def removeProduct():
     current_user = get_jwt_identity()
