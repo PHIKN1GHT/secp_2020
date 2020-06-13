@@ -10,12 +10,12 @@ class Storehouse(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(16), unique=True, index=True, nullable=False)
     address = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    # phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
 
-    def __init__(self, name, address, phoneNumber):
+    def __init__(self, name, address):
         self.name = name
         self.address = address
-        self.phoneNumber = phoneNumber
+        # self.phoneNumber = phoneNumber
 
     def __repr__(self):
         return '<Storehouse [%r] (%r)>' % (self.name)
@@ -25,17 +25,17 @@ class Manager(db.Model):
     managerId = db.Column(db.String(16), unique=True, index=True, nullable=False)
     name = db.Column(db.String(16), unique=False, index=True, nullable=False)
     password = db.Column(db.String(32), unique=False, index=False, nullable=False)
-    email = db.Column(db.String(32), unique=True, nullable=False)
-    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
+    # email = db.Column(db.String(32), unique=True, nullable=False)
+    # phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
     # balance = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
     storehouse = db.relationship('Storehouse', foreign_keys = 'Manager.storehouse_id')
     
-    def __init__(self, managerId, name, email, phoneNumber, storehouse_id):
+    def __init__(self, managerId, name, storehouse_id):
         self.managerId = managerId
         self.name = name
-        self.email = email
-        self.phoneNumber = phoneNumber
+        # self.email = email
+        # self.phoneNumber = phoneNumber
         # self.balance = balance
         self.storehouse_id = storehouse_id
 
