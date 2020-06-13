@@ -20,35 +20,61 @@ export default function AddressManagerPage(props) {
     const [addrs, setAddrs] = useState(tmpAaddrs)
     const [openDia, setOpenDia] = useState(false)
     const [selectInd, setSelectInd] = useState(0)
+    const [diaType, setDiaType] = useState('null')
+    useEffect(() => {
+    })
     const handleGoBack = (event) => {
         props.history.goBack()
     }
     const handleChangeAddr = (event) => {
+        setDiaType('change')
         setSelectInd(Number(event.currentTarget.getAttribute('number')))
         setOpenDia(true)
     }
     const handleCancelDia = (event) => {
+        setDiaType('null')
         setOpenDia(false)
     }
     const handleConfirmDia = (event) => {
-        setAddrs((prevState) => {
-            prevState[selectInd].addr = document.getElementById('modify-addr').value
-            prevState[selectInd].receiver = document.getElementById('modify-name').value
-            prevState[selectInd].phone = document.getElementById('modify-phone').value
-            return prevState
-        })
+        if (diaType === 'change') {
+            setAddrs((prevState) => {
+                prevState[selectInd].addr = document.getElementById('modify-addr').value
+                prevState[selectInd].receiver = document.getElementById('modify-name').value
+                prevState[selectInd].phone = document.getElementById('modify-phone').value
+                return prevState
+            })
+        }
+        else if (diaType === 'add') {
+            setAddrs(prevState => {
+                prevState.push({
+                    number: prevState.length,
+                    id: prevState.length + 1,
+                    addr: document.getElementById('modify-addr').value,
+                    receiver: document.getElementById('modify-name').value,
+                    phone: document.getElementById('modify-phone').value
+                })
+                return prevState
+            })
+        }
+        setDiaType('null')
         setOpenDia(false)
     }
     const handleDeleteAddr = (event) => {
         let index = Number(event.currentTarget.getAttribute('number'))
-        setAddrs((prevState) => {
+        setAddrs(prevState => {
             prevState.splice(index, 1)
             let tmp = []
-            for (let i = 0; i < prevState.length; ++i) {
-                tmp.push(prevState[i])
-            }
+            prevState.map((val, ind) => {
+                val.number = ind
+                tmp.push(val)
+            })
             return tmp
         })
+    }
+    const handleAddAddr = (event) => {
+        setDiaType('add')
+        setSelectInd(-1)
+        setOpenDia(true)
     }
     return (<>
         <div className='address-manager'>
@@ -89,7 +115,7 @@ export default function AddressManagerPage(props) {
                 </div>
             </div>
             <div className='add-icon-con'>
-                <IconButton className='add-icon'>
+                <IconButton className='add-icon' onClick={handleAddAddr}>
                     <AddIcon />
                 </IconButton>
             </div>
@@ -97,12 +123,11 @@ export default function AddressManagerPage(props) {
         <Dialog open={openDia} onClose={handleCancelDia}>
             <DialogTitle>修改地址</DialogTitle>
             <DialogContent>
-                <DialogContentText>请在此处修改您的信息</DialogContentText>
                 <TextField
                     margin="dense"
                     id="modify-name"
                     label='收货人姓名'
-                    defaultValue={addrs[selectInd].receiver}
+                    defaultValue={selectInd > 0 ? addrs[selectInd].receiver : ''}
                     fullWidth
                 />
                 <TextField
@@ -110,14 +135,14 @@ export default function AddressManagerPage(props) {
                     id="modify-phone"
                     label='收货人电话'
                     type='number'
-                    defaultValue={addrs[selectInd].phone}
+                    defaultValue={selectInd > 0 ? addrs[selectInd].phone : ''}
                     fullWidth
                 />
                 <TextField
                     margin="dense"
                     id="modify-addr"
                     label='收货人地址'
-                    defaultValue={addrs[selectInd].addr}
+                    defaultValue={selectInd > 0 ? addrs[selectInd].addr : ''}
                     fullWidth
                 />
             </DialogContent>
