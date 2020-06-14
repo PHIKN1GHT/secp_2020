@@ -1,5 +1,5 @@
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IconButton, ListItemAvatar, Avatar, List, ListItem, Tooltip, DialogTitle, Dialog, DialogContent, DialogContentText, DialogActions, Button, TextField } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
@@ -19,7 +19,7 @@ export default function AddressManagerPage(props) {
     }
     const [addrs, setAddrs] = useState(tmpAaddrs)
     const [openDia, setOpenDia] = useState(false)
-    const [selectInd, setSelectInd] = useState(0)
+    const [selectInd, setSelectInd] = useState(-1)
     const [diaType, setDiaType] = useState('null')
     useEffect(() => {
     })
@@ -127,7 +127,7 @@ export default function AddressManagerPage(props) {
                     margin="dense"
                     id="modify-name"
                     label='收货人姓名'
-                    defaultValue={selectInd > 0 ? addrs[selectInd].receiver : ''}
+                    defaultValue={selectInd >= 0 ? addrs[selectInd].receiver : ''}
                     fullWidth
                 />
                 <TextField
@@ -135,14 +135,14 @@ export default function AddressManagerPage(props) {
                     id="modify-phone"
                     label='收货人电话'
                     type='number'
-                    defaultValue={selectInd > 0 ? addrs[selectInd].phone : ''}
+                    defaultValue={selectInd >= 0 ? addrs[selectInd].phone : ''}
                     fullWidth
                 />
                 <TextField
                     margin="dense"
                     id="modify-addr"
                     label='收货人地址'
-                    defaultValue={selectInd > 0 ? addrs[selectInd].addr : ''}
+                    defaultValue={selectInd >= 0 ? addrs[selectInd].addr : ''}
                     fullWidth
                 />
             </DialogContent>
