@@ -47,7 +47,7 @@ class Product(db.Model):
         self.name = name
         self.storehouse_id = storehouse_id
         self.category = category
-    
+
     def __repr__(self):
         return '<Product %r>' % (self.name)
 

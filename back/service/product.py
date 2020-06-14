@@ -3,7 +3,7 @@ from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
 import io
-from model import Storehouse, User, Product, Description, SupplierOrder, Order
+from model import Storehouse, User, Product, Description, Order
 import datetime
 
 bp = Blueprint('product',__name__)
@@ -50,7 +50,7 @@ def productDatail():
     if not product_id:
         return jsonify({"msg": "Missing product_id parameter"}), 400
 
-    product = Product.query.filter_by(id=product_id).first()
+    product = Product.query.filter_by(id=product_id,removed=False).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
 
@@ -59,7 +59,8 @@ def productDatail():
         return jsonify({"msg": "Bad description"}), 401
 
     description_json = [description.title, description.thumbnail, description.remain, description.price, description.htmlDescription, description.active]  
-    return jsonify(name=product.name, shelved=product.shelved, category=product.category, description=description_json), 200
+    return jsonify(name=product.name, shelved=product.shelved, category=product.category,
+     archived=product.archived, description=description_json), 200
 
 # 经理端创建新产品
 # Tested by Postman
@@ -101,6 +102,7 @@ def createProduct():
     return jsonify(isCreated=True, productID=product.id)
 
 # 经理端更改商品信息
+# Tested by Postman
 @bp.route("/update", methods=['POST'])
 @jwt_required
 def updateProduct():
@@ -116,6 +118,10 @@ def updateProduct():
     if not product_id:
         return jsonify({"msg": "Missing product_id parameter"}), 400
 
+    name = request.json.get('name')
+    if not name:
+        return jsonify({"msg": "Missing name in request"}), 400
+    
     category = request.json.get('category')
     if not category:
         return jsonify({"msg": "Missing category parameter"}), 400
@@ -136,54 +142,29 @@ def updateProduct():
     if not all_description:
         return jsonify({"msg": "Missing description parameter"}), 400
 
-    product = Product.query.filter_by(id=product_id).first()
+    sess = DBSession()
+    product = sess.query(Product).filter_by(id=product_id,removed=False).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
     
-    description = Description.query.filter_by(product_id=product_id,removed=False).first()
+    description = sess.query(Description).filter_by(product_id=product_id,removed=False).first()
     if not description:
         return jsonify({"msg": "Bad description"}), 401
 
-    sess = DBSession()
+    product.name=name
     product.category=category
     product.shelved=shelved
     product.archived=archived
     product.removed=removed
+    description.removed=removed
     sess.commit()
 
     description.modify(all_description)
     sess.commit()
     return jsonify(isUpdated=True), 200
 
-# 经理删除商品
-@bp.route("/remove", methods=['POST'])
-@jwt_required
-def removeProduct():
-    current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
-    if not manager:
-        return jsonify({"msg": "Bad manager_id"}), 401
-
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
-    
-    product_id = request.json.get('product_id')
-    if not product_id:
-        return jsonify({"msg": "Missing product_id parameter"}), 400
-
-    product = Product.query.filter_by(id=product_id).first()
-    if not product:
-        return jsonify({"msg": "Bad productId"}), 401
-    
-    description = Description.query.filter_by(product_id=product_id,removed=False).first()
-    if not description:
-        return jsonify({"msg": "Bad description"}), 401
-    
-    product.removed=True
-    description.removed=True
-    return jsonify(isRemoved=True), 200
-
 # 经理端查看销售统计，不知道放哪儿先放这儿了
+# Tested by Postman
 @bp.route("/statistics", methods=['POST'])
 @jwt_required
 def statistics():
@@ -208,5 +189,9 @@ def statistics():
                 else:
                     product_count[order.product_id] = order.count
     # 按字典集合中，每一个元组的第二个元素排列。
-    product_count_order=sorted(product_count.items(),key=lambda x:x[1],reverse=True)
-    return jsonify(product_count_order=product_count_order), 200
+    productId_count=sorted(product_count.items(),key=lambda x:x[1],reverse=True)
+    name_count=[]
+    for _id_count in productId_count:
+        product = Product.query.filter_by(id=_id_count[0]).first()
+        name_count.append([product.name,_id_count[1]])
+    return jsonify(name_count=name_count), 200

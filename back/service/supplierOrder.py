@@ -1,9 +1,9 @@
-from server import db, app, DBSession
+from server import app, DBSession
 from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
 import io
-from model import Storehouse, User, Product, Description, SupplierOrder, Order
+from model import Storehouse, User, Product, SupplierOrder
 import datetime
 
 bp = Blueprint('supplierOrder',__name__)
@@ -12,6 +12,7 @@ bp = Blueprint('supplierOrder',__name__)
 @bp.route("/all", methods=['POST'])
 @jwt_required
 def allSupplierOrder():
+    sess = DBSession()
     current_user = get_jwt_identity()
     manager = User.query.filter_by(id=current_user,isManager=True).first()
     if not manager:
@@ -20,15 +21,19 @@ def allSupplierOrder():
     supplierOrders = SupplierOrder.query.filter_by(creator_id=current_user).all()
     all_supplierOrders = []
     for supplierOrder in supplierOrders:
-        # storehouse = Storehouse.query.filter_by(id=supplierOrder.storehouse_id).first()
-        product = [supplierOrder.product_id, supplierOrder.count]        
-        all_supplierOrders.append([supplierOrder.id, product, supplierOrder.createTime, supplierOrder.paid, supplierOrder.accepted, supplierOrder.delivered, supplierOrder.confirmed, supplierOrder.rejected, supplierOrder.cancelled])
+        product = [supplierOrder.product_id, supplierOrder.count]
+        storehouse = Storehouse.query.filter_by(id=supplierOrder.storehouse_id)       
+        all_supplierOrders.append([supplierOrder.id, product, manager.username, storehouse.phoneNumber,
+         storehouse.address, supplierOrder.createTime, supplierOrder.paid, supplierOrder.accepted,
+          supplierOrder.delivered, supplierOrder.confirmed, supplierOrder.rejected, supplierOrder.cancelled])
+    all_supplierOrders.sort(key=lambda x:x[5])
     return jsonify(supplierOrders=all_supplierOrders), 200
 
 # 经理端创建新的进货订单
 @bp.route("/create", methods=['POST'])
 @jwt_required
 def createSupplierOrder():
+    sess = DBSession()
     current_user = get_jwt_identity()
     manager = User.query.filter_by(id=current_user,isManager=True).first()
     if not manager:
@@ -49,11 +54,10 @@ def createSupplierOrder():
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
 
-    product = Product.query.filter_by(id=product_id).first()
+    product = sess.query(Product).filter_by(id=product_id).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
 
-    sess = DBSession()
     supplierOrder = SupplierOrder(current_user)
     supplierOrder.fill(product_id,storehouse_id,count)
     sess.add(supplierOrder)
