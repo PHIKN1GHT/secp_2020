@@ -29,6 +29,8 @@ function App() {
   return (
     <Router>
       <Switch>
+
+
         <Route path='/product/detail' component={ProductDetailPage} ></Route>
         <Route path='/product/search/:keyword' component={SearchResultPage} ></Route>
         <Route path='/product/search' component={SearchPage} ></Route>
