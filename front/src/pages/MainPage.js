@@ -69,13 +69,13 @@ class MainPage extends Component {
                     </IconButton>
                 </div>
             </div>
-            <div style={{overflowY:'auto'}}>
+            <div style={{overflowY:'auto',scrollbarWidth: 'none',}}>
                 {/* 目录展示 */}
                 <div className={classes.rowBox} style={{flexWrap:'wrap'}}>
                     {this.state.catalogs.map((catalog) => { 
                         return (
                             <div style={{ width: '20vw', height: '20vw', display: 'flex', flexDirection: 'column', alignItems:'center'}}>
-                                <img style={{borderRadius:'20vw',width:'80%', height:'80%'}} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
+                                <img style={{borderRadius:'80%',width:'80%', height:'80%'}} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
                                 <span>
                                     {catalog.name}
                                 </span>    
@@ -87,7 +87,7 @@ class MainPage extends Component {
                 <div className={classes.rowBox} style={{justifyContent: 'space-evenly',flexWrap:'wrap'}}>
                 {this.state.products.map((product) => { 
                     return (
-                        <div style={{borderRadius:'5px',  border:"1px solid", margin:'2vh 0 0 0', width: '48vw', height: '60vw', display: 'flex', flexDirection: 'column', alignItems:'center',borderColor: 'thistle',}}>
+                        <div style={{borderRadius:'5px',  border:"1px solid", margin:'2vh 0 0 0', width: '48vw',  display: 'flex', flexDirection: 'column', alignItems:'center',borderColor: 'thistle',}}>
                             <img style={{borderRadius:'5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
                             <span>
                                 {product.name}
