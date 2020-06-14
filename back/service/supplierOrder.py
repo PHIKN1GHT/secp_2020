@@ -1,4 +1,4 @@
-from server import db, app
+from server import db, app, DBSession
 from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
@@ -53,8 +53,9 @@ def createSupplierOrder():
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
 
+    sess = DBSession()
     supplierOrder = SupplierOrder(current_user)
     supplierOrder.fill(product_id,storehouse_id,count)
-    db.session.add(supplierOrder)
-    db.session.commit()
+    sess.add(supplierOrder)
+    sess.commit()
     return jsonify(supplierOrderId=supplierOrder.id), 200

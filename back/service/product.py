@@ -1,4 +1,4 @@
-from server import db, app
+from server import app, DBSession
 from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
@@ -90,13 +90,14 @@ def createProduct():
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
 
+    sess = DBSession()
     product = Product(name,category,storehouse_id)
-    db.session.add(product)
-    db.session.commit()
+    sess.add(product)
+    sess.commit()
     
     description = Description(all_description,product.id)
-    db.session.add(description)
-    db.session.commit()
+    sess.add(description)
+    sess.commit()
     return jsonify(isCreated=True, productID=product.id)
 
 # 经理端更改商品信息
@@ -143,14 +144,15 @@ def updateProduct():
     if not description:
         return jsonify({"msg": "Bad description"}), 401
 
+    sess = DBSession()
     product.category=category
     product.shelved=shelved
     product.archived=archived
     product.removed=removed
-    db.session.commit()
+    sess.commit()
 
     description.modify(all_description)
-    db.session.commit()
+    sess.commit()
     return jsonify(isUpdated=True), 200
 
 # 经理删除商品
