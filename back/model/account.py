@@ -8,7 +8,8 @@ class User(db.Model):
     username = db.Column(db.String(16), unique=True, index=True, nullable=False)
     password = db.Column(db.String(32), unique=False, index=False, nullable=False)
     createTime = db.Column(db.DateTime, nullable=False)
-    isManager = db.Column(db.Boolean, unique=False, nullable=False, default=False)  
+    isManager = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    isOperator = db.Column(db.Boolean, unique=False, nullable=False, default=False)
 
     def __init__(self, username):
         self.username = username
@@ -24,8 +25,15 @@ class User(db.Model):
         self.visible = visible
         return self
 
+    def getUserType(self):
+        if self.isManager:
+            return 'manager'
+        if self.isOperator:
+            return 'operator'
+        return 'customer'
+
     def __repr__(self):
-        return '<User [%r]>' % (self.username)
+        return '<User [%r] as [%r]>' % (self.username, self.getUserType())
 
 class Address(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
