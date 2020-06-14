@@ -34,8 +34,7 @@ services = [
     "service.indexing",
 #    "service.fake",
 #    "service.consumption"
-    # "service.manager_business"
-    #"service.product"
+    "service.product"
     "service.supplierOrder"
 ]
 
