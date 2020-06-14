@@ -51,7 +51,7 @@ class Product(db.Model):
     def modify(self, jsondata):
         self.shelved = tryLookUp(jsondata, 'shelved')
         self.archived = tryLookUp(jsondata, 'archived')
-        self.archived = tryLookUp(jsondata, 'archived')
+        self.removed = tryLookUp(jsondata, 'removed')
 
     def __repr__(self):
         return '<Product %r>' % (self.name)

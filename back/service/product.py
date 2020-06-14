@@ -81,11 +81,11 @@ def createProduct():
 
     name = request.json.get('name')
     if not name:
-        return jsonify({"msg": "Missing name in request"}), 400
+        return jsonify({"msg": "Missing name parameter"}), 400
     
     category = request.json.get('category')
     if not category:
-        return jsonify({"msg": "Missing category in request"}), 400
+        return jsonify({"msg": "Missing category parameter"}), 400
 
     all_description = request.json.get('description')
     if not all_description:
@@ -124,7 +124,7 @@ def updateProduct():
 
     name = request.json.get('name')
     if not name:
-        return jsonify({"msg": "Missing name in request"}), 400
+        return jsonify({"msg": "Missing name parameter"}), 400
     
     category = request.json.get('category')
     if not category:

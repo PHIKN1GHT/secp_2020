@@ -24,7 +24,7 @@ def allSupplierOrder():
     for supplierOrder in supplierOrders:
         product = [supplierOrder.product_id, supplierOrder.count]
         storehouse = sess.query(Storehouse).filter_by(id=supplierOrder.storehouse_id).first()       
-        all_supplierOrders.append([supplierOrder.id, product, manager.username, storehouse.phoneNumber,
+        all_supplierOrders.append([supplierOrder.id, product, storehouse.name, storehouse.phoneNumber,
          storehouse.address, supplierOrder.createTime, supplierOrder.paid, supplierOrder.accepted,
           supplierOrder.delivered, supplierOrder.confirmed, supplierOrder.rejected, supplierOrder.cancelled])
     all_supplierOrders.sort(key=lambda x:x[5],reverse=True)
