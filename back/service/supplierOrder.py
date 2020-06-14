@@ -8,34 +8,36 @@ import datetime
 
 bp = Blueprint('supplierOrder',__name__)
 
-# 经理端进货订单列表                                                           
+# 经理端进货订单列表
+# Tested by Postman                                                           
 @bp.route("/all", methods=['POST'])
 @jwt_required
 def allSupplierOrder():
     sess = DBSession()
     current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
     
-    supplierOrders = SupplierOrder.query.filter_by(creator_id=current_user).all()
+    supplierOrders = sess.query(SupplierOrder).filter_by(creator_id=current_user).all()
     all_supplierOrders = []
     for supplierOrder in supplierOrders:
         product = [supplierOrder.product_id, supplierOrder.count]
-        storehouse = Storehouse.query.filter_by(id=supplierOrder.storehouse_id)       
+        storehouse = sess.query(Storehouse).filter_by(id=supplierOrder.storehouse_id).first()       
         all_supplierOrders.append([supplierOrder.id, product, manager.username, storehouse.phoneNumber,
          storehouse.address, supplierOrder.createTime, supplierOrder.paid, supplierOrder.accepted,
           supplierOrder.delivered, supplierOrder.confirmed, supplierOrder.rejected, supplierOrder.cancelled])
-    all_supplierOrders.sort(key=lambda x:x[5])
+    all_supplierOrders.sort(key=lambda x:x[5],reverse=True)
     return jsonify(supplierOrders=all_supplierOrders), 200
 
 # 经理端创建新的进货订单
+# Tested by Postman
 @bp.route("/create", methods=['POST'])
 @jwt_required
 def createSupplierOrder():
     sess = DBSession()
     current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
     
