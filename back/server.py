@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from config import PRODUCTION_ENV, DEVELOPMENT_ENV, SECRETKEY
 from utils import loadBlueprint
+from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__, static_folder=os.path.join("dist","static"), template_folder=os.path.join("dist"))
 app.config.from_object('config')
@@ -23,6 +24,7 @@ def cors(environ):
     return environ
 
 db = SQLAlchemy(app)
+DBSession = sessionmaker(bind=db.engine)
 
 services = [
     "service.resource",
@@ -33,8 +35,8 @@ services = [
 #    "service.fake",
 #    "service.consumption"
     # "service.manager_business"
-    "server.product"
-    "server.supplierOrder"
+    #"service.product"
+    "service.supplierOrder"
 ]
 
 from utils import jwt

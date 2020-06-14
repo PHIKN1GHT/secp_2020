@@ -5,7 +5,7 @@ from flask import jsonify
 from functools import partial
 
 def loadCaptcha(client):
-    response = client.get('/api/account/verify')
+    response = client.get('/api/account/captcha')
     content_type = response.headers['Content-Type']
     response = client.get('/api/account/cheat')
     code = response.data.decode('utf-8')

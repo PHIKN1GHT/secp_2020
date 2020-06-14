@@ -1,4 +1,4 @@
-from server import app, db, inDebugging
+from server import app, inDebugging, DBSession
 from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate, Pipeline, ensureJson, ensureParam
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
@@ -31,13 +31,14 @@ def add():
         return retvs
     _, receiver, phonenumber, address = retvs
     addr = Address(current_user, receiver, phonenumber, address)
-    db.session.add(addr)
-    db.session.commit()
+    sess = DBSession()
+    sess.add(addr)
+    sess.commit()
 
-    user = User.query.filter_by(id=current_user).first()
+    user = sess.query(User).filter_by(id=current_user).first()
     if user.default_address_id is None:
         user.default_address_id = addr.id
-        db.session.commit()
+        sess.commit()
     return jsonify(result=True,id=addr.id), 200
 
 @bp.route("/del")
@@ -54,15 +55,16 @@ def delete():
         return retvs
     _, _id = retvs
 
-    addr = Address.query.filter_by(id=_id).first()
-
-    user = User.query.filter_by(id=current_user).first()
+    sess = DBSession()
+    addr = sess.query(Address).filter_by(id=_id).first()
+    
+    user = sess.query(User).filter_by(id=current_user).first()
     if (addr != None) and (addr.owner_id == current_user):
         if user.default_address_id == addr.id:
             user.default_address_id = None
-            db.session.commit()
-        db.session.delete(addr)
-        db.session.commit()
+            sess.commit()
+        sess.delete(addr)
+        sess.commit()
         return jsonify(result=True), 200
     return jsonify(result=False,reson="BAD ADDRESS ID"), 200
 
@@ -83,12 +85,13 @@ def update():
         return retvs
     _, _id, receiver, phonenumber, address = retvs
 
-    addr = Address.query.filter_by(id=_id).first()
-    user = User.query.filter_by(id=current_user).first()
+    sess = DBSession()
+    addr = sess.query(Address).filter_by(id=_id).first()
+    user = sess.query(User).filter_by(id=current_user).first()
     if (addr != None) and (addr.owner_id == current_user):
         addr.receiver = receiver
         addr.phonenumber = phonenumber
         addr.address = address
-        db.session.commit()
+        sess.commit()
         return jsonify(result=True), 200
     return jsonify(result=False,reson="BAD ADDRESS ID"), 200
