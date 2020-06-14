@@ -42,6 +42,15 @@ def test_allProduct_failed_wrong_storehouse_id(client):
     })
     assert b'Bad storehouseId' in response.data
 
+def test_allProduct_success(client):
+    response = client.post('/api/product/all',headers={
+        'Authorization': 'Bearer '+ token},
+    json={
+        "storehouse_id":1
+    })
+    products = response.json.get('products')
+    assert products
+
 # Test productDatail()
 def test_productDatail_failed_wrong_manager_id(client):
     response = client.post('/api/product/detail',headers={
@@ -76,6 +85,15 @@ def test_productDatail_failed_bad_description(client):
         "product_id":11
     })
     assert b'Bad description' in response.data
+
+def test_productDatail_success(client):
+    response = client.post('/api/product/detail',headers={
+        'Authorization': 'Bearer '+ token},
+    json={
+        "product_id":15
+    })
+    name = response.json.get('name')
+    assert name
 
 # Test createProduct()
 def test_createProduct_failed_wrong_manager_id(client):
@@ -138,7 +156,7 @@ def test_createProduct_succeed(client):
         },
         "storehouse_id":1
     })
-    isCreated =  response.json.get('isCreated')
+    isCreated = response.json.get('isCreated')
     assert isCreated == True
 
 # Test updateProduct()
@@ -195,7 +213,71 @@ def test_updateProduct_failed_no_description(client):
         "name":"test update a product",
         "category":1,
         "status":{
-            "shelved":True
+            "shelved":True,
+            "archived":True
         }
     })
     assert b'Missing description parameter' in response.data
+
+def test_updateProduct_success(client):
+    response = client.post('/api/product/update',headers={
+        'Authorization': 'Bearer '+ token},
+    json={
+        "product_id":17,
+        "name":"test update a product",
+        "category":1,
+        "status":{
+            "shelved":True,
+            "archived":True
+        },
+        "description":{
+            "title":"test update a product description",
+            "remain":99
+        },
+    })
+    isUpdated = response.json.get('isUpdated')
+    assert isUpdated == True
+
+# Test statistics()
+def test_statistics_failed_wrong_manager_id(client):
+    response = client.post('/api/product/statistics',headers={
+        'Authorization': 'Bearer '+ wrong_token})
+    assert b'Bad manager_id' in response.data
+
+def test_statistics_failed_no_json(client):
+    response = client.post('/api/product/statistics',headers={
+        'Authorization': 'Bearer '+ token})
+    assert b'Missing JSON in request' in response.data
+
+def test_statistics_failed_no_storehouse_id(client):
+    response = client.post('/api/product/statistics',headers={
+        'Authorization': 'Bearer '+ token},
+    json={
+        "storehouse":3
+    })
+    assert b'Missing storehouse_id parameter' in response.data
+
+def test_statistics_failed_bad_storehouse_id(client):
+    response = client.post('/api/product/statistics',headers={
+        'Authorization': 'Bearer '+ token},
+    json={
+        "storehouse_id":4
+    })
+    assert b'Bad storehouseId' in response.data
+
+def test_statistics_failed_no_order_record(client):
+    response = client.post('/api/product/statistics',headers={
+        'Authorization': 'Bearer '+ token},
+    json={
+        "storehouse_id":2
+    })
+    assert b'No order record' in response.data
+
+def test_statistics_success(client):
+    response = client.post('/api/product/statistics',headers={
+        'Authorization': 'Bearer '+ token},
+    json={
+        "storehouse_id":1
+    })
+    name_count = response.json.get("name_count")
+    assert name_count
