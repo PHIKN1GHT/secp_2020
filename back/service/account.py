@@ -1,4 +1,4 @@
-from server import app, db, inDebugging
+from server import app, inDebugging, DBSession
 from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate, Pipeline, ensureJson, ensureParam
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
@@ -18,7 +18,7 @@ def ensureCaptcha(request, session):
     return True, []
 
 # GET: 请求验证码图片，并在 login 的 POST 请求里进行验证
-@bp.route("/verify")
+@bp.route("/captcha")
 def verify():
     imagedata = io.BytesIO()
     image, session['captcha'] = captcha()
@@ -47,7 +47,7 @@ def login():
     pipeline.add(ensureJson)
     pipeline.add(ensureCaptcha, [request, session])
     pipeline.add(ensureParam, [request, 'username', lambda: invalidateSession(session, 'captcha')])
-    pipeline.add(ensureParam, [request, 'password',lambda: invalidateSession(session, 'captcha')])
+    pipeline.add(ensureParam, [request, 'password', lambda: invalidateSession(session, 'captcha')])
 
     broken, retvs = pipeline.run()
     if broken:
@@ -105,6 +105,7 @@ def state():
     else:
         return jsonify(logged_in_as_anonymous='anonymous user'), 200
 
+
 @bp.route("/changepswd", methods=['POST'])
 @jwt_required
 def changepswd():
@@ -122,13 +123,14 @@ def changepswd():
     
     _, username, oripswd, newpswd = retvs
 
-    user = User.query.filter_by(username=username).first()
+    sess = DBSession()
+    user = sess.query(User).filter_by(username=username).first()
 
     if not user or not cmparePswd(oripswd, user.password) or not user.id == current_user:
         return jsonify({"msg": "Bad username or password"}), 401
     
     user.setPassword(newpswd)
-    db.session.commit()
+    sess.commit()
 
     invalidate(get_raw_jwt())
     return jsonify(msg="Change password successfully, please relogin"), 200

@@ -1,4 +1,4 @@
-from server import db, app
+from server import app, DBSession
 from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
@@ -10,7 +10,7 @@ bp = Blueprint('product',__name__)
 
 # 目前只包含了经理端查看商品列表
 # Tested by Postman
-@bp.route("/product", methods=['POST'])
+@bp.route("/all", methods=['POST'])
 @jwt_required
 def allProduct():
     current_user = get_jwt_identity()
@@ -35,7 +35,7 @@ def allProduct():
 
 # 经理端查看商品详情
 # Tested by Postman
-@bp.route("/product/detail", methods=['POST'])
+@bp.route("/detail", methods=['POST'])
 @jwt_required
 def productDatail():
     current_user = get_jwt_identity()
@@ -63,7 +63,7 @@ def productDatail():
 
 # 经理端创建新产品
 # Tested by Postman
-@bp.route("/product/create", methods=['POST'])
+@bp.route("/create", methods=['POST'])
 @jwt_required
 def createProduct():
     current_user = get_jwt_identity()
@@ -90,17 +90,18 @@ def createProduct():
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
 
+    sess = DBSession()
     product = Product(name,category,storehouse_id)
-    db.session.add(product)
-    db.session.commit()
+    sess.add(product)
+    sess.commit()
     
     description = Description(all_description,product.id)
-    db.session.add(description)
-    db.session.commit()
+    sess.add(description)
+    sess.commit()
     return jsonify(isCreated=True, productID=product.id)
 
 # 经理端更改商品信息
-@bp.route("/product/update", methods=['POST'])
+@bp.route("/update", methods=['POST'])
 @jwt_required
 def updateProduct():
     current_user = get_jwt_identity()
@@ -143,18 +144,19 @@ def updateProduct():
     if not description:
         return jsonify({"msg": "Bad description"}), 401
 
+    sess = DBSession()
     product.category=category
     product.shelved=shelved
     product.archived=archived
     product.removed=removed
-    db.session.commit()
+    sess.commit()
 
     description.modify(all_description)
-    db.session.commit()
+    sess.commit()
     return jsonify(isUpdated=True), 200
 
 # 经理删除商品
-@bp.route("/product/remove", methods=['POST'])
+@bp.route("/remove", methods=['POST'])
 @jwt_required
 def removeProduct():
     current_user = get_jwt_identity()
