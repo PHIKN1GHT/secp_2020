@@ -13,8 +13,9 @@ bp = Blueprint('product',__name__)
 @bp.route("/all", methods=['POST'])
 @jwt_required
 def allProduct():
+    sess = DBSession()
     current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
 
@@ -25,11 +26,11 @@ def allProduct():
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
     
-    storehouse = Storehouse.query.filter_by(id=storehouse_id).first()
+    storehouse = sess.query(Storehouse).filter_by(id=storehouse_id).first()
     if not storehouse:
         return jsonify({"msg": "Bad storehouseId"}), 401
 
-    products = Product.query.filter_by(storehouse_id=storehouse_id).all()
+    products = sess.query(Product).filter_by(storehouse_id=storehouse_id).all()
     all_products = [(product.id, product.name, product.shelved, product.category) for product in products]
     return jsonify(products=all_products), 200
 
@@ -38,8 +39,9 @@ def allProduct():
 @bp.route("/detail", methods=['POST'])
 @jwt_required
 def productDatail():
+    sess = DBSession()
     current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
       
@@ -50,15 +52,16 @@ def productDatail():
     if not product_id:
         return jsonify({"msg": "Missing product_id parameter"}), 400
 
-    product = Product.query.filter_by(id=product_id,removed=False).first()
+    product = sess.query(Product).filter_by(id=product_id,removed=False).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
 
-    description = Description.query.filter_by(product_id=product_id,removed=False).first()
+    description = sess.query(Description).filter_by(product_id=product_id,removed=False).first()
     if not description:
         return jsonify({"msg": "Bad description"}), 401
 
-    description_json = [description.title, description.thumbnail, description.remain, description.price, description.htmlDescription, description.active]  
+    description_json = [description.title, description.thumbnail, description.remain, description.price,
+     description.htmlDescription, description.active]  
     return jsonify(name=product.name, shelved=product.shelved, category=product.category,
      archived=product.archived, description=description_json), 200
 
@@ -67,8 +70,9 @@ def productDatail():
 @bp.route("/create", methods=['POST'])
 @jwt_required
 def createProduct():
+    sess = DBSession()
     current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
 
@@ -91,7 +95,6 @@ def createProduct():
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
 
-    sess = DBSession()
     product = Product(name,category,storehouse_id)
     sess.add(product)
     sess.commit()
@@ -106,8 +109,9 @@ def createProduct():
 @bp.route("/update", methods=['POST'])
 @jwt_required
 def updateProduct():
+    sess = DBSession()
     current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
 
@@ -126,23 +130,14 @@ def updateProduct():
     if not category:
         return jsonify({"msg": "Missing category parameter"}), 400
 
-    shelved = request.json.get('shelved')
-    if not shelved:
-        return jsonify({"msg": "Missing shelved parameter"}), 400
-    
-    archived = request.json.get('archived')
-    if not archived:
-        return jsonify({"msg": "Missing archived parameter"}), 400
-
-    removed = request.json.get('removed')
-    if not removed:
-        return jsonify({"msg": "Missing removed parameter"}), 400
+    status = request.json.get('status')
+    if not status:
+        return jsonify({"msg": "Missing status parameter"}), 400
 
     all_description = request.json.get('description')
     if not all_description:
         return jsonify({"msg": "Missing description parameter"}), 400
 
-    sess = DBSession()
     product = sess.query(Product).filter_by(id=product_id,removed=False).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
@@ -152,12 +147,9 @@ def updateProduct():
         return jsonify({"msg": "Bad description"}), 401
 
     product.name=name
-    product.category=category
-    product.shelved=shelved
-    product.archived=archived
-    product.removed=removed
-    description.removed=removed
-    sess.commit()
+    product.modify(status)
+    if product.removed:
+        description.removed=True
 
     description.modify(all_description)
     sess.commit()
@@ -168,8 +160,9 @@ def updateProduct():
 @bp.route("/statistics", methods=['POST'])
 @jwt_required
 def statistics():
+    sess = DBSession()
     current_user = get_jwt_identity()
-    manager = User.query.filter_by(id=current_user,isManager=True).first()
+    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
 
@@ -178,10 +171,10 @@ def statistics():
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
 
     nowTime = datetime.datetime.now()
-    virtual_orders = Order.query.filter_by(storehouse_id=storehouse_id,virtual=True,cancelled=False).all()
+    virtual_orders = sess.query(Order).filter_by(storehouse_id=storehouse_id,virtual=True,cancelled=False).all()
     product_count={}
     for virorder in virtual_orders:
-        orders = Order.query.filter_by(storehouse_id=storehouse_id,belonging_id=virorder.id,virtual=False).all()
+        orders = sess.query(Order).filter_by(storehouse_id=storehouse_id,belonging_id=virorder.id,virtual=False).all()
         for order in orders:
             if(order.createTime.__rsub__(nowTime).days<=10):
                 if(order.product_id in product_count):
@@ -192,6 +185,6 @@ def statistics():
     productId_count=sorted(product_count.items(),key=lambda x:x[1],reverse=True)
     name_count=[]
     for _id_count in productId_count:
-        product = Product.query.filter_by(id=_id_count[0]).first()
+        product = sess.query(Product).filter_by(id=_id_count[0]).first()
         name_count.append([product.name,_id_count[1]])
     return jsonify(name_count=name_count), 200
