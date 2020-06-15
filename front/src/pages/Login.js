@@ -22,12 +22,7 @@ export default function LoginPage(props) {
             password: password,
             captcha: captcha
         })
-<<<<<<< HEAD
         const url = 'http://127.0.0.1:2333/api/account/login'
-=======
-        console.log(bodyData)
-        const url = 'http://localhost:2333/api/account/login'
->>>>>>> 5019339b69208c18e1ea05b75fd2d8b587b94dd5
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

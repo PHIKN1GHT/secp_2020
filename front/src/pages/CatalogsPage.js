@@ -124,7 +124,7 @@ class CatalogsPage extends Component {
         const url = 'http://localhost:2333//api/mall/catalog'
         const c = this.props.productId
         const bodyData = JSON.stringify({
-            id,
+            //id,
         })
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
