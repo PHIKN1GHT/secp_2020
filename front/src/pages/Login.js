@@ -1,21 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 import Toast from '../components/Toast';
 
 export default function LoginPage(props) {
     const [captchaTimes, setCaptchaTimes] = useState(0)
-    let captchaURL = 'http://localhost:2333/api/account/captcha#'+Date.now()
+    const [captchaURL, setCaptchaURL] = useState("")
+    //let captchaURL = 'http://localhost:2333/api/account/captcha#'+Date.now()
     console.log('a')
-    const handleChangeCaptcha = (event) => {
-        captchaURL = 'http://localhost:2333/api/account/captcha#'+Date.now()
-        fetch(captchaURL)
+    const handleChangeCaptcha = () => {
+        //setCaptchaURL()
+        
+        let url = 'http://localhost:2333/api/account/captcha#'+Date.now()
+        
+        fetch(url)
             .then(response => response.blob()) // parses response to blob
-            .then(
-                setCaptchaTimes(prevState => prevState + 1)
+            .then((imgData) => {
+                setCaptchaURL(url)
                 //setCaptchaURL(URL.createObjectURL(imgData))
-            )
+                setCaptchaTimes(prevState => prevState + 1)
+                //console.log(imgData)
+            })
+
+        //console.log('http://localhost:2333/api/account/captcha#'+Date.now())
+        /*fetch('http://localhost:2333/api/account/captcha#'+Date.now())
+            .then(response => response.blob()) // parses response to blob
+            .then((imgData) => {
+                setCaptchaURL(URL.createObjectURL(imgData))
+                console.log(URL.createObjectURL(imgData))
+            })*/
     }
+    
+    useEffect(()=>{
+        handleChangeCaptcha()
+    }, [])
+
     const handleLogin = (event) => {
         const username = document.getElementsByName('username')[0].value
         const password = document.getElementsByName('password')[0].value
@@ -25,13 +44,13 @@ export default function LoginPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = 'http://127.0.0.1:2333/api/account/login'
+        const url = 'http://localhost:2333/api/account/login'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'include', // include, same-origin, *omit
             headers: {
-                //'content-type': 'application/json'
+                'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
@@ -57,6 +76,7 @@ export default function LoginPage(props) {
                     //失败
                     console.log(json['reason'])
                     Toast('登陆失败，请检查用户名和密码是否正确', 500)
+                    handleChangeCaptcha()
                 }
             }).catch(Toast('访问服务器失败', 500))
     }
@@ -78,7 +98,8 @@ export default function LoginPage(props) {
                         </div>
                         <div className='captcha'>
                             <img className='captcha-img' onClick={handleChangeCaptcha}
-                                src={captchaURL} name='captcha-img' key={`captcha-${captchaTimes}`} />
+                                crossOrigin='use-credentials' src={captchaURL} name='captcha-img' 
+                                key={`captcha-${captchaTimes}`} />
                             <div className='captcha-input'>
                                 <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
                             </div>
