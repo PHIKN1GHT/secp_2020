@@ -7,6 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import TopBar from '../components/TopBar';
 
 const styles = theme => ({
     colBox: {
@@ -61,15 +62,15 @@ class MainPage extends Component {
         const url = 'http://localhost:2333/api/mall/homepage'
         fetch(url, {
             // body: bodyData, // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
+            //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json'
             },
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
+            //redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
         })
         .then(response => response.json()) // parses response to JSON 
         .then(json => {
@@ -92,6 +93,7 @@ class MainPage extends Component {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
             {/* 搜索框 */}
+            {/* <TopBar canGoBack={false} canSearch={true} /> */}
             <div className={classes.searchBar}>
                 <input onClick={this.handleSearch.bind(this)} readonly="readonly" style={{ width: '60%', height: '70%', }} />
                 <div style={{ margin: '0' }}>

@@ -91,7 +91,7 @@ class CatalogsPage extends Component {
         // })
     }
     fetchProducts(catalogId) { 
-        const url = 'http://localhost:2333//api/mall/catalog'
+        const url = 'http://localhost:2333/api/mall/catalog'
         const catalog = catalogId
         const page = 1
         const bodyData = JSON.stringify({
@@ -101,7 +101,7 @@ class CatalogsPage extends Component {
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
+            credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json'
             },
@@ -121,15 +121,13 @@ class CatalogsPage extends Component {
         })
     }
     fetchAndInitial() { 
-        const url = 'http://localhost:2333//api/mall/catalog'
-        const c = this.props.productId
-        const bodyData = JSON.stringify({
-            //id,
-        })
+        const url = 'http://localhost:2333/api/mall/catalogs'
+        // const bodyData = JSON.stringify({
+        // })
         fetch(url, {
-            body: bodyData, // must match 'Content-Type' header
+            //body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
+            credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json'
             },
@@ -140,17 +138,10 @@ class CatalogsPage extends Component {
         })
         .then(response => response.json()) // parses response to JSON 
         .then(json => {
-            const images = json['images']
-            const detailImages = json['detailImages']
-            const name = json['name']
-            const price = json['price']
-            const unit = json['unit']
+            const catalogs = json['catalogs']
+            
             this.setState({
-                images,
-                detailImages,
-                name,
-                price,
-                unit,
+                catalogs,
             })
         })
     }

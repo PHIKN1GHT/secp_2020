@@ -34,18 +34,45 @@ class SearchResultPage extends Component {
     constructor(props) { 
         super(props)
         this.state = {
-            products:[],
+            products: [],
+            totalPage: 0,
         }
     }
     componentWillMount() { 
-       
-        let products = []
-        for (let i = 1; i <= 20; ++i){
-            products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
-        }
-        this.setState({
-            products,
+       this.fetchAndInitial()
+        // let products = []
+        // for (let i = 1; i <= 20; ++i){
+        //     products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
+        // }
+        // this.setState({
+        //     products,
 
+        // })
+    }
+    fetchAndInitial() { 
+        const filter = this.props.location.state['keyword']
+        const page = 1
+        const url = 'http://localhost:2333/api/mall/search'
+        fetch(url, {
+            // body: bodyData, // must match 'Content-Type' header
+            //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'include', // include, same-origin, *omit
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            //redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
+        })
+        .then(response => response.json()) // parses response to JSON 
+        .then(json => {
+            const products = json['products']
+            const totalPage = json['totalPage']
+            this.setState({
+                products,
+                totalPage,
+            })
         })
     }
     handleGoBack(){
