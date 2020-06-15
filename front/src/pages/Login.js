@@ -6,6 +6,7 @@ import Toast from '../components/Toast';
 export default function LoginPage(props) {
     const [captchaTimes, setCaptchaTimes] = useState(0)
     const captchaURL = 'http://localhost:2333/api/account/captcha'
+    console.log('a')
     const handleChangeCaptcha = (event) => {
         fetch(captchaURL)
             .then(response => response.blob()) // parses response to blob
