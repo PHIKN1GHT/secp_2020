@@ -1,6 +1,6 @@
 import argparse, sys, os
 from flask_sqlalchemy import SQLAlchemy
-#from flask_cors import CORS
+from flask_cors import CORS
 from flask import Flask
 from config import PRODUCTION_ENV, DEVELOPMENT_ENV, SECRETKEY
 from utils import loadBlueprint
@@ -18,10 +18,13 @@ app.config['JWT_SECRET_KEY'] = SECRETKEY
     
 @app.after_request
 def cors(environ):
-    environ.headers['Access-Control-Allow-Origin']='*'
+    environ.headers['Access-Control-Allow-Origin']='http://localhost:3000'
     environ.headers['Access-Control-Allow-Method']='*'
     environ.headers['Access-Control-Allow-Headers']='x-requested-with,content-type'
+    environ.headers['Access-Control-Allow-Credentials']='true'
     return environ
+
+CORS(app, supports_credentials=True)
 
 db = SQLAlchemy(app)
 DBSession = sessionmaker(bind=db.engine)
@@ -30,11 +33,11 @@ services = [
     "service.resource",
     "service.account",
     "service.address",
-    "service.admin",
-    "service.indexing",
+#    "service.admin",
+#    "service.indexing",
 #    "service.fake",
 #    "service.consumption"
-    # "service.manager_business"
+#    "service.manager_business"
     "service.product",
     "service.supplierOrder"
 ]
