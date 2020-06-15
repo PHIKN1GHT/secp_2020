@@ -6,10 +6,11 @@ import Toast from '../components/Toast';
 
 // 和logincard共用css
 export default function RegisterPage(props) {
-    const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
+    // const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
+    const [captchaURL, setCaptchaURL] = useState('http://localhost:2333/api/account/captcha')
 
     const handleChangeCaptcha = (event) => {
-        const url = '/api/account/captcha'
+        const url = 'http://localhost:2333/api/account/captcha'
         fetch(url).then(response => response.blob()) // parses response to blob
             .then(imgData => {
                 setCaptchaURL(URL.createObjectURL(imgData))
@@ -26,13 +27,12 @@ export default function RegisterPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = '/api/account/registery'
+        const url = 'http://localhost:2333/api/account/registery'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'same-origin', // include, same-origin, *omit
             headers: {
-                'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.

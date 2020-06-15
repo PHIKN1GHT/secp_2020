@@ -34,53 +34,22 @@ class MainPage extends Component {
         super(props)
         this.state = {
             catalogs: [],
-            products: [],
-            totalPage: 0,
+            products:[],
         }
     }
-    componentWillMount() {
-        this.fetchAndInitial()
-        // let catalogs = []
-        // for (let i = 1; i <= 10; ++i){
-        //     catalogs.push({id:i, name:'catalog-'+i})
-        // }
-        // let products = []
-        // for (let i = 1; i <= 20; ++i){
-        //     products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
-        // }
-        // this.setState({
-        //     catalogs,
-        //     products,
+    componentWillMount() { 
+        let catalogs = []
+        for (let i = 1; i <= 10; ++i){
+            catalogs.push({id:i, name:'catalog-'+i})
+        }
+        let products = []
+        for (let i = 1; i <= 20; ++i){
+            products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
+        }
+        this.setState({
+            catalogs,
+            products,
 
-        // })
-    }
-    fetchAndInitial() { 
-        // totalPage: number,
-        // catalogs: [id: number, name: str],
-        // products: [number: [id: number, name: str, price: number, unit: str, cover: '']]
-        const url = 'http://localhost:2333/api/mall/homepage'
-        fetch(url, {
-            // body: bodyData, // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'GET', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
-        })
-        .then(response => response.json()) // parses response to JSON 
-        .then(json => {
-            const catalogs = json['catalogs']
-            const products = json['products']
-            const totalPage = json['totalPage']
-            this.setState({
-                catalogs,
-                products,
-                totalPage,
-            })
         })
     }
     handleSearch(e) { 
@@ -100,7 +69,7 @@ class MainPage extends Component {
                     </IconButton>
                 </div>
             </div>
-            <div style={{ flex:1, overflowY:'auto',scrollbarWidth: 'none',}}>
+            <div style={{overflowY:'auto',scrollbarWidth: 'none',}}>
                 {/* 目录展示 */}
                 <div className={classes.rowBox} style={{flexWrap:'wrap'}}>
                     {this.state.catalogs.map((catalog) => { 

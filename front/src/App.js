@@ -23,16 +23,17 @@ import SearchPage from './pages/SearchPage';
 import CatalogsPage from './pages/CatalogsPage';
 import OrderDetailPage from './pages/OrderDetail';
 import AddressManagerPage from './pages/AddressManager';
-
+import ProductDetailPage from './pages/ProductDetailPage'
 
 function App() {
   return (
     <Router>
       <Switch>
+
+
+        <Route path='/product/detail' component={ProductDetailPage} ></Route>
         <Route path='/product/search/:keyword' component={SearchResultPage} ></Route>
-
         <Route path='/product/search' component={SearchPage} ></Route>
-
         <Route path='/product/catalogs' component={CatalogsPage} ></Route>
         <Route path='/shoppingCart' component={ShoppingCart} ></Route>
         <Route path='/product/detail/:product_id' component={ProductView} ></Route>

@@ -47,7 +47,12 @@ class Product(db.Model):
         self.name = name
         self.storehouse_id = storehouse_id
         self.category = category
-    
+
+    def modify(self, jsondata):
+        self.shelved = tryLookUp(jsondata, 'shelved', False)
+        self.archived = tryLookUp(jsondata, 'archived', False)
+        self.removed = tryLookUp(jsondata, 'removed', False)
+
     def __repr__(self):
         return '<Product %r>' % (self.name)
 
