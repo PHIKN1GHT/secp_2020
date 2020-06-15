@@ -23,19 +23,18 @@ export default function LoginPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = 'http://localhost:2333/api/account/login'
+        const url = 'http://127.0.0.1:2333/api/account/login'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
+            credentials: 'include', // include, same-origin, *omit
             headers: {
-                'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
+            //redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
         }).then(response => response.json()) // parses response to JSON 
             .then(json => {
                 if (json['result']) {
@@ -67,11 +66,13 @@ export default function LoginPage(props) {
                     <form className='login-wrapper'>
                         <div className='username-input'>
                             <TextField fullWidth variant='outlined'
-                                name='username' label='USERNAME'></TextField>
+                                name='username' label='USERNAME' defaultValue='SYSTEM'>
+                            </TextField>
                         </div>
                         <div className='password-input'>
                             <TextField fullWidth
-                                variant='outlined' name='password' label='PASSWORD'></TextField>
+                                variant='outlined' name='password' label='PASSWORD' type='password' defaultValue='This is a simple SALT'>
+                            </TextField>
                         </div>
                         <div className='captcha'>
                             <img className='captcha-img' onClick={handleChangeCaptcha}

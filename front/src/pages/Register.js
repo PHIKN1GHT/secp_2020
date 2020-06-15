@@ -6,15 +6,13 @@ import Toast from '../components/Toast';
 
 // 和logincard共用css
 export default function RegisterPage(props) {
-    // const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
-    const [captchaURL, setCaptchaURL] = useState('http://localhost:2333/api/account/captcha')
-    console.log('a')
+    const [captchaTimes, setCaptchaTimes] = useState(0)
+    const captchaURL = 'http://localhost:2333/api/account/captcha#'
     const handleChangeCaptcha = (event) => {
-        const url = 'http://localhost:2333/api/account/captcha'
-        fetch(url).then(response => response.blob()) // parses response to blob
-            .then(imgData => {
-                setCaptchaURL(URL.createObjectURL(imgData))
-            })
+        fetch(captchaURL).then(response => response.blob()) // parses response to blob
+            .then(
+                setCaptchaTimes(prevState => prevState + 1)
+            )
     }
 
     const handleRegister = (event) => {
@@ -30,9 +28,8 @@ export default function RegisterPage(props) {
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
+            credentials: 'include', // include, same-origin, *omit
             headers: {
-                'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -66,7 +63,7 @@ export default function RegisterPage(props) {
                         </div>
                         <div className='captcha'>
                             <img className='captcha-img' onClick={handleChangeCaptcha}
-                                src={captchaURL} name='captcha-img' />
+                                src={captchaURL} name='captcha-img' key={`captcha-${captchaTimes}`} />
                             <div className='captcha-input'>
                                 <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
                             </div>
