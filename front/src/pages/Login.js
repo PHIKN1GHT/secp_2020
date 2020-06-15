@@ -4,10 +4,11 @@ import { Button } from '@material-ui/core';
 import Toast from '../components/Toast';
 
 export default function LoginPage(props) {
-    const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
+    // const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
+    const [captchaURL, setCaptchaURL] = useState('http://localhost:2333/api/account/captcha')
 
     const handleChangeCaptcha = (event) => {
-        const url = '/api/account/captcha'
+        const url = 'http://localhost:2333/api/account/captcha'
         fetch(url).then(response => response.blob()) // parses response to blob
             .then(imgData => {
                 setCaptchaURL(URL.createObjectURL(imgData))
@@ -22,7 +23,7 @@ export default function LoginPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = '/api/account/login'
+        const url = 'http://localhost:2333/api/account/login'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
