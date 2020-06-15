@@ -41,14 +41,16 @@
 .login .login-card .login-wrapper .captcha{
     position: relative;
     margin-top: 35px;
-    
+    display: flex;
 }
 .login .login-card .login-wrapper .captcha .captcha-img{
-    position: absolute;
-    height: 100%;
+    width: 45%;
+    flex: 1;
+    border-radius: 5px;
 }
 .login .login-card .login-wrapper .captcha .captcha-input{
-    margin-left: 45%;
+    max-width: 45%;
+    margin-left: 15px;
     border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.7);
 }

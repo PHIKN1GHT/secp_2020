@@ -4,15 +4,16 @@ import { Button } from '@material-ui/core';
 import Toast from '../components/Toast';
 
 export default function LoginPage(props) {
-    // const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
-    const [captchaURL, setCaptchaURL] = useState('http://localhost:2333/api/account/captcha#'+Date.now())
-
+    const [captchaTimes, setCaptchaTimes] = useState(0)
+    const captchaURL = 'http://localhost:2333/api/account/captcha'
+    console.log('a')
     const handleChangeCaptcha = (event) => {
-        const url = 'http://localhost:2333/api/account/captcha#'+Date.now()
-        fetch(url).then(response => response.blob()) // parses response to blob
-            .then(imgData => {
-                setCaptchaURL(URL.createObjectURL(imgData))
-            })
+        fetch(captchaURL)
+            .then(response => response.blob()) // parses response to blob
+            .then(
+                setCaptchaTimes(prevState => prevState + 1)
+                //setCaptchaURL(URL.createObjectURL(imgData))
+            )
     }
     const handleLogin = (event) => {
         const username = document.getElementsByName('username')[0].value
@@ -53,6 +54,7 @@ export default function LoginPage(props) {
                 }
                 else {
                     //失败
+                    console.log(json['reason'])
                     Toast('登陆失败，请检查用户名和密码是否正确', 500)
                 }
             }).catch(Toast('访问服务器失败', 500))
@@ -66,16 +68,16 @@ export default function LoginPage(props) {
                         <div className='username-input'>
                             <TextField fullWidth variant='outlined'
                                 name='username' label='USERNAME' defaultValue='SYSTEM'>
-                                </TextField>
+                            </TextField>
                         </div>
                         <div className='password-input'>
                             <TextField fullWidth
                                 variant='outlined' name='password' label='PASSWORD' type='password' defaultValue='This is a simple SALT'>
-                                </TextField>
+                            </TextField>
                         </div>
                         <div className='captcha'>
                             <img className='captcha-img' onClick={handleChangeCaptcha}
-                                src={captchaURL} name='captcha-img' />
+                                src={captchaURL} name='captcha-img' key={`captcha-${captchaTimes}`} />
                             <div className='captcha-input'>
                                 <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
                             </div>
@@ -83,7 +85,7 @@ export default function LoginPage(props) {
                         <div className='login-btn'>
                             <Button fullWidth className='login-btn-' onClick={handleLogin}>
                                 Login
-                        </Button>
+                            </Button>
                         </div>
                     </form>
                 </div>
