@@ -122,14 +122,12 @@ class CatalogsPage extends Component {
     }
     fetchAndInitial() { 
         const url = 'http://localhost:2333//api/mall/catalog'
-        const c = this.props.productId
         const bodyData = JSON.stringify({
-            id,
         })
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
+            credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json'
             },
