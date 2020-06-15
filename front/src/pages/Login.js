@@ -9,10 +9,10 @@ export default function LoginPage(props) {
     const handleChangeCaptcha = (event) => {
         fetch(captchaURL)
             .then(response => response.blob()) // parses response to blob
-            .then(imgData => {
+            .then(
                 setCaptchaTimes(prevState => prevState + 1)
                 //setCaptchaURL(URL.createObjectURL(imgData))
-            })
+            )
     }
     const handleLogin = (event) => {
         const username = document.getElementsByName('username')[0].value
