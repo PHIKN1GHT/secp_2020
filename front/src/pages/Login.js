@@ -5,7 +5,7 @@ import Toast from '../components/Toast';
 
 export default function LoginPage(props) {
     const [captchaTimes, setCaptchaTimes] = useState(0)
-    const captchaURL = 'http://localhost:2333/api/account/captcha'
+    const captchaURL = `http://localhost:2333/api/account/captcha?${Date.now()}`
     console.log('a')
     const handleChangeCaptcha = (event) => {
         fetch(captchaURL)
@@ -30,7 +30,7 @@ export default function LoginPage(props) {
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'include', // include, same-origin, *omit
             headers: {
-                'content-type': 'application/json'
+                //'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
