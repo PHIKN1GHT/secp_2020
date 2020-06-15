@@ -8,7 +8,7 @@ import Toast from '../components/Toast';
 export default function RegisterPage(props) {
     // const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
     const [captchaURL, setCaptchaURL] = useState('http://localhost:2333/api/account/captcha')
-
+    console.log('a')
     const handleChangeCaptcha = (event) => {
         const url = 'http://localhost:2333/api/account/captcha'
         fetch(url).then(response => response.blob()) // parses response to blob
@@ -16,7 +16,6 @@ export default function RegisterPage(props) {
                 setCaptchaURL(URL.createObjectURL(imgData))
             })
     }
-
 
     const handleRegister = (event) => {
         const username = document.getElementsByName('username')[0].value
