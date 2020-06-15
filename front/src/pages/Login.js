@@ -5,10 +5,10 @@ import Toast from '../components/Toast';
 
 export default function LoginPage(props) {
     // const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
-    const [captchaURL, setCaptchaURL] = useState('http://localhost:2333/api/account/captcha')
+    const [captchaURL, setCaptchaURL] = useState('http://localhost:2333/api/account/captcha#'+Date.now())
 
     const handleChangeCaptcha = (event) => {
-        const url = 'http://localhost:2333/api/account/captcha'
+        const url = 'http://localhost:2333/api/account/captcha#'+Date.now()
         fetch(url).then(response => response.blob()) // parses response to blob
             .then(imgData => {
                 setCaptchaURL(URL.createObjectURL(imgData))
@@ -28,7 +28,7 @@ export default function LoginPage(props) {
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
+            credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json'
             },
