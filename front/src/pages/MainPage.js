@@ -64,7 +64,6 @@ class MainPage extends Component {
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'same-origin', // include, same-origin, *omit
             headers: {
-                'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'
             },
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -101,7 +100,7 @@ class MainPage extends Component {
                     </IconButton>
                 </div>
             </div>
-            <div style={{overflowY:'auto',scrollbarWidth: 'none',}}>
+            <div style={{ flex:1, overflowY:'auto',scrollbarWidth: 'none',}}>
                 {/* 目录展示 */}
                 <div className={classes.rowBox} style={{flexWrap:'wrap'}}>
                     {this.state.catalogs.map((catalog) => { 

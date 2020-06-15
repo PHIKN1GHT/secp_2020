@@ -23,13 +23,13 @@ export default function LoginPage(props) {
             password: password,
             captcha: captcha
         })
+        console.log(bodyData)
         const url = 'http://localhost:2333/api/account/login'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'same-origin', // include, same-origin, *omit
             headers: {
-                'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -66,11 +66,13 @@ export default function LoginPage(props) {
                     <form className='login-wrapper'>
                         <div className='username-input'>
                             <TextField fullWidth variant='outlined'
-                                name='username' label='USERNAME'></TextField>
+                                name='username' label='USERNAME' defaultValue='SYSTEM'>
+                                </TextField>
                         </div>
                         <div className='password-input'>
                             <TextField fullWidth
-                                variant='outlined' name='password' label='PASSWORD'></TextField>
+                                variant='outlined' name='password' label='PASSWORD' type='password' defaultValue='This is a simple SALT'>
+                                </TextField>
                         </div>
                         <div className='captcha'>
                             <img className='captcha-img' onClick={handleChangeCaptcha}

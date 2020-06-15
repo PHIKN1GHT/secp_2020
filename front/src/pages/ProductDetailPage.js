@@ -45,6 +45,44 @@ class ProductDetailPage extends Component {
             },
         }
     }
+    componentWillMount() { 
+        this.fetchAndInitial()
+
+    }
+    fetchAndInitial() { 
+        const url = 'http://localhost:2333//api/product/detail'
+        const id = this.props.productId
+        const bodyData = JSON.stringify({
+            id,
+        })
+        fetch(url, {
+            body: bodyData, // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, same-origin, *omit
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+        })
+        .then(response => response.json()) // parses response to JSON 
+        .then(json => {
+            const images = json['images']
+            const detailImages = json['detailImages']
+            const name = json['name']
+            const price = json['price']
+            const unit = json['unit']
+            this.setState({
+                images,
+                detailImages,
+                name,
+                price,
+                unit,
+            })
+        })
+    }
 
     render() {
         const { classes } = this.props;
