@@ -26,7 +26,7 @@ export default function LoginPage(props) {
         const url = 'http://127.0.0.1:2333/api/account/login'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json'
