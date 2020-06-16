@@ -7,7 +7,7 @@ import Toast from '../components/Toast';
 // 和logincard共用css
 export default function RegisterPage(props) {
     const [captchaTimes, setCaptchaTimes] = useState(0)
-    const captchaURL = 'http://localhost:2333/api/account/captcha#'
+    const captchaURL = `http://localhost:2333/api/account/captcha#?${Date.now()}`
     const handleChangeCaptcha = (event) => {
         fetch(captchaURL).then(response => response.blob()) // parses response to blob
             .then(
@@ -63,7 +63,7 @@ export default function RegisterPage(props) {
                         </div>
                         <div className='captcha'>
                             <img className='captcha-img' onClick={handleChangeCaptcha}
-                                src={captchaURL} name='captcha-img' key={`captcha-${captchaTimes}`} />
+                                src={captchaURL} name='captcha-img' key={`captcha-${captchaTimes} `} />
                             <div className='captcha-input'>
                                 <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
                             </div>
