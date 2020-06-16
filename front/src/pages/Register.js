@@ -6,8 +6,8 @@ import Toast from '../components/Toast';
 
 // 和logincard共用css
 export default function RegisterPage(props) {
-    const host = 'http://188.131.174.176:8082'
-    const captchaURL = host + '/api/account/captcha?' + Date.now()
+    const server = 'http://188.131.174.176:8082'
+    const captchaURL = server + '/api/account/captcha?' + Date.now()
     const [captchaTimes, setCaptchaTimes] = useState(0)
 
     const handleChangeCaptcha = (event) => {
@@ -23,7 +23,7 @@ export default function RegisterPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = host + '/api/account/registery'
+        const url = server + '/api/account/registery'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

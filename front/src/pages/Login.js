@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 import Toast from '../components/Toast';
+import { server } from './Const';
 
 export default function LoginPage(props) {
     if (localStorage.getItem('access_token')) {
         // TODO
         // 检测token时效后，有效则跳转
     }
-    const host = 'http://188.131.174.176:8082'
-    const captchaURL = host + '/api/account/captcha?' + Date.now()
+    const server = 'http://188.131.174.176:8082'
+    const captchaURL = server + '/api/account/captcha?' + Date.now()
     const [captchacaptchaTimes, setCaptchaTimes] = useState(0)
     const handleChangeCaptcha = () => {
         setCaptchaTimes(prevState => prevState + 1)
@@ -23,7 +24,7 @@ export default function LoginPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = host + '/api/account/login'
+        const url = server + '/api/account/login'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             credentials: 'include', // include, same-origin, *omit
