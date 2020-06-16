@@ -2,11 +2,13 @@ import React, {Component} from 'react';
 import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
+import TopBar from '../components/TopBar'
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const styles = theme => ({
     colBox: {
@@ -54,13 +56,19 @@ class SearchPage extends Component {
     handleSearch(e) { 
         const searchInput = document.getElementsByName('searchInput')[0]
         const keyword = searchInput.value
-        this.props.history.push({ pathname: '/product/search/'+searchInput.value, state: { keyword } })
+        this.props.history.push({ pathname: '/product/search/', state: { keyword } })
+    }
+    handleGoBack(){
+        this.props.history.go(-1)
     }
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{backgroundColor: 'lavender',}}>
             {/* 搜索框 */}
             <div className={classes.searchBar}>
+                <IconButton style={{'justifySelf':"flex-start"}} >
+                    <ArrowBackIosIcon onClick={this.handleGoBack.bind(this)} />
+                </IconButton>
                 <input autoFocus={true} name='searchInput' style={{ width: '60%', height: '70%', }} />
                 <div style={{ margin: '0' }}>
                     <IconButton onClick={this.handleSearch.bind(this)} >

@@ -69,8 +69,6 @@ class TestServiceAddress(WithToken):
         })
         assert response.json['result'] == True
 
-
-
         response = client.get('/api/address/all', headers={
             'Authorization': 'Bearer '+ self.token
         })

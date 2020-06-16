@@ -4,20 +4,15 @@ import { Button } from '@material-ui/core';
 import Toast from '../components/Toast';
 
 export default function LoginPage(props) {
-    const [captchaTimes, setCaptchaTimes] = useState(0)
-    let captchaURL = `http://localhost:2333/api/account/captcha?${Date.now()}`
-    useEffect(() => {
-        document.getElementsByName('captcha-img')[0].setAttribute('src', captchaURL)
-        captchaURL = `http://localhost:2333/api/account/captcha?${Date.now()}`
-    })
-    console.log('a')
-    const handleChangeCaptcha = (event) => {
-        fetch(captchaURL)
-            .then(response => response.blob()) // parses response to blob
-            .then(
-                setCaptchaTimes(prevState => prevState + 1)
-                //setCaptchaURL(URL.createObjectURL(imgData))
-            )
+    if (localStorage.getItem('access_token')) {
+        // TODO
+        // 检测token时效后，有效则跳转
+    }
+    const host = 'http://188.131.174.176:8082'
+    const captchaURL = host + '/api/account/captcha?' + Date.now()
+    const [captchacaptchaTimes, setCaptchaTimes] = useState(0)
+    const handleChangeCaptcha = () => {
+        setCaptchaTimes(prevState => prevState + 1)
     }
     const handleLogin = (event) => {
         const username = document.getElementsByName('username')[0].value
@@ -28,10 +23,9 @@ export default function LoginPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = 'http://127.0.0.1:2333/api/account/login'
+        const url = host + '/api/account/login'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json'
@@ -41,27 +35,27 @@ export default function LoginPage(props) {
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // *client, no-referrer
         }).then(response => response.json()
-        ) // parses response to JSON 
-            .then(json => {
-                if (json['result']) {
-                    // 成功登录
-                    Toast('登陆成功', 500)
-                    localStorage.setItem('token', json['token'])
-
-                    // 检验账号类型
-                    // TODO
-                    switch (json['type']) {
-                        case '':
-                            break;
-                        default:
-                            break;
-                    }
+        ).then(json => {
+            if (json['result']) {
+                // 成功登录
+                Toast('登陆成功', 500)
+                localStorage.setItem('access_token', json['access_token'])
+                // 检验账号类型
+                // TODO
+                switch (json['type']) {
+                    case '':
+                        break;
+                    default:
+                        props.history.push({ pathname: '/mainpage' })
+                        break;
                 }
-                else {
-                    //失败
-                    Toast('登陆失败，请检查用户名和密码是否正确', 500)
-                }
-            }).catch(Toast('访问服务器失败', 500))
+            }
+            else {
+                //失败
+                Toast('登陆失败，请检查用户名和密码是否正确', 500)
+                handleChangeCaptcha()
+            }
+        })
     }
     return (
         <div className='login'>
@@ -80,8 +74,12 @@ export default function LoginPage(props) {
                             </TextField>
                         </div>
                         <div className='captcha'>
-                            <img className='captcha-img' onClick={handleChangeCaptcha}
-                                src={captchaURL} name='captcha-img' key={`captcha-${captchaTimes} `} />
+                            <img className='captcha-img'
+                                onClick={handleChangeCaptcha}
+                                crossOrigin='use-credentials'
+                                src={captchaURL}
+                                name='captcha-img'
+                                key={`captcha-${captchacaptchaTimes}`} />
                             <div className='captcha-input'>
                                 <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
                             </div>

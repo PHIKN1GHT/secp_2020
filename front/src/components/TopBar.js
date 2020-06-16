@@ -49,7 +49,7 @@ class TopBar extends Component {
         })
     }
     handleGoBack(){
-        this.props.history.push({ pathname: this.props.backUrl,})
+        this.props.history.go(-1)
     }
     handleSearch(e) { 
         this.props.history.push({ pathname: '/product/search',})
@@ -59,7 +59,7 @@ class TopBar extends Component {
         return (
             <div className={classes.topBar}>
                 {
-                    this.props.backUrl != undefined ?
+                    this.props.canGoBack ?
                     <IconButton style={{'justifySelf':"flex-start"}} >
                         <ArrowBackIosIcon onClick={this.handleGoBack.bind(this)} />
                     </IconButton>
