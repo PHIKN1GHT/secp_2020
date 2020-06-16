@@ -33,8 +33,8 @@ export default function LoginPage(props) {
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
+            // redirect: 'follow', // manual, *follow, error
+            // referrer: 'no-referrer', // *client, no-referrer
         }).then(response => response.json()
         ).then(json => {
             if (json['result']) {

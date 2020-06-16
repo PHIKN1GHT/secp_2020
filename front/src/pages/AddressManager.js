@@ -1,6 +1,7 @@
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import React, { useState, useEffect, useRef } from 'react';
 import { IconButton, ListItemAvatar, Avatar, List, ListItem, Tooltip, DialogTitle, Dialog, DialogContent, DialogContentText, DialogActions, Button, TextField } from '@material-ui/core';
+import { server } from './Const';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import EditIcon from '@material-ui/icons/Edit';
@@ -22,6 +23,21 @@ export default function AddressManagerPage(props) {
     const [selectInd, setSelectInd] = useState(-1)
     const [diaType, setDiaType] = useState('null')
     useEffect(() => {
+        const url = server + '/api/address/all'
+        fetch(url, { // must match 'Content-Type' header
+            credentials: 'include', // include, same-origin, *omit
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': localStorage.getItem('access_token')
+            },
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            // redirect: 'follow', // manual, *follow, error
+            // referrer: 'no-referrer', // *client, no-referrer
+        }).then(response => response.json())
+            .then(json => {
+                console.log(json)
+            })
     })
     const handleGoBack = (event) => {
         props.history.goBack()
