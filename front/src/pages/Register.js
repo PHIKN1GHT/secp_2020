@@ -6,13 +6,12 @@ import Toast from '../components/Toast';
 
 // 和logincard共用css
 export default function RegisterPage(props) {
+    const server = 'http://188.131.174.176:8082'
+    const captchaURL = server + '/api/account/captcha?' + Date.now()
     const [captchaTimes, setCaptchaTimes] = useState(0)
-    const captchaURL = 'http://localhost:2333/api/account/captcha#'
+
     const handleChangeCaptcha = (event) => {
-        fetch(captchaURL).then(response => response.blob()) // parses response to blob
-            .then(
-                setCaptchaTimes(prevState => prevState + 1)
-            )
+        setCaptchaTimes(prevState => prevState + 1)
     }
 
     const handleRegister = (event) => {
@@ -24,7 +23,7 @@ export default function RegisterPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = 'http://localhost:2333/api/account/registery'
+        const url = server + '/api/account/registery'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -42,12 +41,14 @@ export default function RegisterPage(props) {
                     // 成功注册
                     localStorage.setItem('token', json['token'])
                     Toast('注册成功', 500)
+                    props.history.push({ pathname: '/mainpage' })
                 }
                 else {
                     //失败
                     Toast('注册失败', 500)
+                    handleChangeCaptcha()
                 }
-            }).catch(Toast('访问服务器失败', 500))
+            })
     }
     return (
         <div className='login'>
@@ -62,8 +63,11 @@ export default function RegisterPage(props) {
                             <TextField fullWidth variant='outlined' name='password' label='PASSWORD'></TextField>
                         </div>
                         <div className='captcha'>
-                            <img className='captcha-img' onClick={handleChangeCaptcha}
-                                src={captchaURL} name='captcha-img' key={`captcha-${captchaTimes}`} />
+                            <img className='captcha-img'
+                                onClick={handleChangeCaptcha}
+                                src={captchaURL}
+                                name='captcha-img'
+                                key={`captcha-${captchaTimes} `} />
                             <div className='captcha-input'>
                                 <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
                             </div>
