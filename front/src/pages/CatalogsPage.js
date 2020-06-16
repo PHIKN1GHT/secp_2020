@@ -6,6 +6,7 @@ import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
 import TopBar from '../components/TopBar'
 import Toast from '../components/Toast'
 
+import LensIcon from '@material-ui/icons/Lens';
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
@@ -87,6 +88,12 @@ const styles = theme => ({
         // marginLeft: 'auto',
         marginTop: 'auto',
     },
+    shoppingIcon: {
+       
+       
+
+    },
+    
 });
 
 
@@ -196,15 +203,58 @@ class CatalogsPage extends Component {
             })
         })
     }
+    calAbsPosition(element) { 
+        let actualLeft = element.offsetLeft;
+        let current = element.offsetParent;
+
+　　　　while (current != undefined){
+　　　　　　actualLeft += current.offsetLeft;
+　　　　　　current = current.offsetParent;
+        }
+        let actualTop = element.offsetTop;
+        current = element.offsetParent;
+
+　　　　while (current != undefined){
+　　　　　　actualTop += current.offsetTop;
+　　　　　　current = current.offsetParent;
+        }
+        return {left: actualLeft, top: actualTop}
+        
+    }
     elementJump(element) { 
-        let cloneElement = element.cloneNode(true)
+        //let cloneElement = element.cloneNode(true)
         //
         //取得底端购物车的元素，然后使用top, left, position确定最后的位置
         //
-        //WebkitTransition:'marginleft 1s', transition:'margin-left 1s'
-        // cloneElement.style.WebkitTransition = 
-        // cloneElement.style.transition = 
+       
+        
+        let cloneElement = document.getElementsByName('circle')[0].cloneNode(true)
         console.log(cloneElement)
+        cloneElement.style.position = 'absolute'
+        cloneElement.style.zIndex = '99'
+        cloneElement.style.display = 'initial'
+        
+        const nowPosition = element.getBoundingClientRect()
+        cloneElement.style.left = nowPosition.left+'px'
+        cloneElement.style.top = nowPosition.top + 'px'
+        cloneElement.style.WebkitTransition ='top 1s, left 0.8s, width 1s, height 1s'
+        cloneElement.style.transition = 'top 1s, left 0.8s, width 1s, height 1s'
+        cloneElement.style.width = element.width.baseVal.value+'px'
+        cloneElement.style.height = element.height.baseVal.value+'px'
+
+        document.body.appendChild(cloneElement)
+        setTimeout(
+            () => { 
+                const cart = document.getElementsByName('cart')[0]
+                const cartPosition = this.calAbsPosition(cart)
+                console.log(cartPosition)
+                cloneElement.style.left = cartPosition.left+cart.offsetWidth/2+'px'
+                cloneElement.style.top = cartPosition.top+cart.offsetHeight/4 + 'px'
+                cloneElement.style.width = 0+'px'
+                cloneElement.style.height = 0+'px'
+                setTimeout(() => { document.body.removeChild(cloneElement) }, 1000)
+            },
+            0);
     }
 
 
@@ -290,6 +340,10 @@ class CatalogsPage extends Component {
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
+            {/* document.getElementsByNames不识别svg元素？？ */}
+            <div name='circle' style={{display:'none'}}>
+                <LensIcon name='circleSVG' style={{height:'100%', width:'100%'}}  />
+            </div>
             <TopBar
                 backIconHidden={true}
                 fakeSearch={true}
@@ -352,7 +406,7 @@ class CatalogsPage extends Component {
                                     <span>/{product.unit}</span>
                                     </div>
                                 <div className={classes.rbCorner}>
-                                        <AddShoppingCartIcon onClick={(e) => { this.handleAddShoppingCart(e, product.id) }} className={classes.shoppingIcon}/>
+                                        <AddShoppingCartIcon  onClick={(e) => { this.handleAddShoppingCart(e, product.id) }} className={classes.shoppingIcon}/>
 
                                 </div>
                                     </div>

@@ -10,7 +10,7 @@ export default function BottomNavBarForCustomer(props) {
         <BottomNavBar props={[
             { icon: <HomeIcon />, text: '首页', url: '/mainpage' },
             { icon: <DehazeIcon />, text: '分类 ', url: '/product/catalogs' },
-            { icon: <ShoppingCartIcon />, text: ' 购物车 ', url: '/shoppingCart' },
+            { icon: <ShoppingCartIcon />, text: ' 购物车 ', url: '/shoppingCart', name:'cart' },
             { icon: <AccountCircleIcon />, text: '我的', url: '/user-info' }
         ]} />
     )
