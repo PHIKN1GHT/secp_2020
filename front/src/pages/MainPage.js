@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import { server } from './Const'
+import React, { Component } from 'react';
 import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
@@ -8,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import TopBar from '../components/TopBar';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const styles = theme => ({
     colBox: {
@@ -21,11 +23,20 @@ const styles = theme => ({
         display: 'flex',
     },
     searchBar: {
-        width:'100vw',
+        margin: '0 5vw 0 5vw',
+        //width:'100vw',
         height: '5vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    input: {
+        height: '70%',
+        flex: '1 1',
+        borderRadius: '20px',
+        border: 'mediumaquamarine 1px solid',
+        overflow: 'hidden',
+
     }
 });
 
@@ -59,7 +70,7 @@ class MainPage extends Component {
         // totalPage: number,
         // catalogs: [id: number, name: str],
         // products: [number: [id: number, name: str, price: number, unit: str, cover: '']]
-        const url = 'http://localhost:2333/api/mall/homepage'
+        const url = server + '/api/mall/homepage'
         fetch(url, {
             // body: bodyData, // must match 'Content-Type' header
             //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -68,7 +79,7 @@ class MainPage extends Component {
                 'content-type': 'application/json'
             },
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, cors, *same-origin
+            mode: 'no-cors', // no-cors, cors, *same-origin
             //redirect: 'follow', // manual, *follow, error
             //referrer: 'no-referrer', // *client, no-referrer
         })
@@ -95,11 +106,10 @@ class MainPage extends Component {
             {/* 搜索框 */}
             {/* <TopBar canGoBack={false} canSearch={true} /> */}
             <div className={classes.searchBar}>
-                <input onClick={this.handleSearch.bind(this)} readonly="readonly" style={{ width: '60%', height: '70%', }} />
-                <div style={{ margin: '0' }}>
-                    <IconButton onClick={this.handleSearch.bind(this)} >
-                        <SearchIcon />
-                    </IconButton>
+                <ArrowBackIosIcon style={{visibility:'hidden', margin: '0 2vw',justifySelf:"flex-start", cursor:'pointer'}} />
+                <input className={classes.input} onClick={this.handleSearch.bind(this)} readonly="readOnly" style={{}} />
+                <div style={{ margin: '0 2vw', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                    <SearchIcon style={{cursor:'pointer'}} onClick={this.handleSearch.bind(this)} />
                 </div>
             </div>
             <div style={{ flex:1, overflowY:'auto',scrollbarWidth: 'none',}}>

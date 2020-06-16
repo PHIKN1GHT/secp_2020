@@ -21,11 +21,19 @@ const styles = theme => ({
         display: 'flex',
     },
     searchBar: {
-        width:'100vw',
+        margin: '0 5vw 0 5vw',
         height: '5vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    input: {
+        height: '70%',
+        flex: '1 1',
+        borderRadius: '20px',
+        border: 'mediumaquamarine 1px solid',
+        overflow: 'hidden',
+        paddingLeft: '10px',
     }
 });
 
@@ -86,6 +94,13 @@ class SearchResultPage extends Component {
         return (<div className={classes.colBox}>
             {/* 搜索框 */}
             <div className={classes.searchBar}>
+                <ArrowBackIosIcon onClick={this.handleGoBack.bind(this)} style={{ margin: '0 2vw',justifySelf:"flex-start", cursor:'pointer'}} />
+                <input className={classes.input} onClick={this.handleSearch.bind(this)} readonly="readOnly" style={{}} />
+                <div style={{ margin: '0 2vw', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                    <SearchIcon style={{cursor:'pointer'}} onClick={this.handleSearch.bind(this)} />
+                </div>
+            </div>
+            {/* <div className={classes.searchBar}>
                 <IconButton style={{'justifySelf':"flex-start"}} >
                     <ArrowBackIosIcon onClick={this.handleGoBack.bind(this)} />
                 </IconButton>
@@ -95,9 +110,10 @@ class SearchResultPage extends Component {
                         <SearchIcon />
                     </IconButton>
                 </div>
-                {this.props.location.state['keyword']}
-            </div>
-            <div style={{overflowY:'auto'}}>
+            </div> */}
+            {this.props.location.state['keyword']}
+
+            <div style={{overflowY:'auto', flex:'1'}}>
             {/* 推荐商品 */}
                 <div className={classes.rowBox} style={{justifyContent: 'space-evenly',flexWrap:'wrap'}}>
                 {this.state.products.map((product) => { 
