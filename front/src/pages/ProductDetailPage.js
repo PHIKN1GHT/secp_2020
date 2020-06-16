@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { ReactDOM } from 'react-dom';
 
+import { server } from './Const' 
 import BottomNavBarForProductDetailPage from '../components/BottomNavBarForProductDetailPage'
 import TopBar from '../components/TopBar'
 
@@ -24,34 +25,39 @@ class ProductDetailPage extends Component {
         super(props)
         this.state = {
             index: 0,
-            images: [
+            images: [],
+            detailImages: [],
+            product: {},
+        }
+    }
+    componentWillMount() { 
+        //this.fetchAndInitial()
+        const index = 0
+        const images = [
                 'https://material-ui.com/static/images/cards/live-from-space.jpg',
                 'https://material-ui.com/static/images/cards/live-from-space.jpg',
                 'https://material-ui.com/static/images/cards/live-from-space.jpg',
-            ],
-            detailImages: [
+            ]
+        const detailImages= [
                 'https://img.alicdn.com/imgextra/i2/2627785630/O1CN01I9eJx71rSaR8R3tzW_!!2627785630.jpg',
                 'https://img.alicdn.com/imgextra/i3/2627785630/O1CN01Q6ZV1m1rSaR3oqq7N_!!2627785630.jpg',
                 'https://img.alicdn.com/imgextra/i2/2627785630/O1CN01zBTa8M1rSaR3yrxPt_!!2627785630.jpg',
                 'https://img.alicdn.com/imgextra/i2/2627785630/O1CN01lHLMnk1rSaR6ojQAb_!!2627785630.jpg',
-            ],
-            product: {
-                id: 3,
-                name: '御牛满地澳洲肥牛卷火锅食材牛肉片',
+            ]
+        const product= {
+                id: this.props.location.state['productId'],
+                name: this.props.location.state['productId']+'御牛满地澳洲肥牛卷火锅食材牛肉片',
                 price: 178,
                 unit: '件',
                 cover: '',
                 quantity: 15
-            },
         }
-    }
-    componentWillMount() { 
-        this.fetchAndInitial()
+        this.setState({index, images, detailImages, product})
 
     }
     fetchAndInitial() { 
-        const url = 'http://localhost:2333//api/product/detail'
-        const id = this.props.productId
+        const url = server+'/api/product/detail'
+        const id = this.props.location.state['productId']
         const bodyData = JSON.stringify({
             id,
         })
@@ -83,13 +89,31 @@ class ProductDetailPage extends Component {
             })
         })
     }
+    handleGoBack(){
+        this.props.history.push({ pathname: '/product/catalogs', state: {record:this.props.location.state['record']}})
+    }
+    handleSearch(e) { 
+        const backUrl = '/product/catalogs'
+        const record = this.props.location.state['record']
+
+        this.props.history.push({ pathname: '/product/search', state: {backUrl, record}})
+
+        // const searchInput = document.getElementsByName('searchInput')[0]
+        // const keyword = searchInput.value
+        // this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword } })
+    
+    }
 
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox}>
             {/* 顶部栏 */}
-            <TopBar backUrl={this.props.backUrl} canSearch={true} />
-            <div style={{overflowY:'auto', overflowX:'hidden'}}>
+            <TopBar
+                backIconHidden={false}
+                fakeSearch={true}
+                onGoBack={this.handleGoBack.bind(this)}
+                onSearch={this.handleSearch.bind(this)} />
+            <div style={{overflowY:'auto', overflowX:'hidden', flex:1, scrollbarWidth:'none', }}>
                 {/* 轮播图 */}
                 <div style={{ height: '100vw', width: '100vw' }}>
                     <Slider images={this.state.images} />
