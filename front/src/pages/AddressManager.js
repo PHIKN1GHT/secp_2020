@@ -37,6 +37,20 @@ export default function AddressManagerPage(props) {
         }).then(response => response.json())
             .then(json => {
                 console.log(json)
+                // 等待后端修复
+                // setAddrs(() => {
+                //     let tmp = []
+                //     json.map((val, ind) => {
+                //         tmp.push({
+                //             number: ind,
+                //             id: val['id'],
+                //             addr: val['address'],
+                //             phone: val['phonenumber'],
+                //             receiver: val['receiver']
+                //         })
+                //     })
+                //     return tmp
+                // })
             })
     })
     const handleGoBack = (event) => {
@@ -52,25 +66,73 @@ export default function AddressManagerPage(props) {
         setOpenDia(false)
     }
     const handleConfirmDia = (event) => {
+        const inputData = {
+            addr: document.getElementById('modify-addr').value,
+            receiver: document.getElementById('modify-name').value,
+            phone: document.getElementById('modify-phone').value
+        }
         if (diaType === 'change') {
-            setAddrs((prevState) => {
-                prevState[selectInd].addr = document.getElementById('modify-addr').value
-                prevState[selectInd].receiver = document.getElementById('modify-name').value
-                prevState[selectInd].phone = document.getElementById('modify-phone').value
-                return prevState
-            })
+            inputData.number = addrs[selectInd].number
+            inputData.id = addrs[selectInd].id
+            const url = server + '/api/address/update'
+            fetch(url, {
+                body: {
+                    id: inputData.id,
+                    address: inputData.address,
+                    receiver: inputData.receiver,
+                    phonenumber: inputData.phone
+                },
+                credentials: 'include', // include, same-origin, *omit
+                headers: {
+                    'content-type': 'application/json',
+                    'Authorization': localStorage.getItem('access_token')
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+            }).then(response => response.json())
+                .then(json => {
+                    if (json['result']) {
+                        //修改成功
+                        setAddrs((prevState) => {
+                            prevState[selectInd] = inputData
+                            return prevState
+                        })
+                    } else {
+                        //修改失败
+                        handleCancelDia()
+                    }
+                })
         }
         else if (diaType === 'add') {
-            setAddrs(prevState => {
-                prevState.push({
-                    number: prevState.length,
-                    id: prevState.length + 1,
-                    addr: document.getElementById('modify-addr').value,
-                    receiver: document.getElementById('modify-name').value,
-                    phone: document.getElementById('modify-phone').value
+            inputData.number = addrs.length
+            const url = server + '/api/address/add'
+            fetch(url, {
+                body: {
+                    receiver: inputData.receiver,
+                    address: inputData.addr,
+                    phonenumber: inputData.phone
+                },
+                credentials: 'include', // include, same-origin, *omit
+                headers: {
+                    'content-type': 'application/json',
+                    'Authorization': localStorage.getItem('access_token')
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+            }).then(response => response.json())
+                .then(json => {
+                    if (json.result) {
+                        //添加成功
+                        inputData.id = json.id
+                        setAddrs(prevState => {
+                            prevState.push(inputData)
+                            return prevState
+                        })
+                    } else {
+                        //添加失败
+                        handleCancelDia()
+                    }
                 })
-                return prevState
-            })
         }
         setDiaType('null')
         setOpenDia(false)
