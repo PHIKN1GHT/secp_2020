@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import { server } from './Const'
+import React, { Component } from 'react';
 import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
@@ -60,7 +61,7 @@ class SearchResultPage extends Component {
     fetchAndInitial() { 
         const filter = this.props.location.state['keyword']
         const page = 1
-        const url = 'http://localhost:2333/api/mall/search'
+        const url = server + '/api/mall/search'
         fetch(url, {
             // body: bodyData, // must match 'Content-Type' header
             //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -69,7 +70,7 @@ class SearchResultPage extends Component {
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, cors, *same-origin
+            mode: 'no-cors', // no-cors, cors, *same-origin
             //redirect: 'follow', // manual, *follow, error
             //referrer: 'no-referrer', // *client, no-referrer
         })
@@ -83,11 +84,14 @@ class SearchResultPage extends Component {
             })
         })
     }
-    handleGoBack(){
-        this.props.history.push({ pathname: '/mainpage',})
+    handleGoBack() {
+        const backUrl = this.props.location.state['backUrl']
+        this.props.history.push({ pathname: backUrl,})
     }
     handleSearch(e) { 
-        this.props.history.push({ pathname: '/product/search',})
+        const backUrl = '/product/catalogs'
+
+        this.props.history.push({ pathname: '/product/search', state:{backUrl}})
     }
     render() {
         const { classes } = this.props;

@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import { ReactDOM } from 'react-dom';
+import { server } from './Const'
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
+import TopBar from '../components/TopBar'
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
@@ -69,29 +71,29 @@ class CatalogsPage extends Component {
         }
     }
     componentWillMount() { 
-        this.fetchAndInitial()
-        // let catalogs = []
-        // for (let i = 1; i <= 10; ++i){
-        //     catalogs.push({id:i, name:'catalog-'+i})
-        // }
-        // let products = {}
-        // for (let catalog = 1; catalog <= 15; ++catalog){
-        //     for (let i = 1; i <= 20; ++i){
-        //         if (products[catalog] == undefined) {
-        //             products[catalog] = []
-        //         }
-        //         products[catalog].push({id:catalog*100+i, name:'products-'+catalog*100+i, price:'price-'+catalog*100+i, unit:'unit-'+catalog*100+i,cover:'cover-'+catalog*100+i})
-        //     }
-        // }
+        //this.fetchAndInitial()
+        let catalogs = []
+        for (let i = 1; i <= 10; ++i){
+            catalogs.push({id:i, name:'catalog-'+i})
+        }
+        let products = {}
+        for (let catalog = 1; catalog <= 15; ++catalog){
+            for (let i = 1; i <= 20; ++i){
+                if (products[catalog] == undefined) {
+                    products[catalog] = []
+                }
+                products[catalog].push({id:catalog*100+i, name:'products-'+catalog*100+i, price:'price-'+catalog*100+i, unit:'unit-'+catalog*100+i,cover:'cover-'+catalog*100+i})
+            }
+        }
         
-        // this.setState({
-        //     catalogs,
-        //     products,
+        this.setState({
+            catalogs,
+            products,
 
-        // })
+        })
     }
     fetchProducts(catalogId) { 
-        const url = 'http://localhost:2333/api/mall/catalog'
+        const url = server + '/api/mall/catalog'
         const catalog = catalogId
         const page = 1
         const bodyData = JSON.stringify({
@@ -106,9 +108,9 @@ class CatalogsPage extends Component {
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
+            mode: 'no-cors', // no-cors, cors, *same-origin
+            //redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
         })
         .then(response => response.json()) // parses response to JSON 
         .then(json => {
@@ -121,7 +123,7 @@ class CatalogsPage extends Component {
         })
     }
     fetchAndInitial() { 
-        const url = 'http://localhost:2333/api/mall/catalogs'
+        const url = server + '/api/mall/catalogs'
         // const bodyData = JSON.stringify({
         // })
         fetch(url, {
@@ -132,9 +134,9 @@ class CatalogsPage extends Component {
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
+            mode: 'no-cors', // no-cors, cors, *same-origin
+            // redirect: 'follow', // manual, *follow, error
+            // referrer: 'no-referrer', // *client, no-referrer
         })
         .then(response => response.json()) // parses response to JSON 
         .then(json => {
@@ -155,17 +157,43 @@ class CatalogsPage extends Component {
         const productArea = document.getElementsByName('productArea')[0]
         productArea.scrollTop = 0
     }
+    handleGoBack(){
+        this.props.history.go(-1)
+    }
+    handleSearch(e) { 
+        const backUrl = '/product/catalogs'
+        this.props.history.push({ pathname: '/product/search', state: {backUrl}})
+
+        // const searchInput = document.getElementsByName('searchInput')[0]
+        // const keyword = searchInput.value
+        // this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword } })
+    
+    }
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
+            <TopBar
+                backIconHidden={true}
+                fakeSearch={true}
+                onGoBack={this.handleGoBack.bind(this)}
+                onSearch={this.handleSearch.bind(this)} />
             <div className={classes.rowBox} style={{overflow:'hidden'}}>
                 {/* 商品目录 */}
                 <div style={{ overflowY: 'auto',scrollbarWidth:'none' }}>
                     {
                         this.state.catalogs.map((catalog) => { 
                             return (
-                                <div style={{width:'15vw', height:'10vh'}}>
-                                    <button onClick={this.handleSelectCatalog.bind(this)} id={catalog.id} style={{ width: '100%', height: "100%" }}>
+                                <div style={{width:'15vw', height:'6vh'}}>
+                                    <button onClick={this.handleSelectCatalog.bind(this)} id={catalog.id}
+                                        style={{
+                                            width: '100%',
+                                            height: "100%",
+                                            borderStyle: 'hidden',
+                                            cursor: 'pointer',
+                                            backgroundColor: this.state.selectedCatalogId == catalog.id ? 'lavender' : 'white',
+
+                                            
+                                        }}>
                                         {catalog.name}
                                     </button>    
                                 </div>

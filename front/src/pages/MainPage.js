@@ -98,7 +98,8 @@ class MainPage extends Component {
     handleSearch(e) { 
         //const searchInput = document.getElementsByName('searchInput')[0]
         //const keyword = searchInput.value
-        this.props.history.push({ pathname: '/product/search',})
+        const backUrl = '/'
+        this.props.history.push({ pathname: '/product/search', state: {backUrl}})
     }
     render() {
         const { classes } = this.props;

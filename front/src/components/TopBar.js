@@ -21,11 +21,19 @@ const styles = theme => ({
         display: 'flex',
     },
     topBar: {
-        width:'100vw',
+        margin: '0 5vw 0 5vw',
         height: '5vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    input: {
+        height: '70%',
+        flex: '1 1',
+        borderRadius: '20px',
+        border: 'mediumaquamarine 1px solid',
+        overflow: 'hidden',
+        paddingLeft: '10px',
     }
 });
 
@@ -52,31 +60,38 @@ class TopBar extends Component {
         this.props.history.go(-1)
     }
     handleSearch(e) { 
-        this.props.history.push({ pathname: '/product/search',})
+        if (this.props.fakeSearch == true) {
+            this.props.history.push({ pathname: '/product/search', })
+        } else { 
+            const searchInput = document.getElementsByName('searchInput')[0]
+            const keyword = searchInput.value
+            this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword } })
+        }
     }
     render() {
         const { classes } = this.props;
         return (
             <div className={classes.topBar}>
-                {
-                    this.props.canGoBack ?
-                    <IconButton style={{'justifySelf':"flex-start"}} >
-                        <ArrowBackIosIcon onClick={this.handleGoBack.bind(this)} />
-                    </IconButton>
-                        :null
-                }
-                {
-                    this.props.canSearch ?
-                        <>
-                            <input onClick={this.handleSearch.bind(this)} readonly="readonly" style={{ width: '60%', height: '70%', }} />
-                            <div style={{ margin: '0' }}>
-                                <IconButton onClick={this.handleSearch.bind(this)} >
-                                    <SearchIcon />
-                                </IconButton>
-                            </div>
-                        </>
-                        :null
-                }
+                <ArrowBackIosIcon
+                    onClick={this.props.onGoBack}
+                    style={{
+                        visibility: this.props.backIconHidden ? 'hidden' : 'visible',
+                        margin: '0 2vw',
+                        justifySelf: "flex-start",
+                        cursor: 'pointer',
+                    }} />
+                <input
+                    name={'searchInput'}
+                    className={classes.input} 
+                    onClick={this.props.onSearch}
+                    readOnly={this.props.fakeSearch?'readOnly':''}
+                    style={{}} />
+                <div style={{ margin: '0 2vw', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                    <SearchIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={this.props.onSearch} />
+                </div>
+
             </div>
         );
     }
