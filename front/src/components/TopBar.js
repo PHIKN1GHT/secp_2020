@@ -81,6 +81,7 @@ class TopBar extends Component {
                         cursor: 'pointer',
                     }} />
                 <input
+                    autoFocus={!this.props.fakeSearch}
                     name={'searchInput'}
                     className={classes.input} 
                     onClick={this.props.onSearch}

@@ -86,12 +86,15 @@ class SearchResultPage extends Component {
     }
     handleGoBack() {
         const backUrl = this.props.location.state['backUrl']
-        this.props.history.push({ pathname: backUrl,})
+        const record = this.props.location.state['record']
+
+        this.props.history.push({ pathname: backUrl, state: {record}})
     }
     handleSearch(e) { 
         const backUrl = '/product/catalogs'
+        const record = this.props.location.state['record']
 
-        this.props.history.push({ pathname: '/product/search', state:{backUrl}})
+        this.props.history.push({ pathname: '/product/search', state:{backUrl, record}})
     }
     render() {
         const { classes } = this.props;

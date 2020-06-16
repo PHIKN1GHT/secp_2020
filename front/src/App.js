@@ -31,12 +31,12 @@ function App() {
       <Switch>
 
 
-        <Route path='/product/detail' component={ProductDetailPage} ></Route>
+        <Route path='/product/detail/:productId' component={ProductDetailPage} ></Route>
         <Route path='/product/search/:keyword' component={SearchResultPage} ></Route>
         <Route path='/product/search' component={SearchPage} ></Route>
         <Route path='/product/catalogs' component={CatalogsPage} ></Route>
         <Route path='/shoppingCart' component={ShoppingCart} ></Route>
-        <Route path='/product/detail/:product_id' component={ProductView} ></Route>
+        {/* <Route path='/product/detail/:product_id' component={ProductView} ></Route> */}
         <Route path='/login' component={LoginPage} ></Route>
         <Route path='/register' component={RegisterPage} ></Route>
         <Route path='/user-info' component={UserInfoPage} ></Route>

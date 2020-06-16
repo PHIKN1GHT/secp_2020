@@ -4,6 +4,7 @@ import { server } from './Const'
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
 import TopBar from '../components/TopBar'
+import Toast from '../components/Toast'
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
@@ -11,6 +12,32 @@ import SearchIcon from '@material-ui/icons/Search';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import { Checkbox, Button } from '@material-ui/core';
 const styles = theme => ({
+    productCard: {
+        cursor: 'pointer',
+        width: '100%',
+        height: '15vh',
+        display: 'flex',
+        backgroundColor: 'white',
+        "&:hover": {
+            backgroundColor:'lavender',
+            // "&>*": {
+            //     backgroundColor:'lavender',
+            // },
+            "& span": {
+                backgroundColor:'lavender',
+            },
+            "& div": {
+                backgroundColor:'lavender',
+            }
+            
+        },
+        webkitBoxSizing: 'border-box',
+        mozBoxSizing: 'border-box',
+        boxSizing: 'border-box',
+
+
+        
+    },
     colBox: {
         height: '100vh',
         display: 'flex',
@@ -55,7 +82,9 @@ const styles = theme => ({
         margin:'auto 10px auto 10px',
     },
     rbCorner: {
-        marginLeft: 'auto',
+        display: 'flex',
+        flexDirection:'row-reverse',
+        // marginLeft: 'auto',
         marginTop: 'auto',
     },
 });
@@ -89,8 +118,19 @@ class CatalogsPage extends Component {
         this.setState({
             catalogs,
             products,
-
         })
+        if (this.props.location.state != undefined) { 
+            const record = this.props.location.state['record']
+            if (record != undefined) { 
+                this.setState(
+                    { selectedCatalogId: record.selectedCatalogId },
+                    () => { 
+                        const productArea = document.getElementsByName('productArea')[0]
+                        productArea.scrollTop = record.scrollTop
+                    }
+                )
+            }
+        }
     }
     fetchProducts(catalogId) { 
         const url = server + '/api/mall/catalog'
@@ -119,6 +159,12 @@ class CatalogsPage extends Component {
             this.setState({
                 totalPage,
                 products,
+            }, () => { 
+                    const record = this.props.location.state['record']
+                    if (record != undefined) { 
+                        const productArea = document.getElementsByName('productArea')[0]
+                        productArea.scrollTop = record.scrollTop
+                    }
             })
         })
     }
@@ -141,12 +187,27 @@ class CatalogsPage extends Component {
         .then(response => response.json()) // parses response to JSON 
         .then(json => {
             const catalogs = json['catalogs']
-            
+            const record = this.props.location.state['record']
             this.setState({
+                selectedCatalogId: record == undefined?catalogs[0]:record.selectedCatalogId,
                 catalogs,
+            }, () => { 
+                this.fetchProducts(this.state.selectedCatalogId)
             })
         })
     }
+    elementJump(element) { 
+        let cloneElement = element.cloneNode(true)
+        //
+        //取得底端购物车的元素，然后使用top, left, position确定最后的位置
+        //
+        //WebkitTransition:'marginleft 1s', transition:'margin-left 1s'
+        // cloneElement.style.WebkitTransition = 
+        // cloneElement.style.transition = 
+        console.log(cloneElement)
+    }
+
+
     handleSearch(e) { 
         this.props.history.push({ pathname: '/product/search',})
     }
@@ -161,14 +222,71 @@ class CatalogsPage extends Component {
         this.props.history.go(-1)
     }
     handleSearch(e) { 
+        const productArea = document.getElementsByName('productArea')[0]
+
+        const selectedCatalogId = this.state.selectedCatalogId
+        const scrollTop = productArea.scrollTop
+        const record = {selectedCatalogId, scrollTop}
         const backUrl = '/product/catalogs'
-        this.props.history.push({ pathname: '/product/search', state: {backUrl}})
+        this.props.history.push({ pathname: '/product/search', state: {backUrl, record}})
 
         // const searchInput = document.getElementsByName('searchInput')[0]
         // const keyword = searchInput.value
         // this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword } })
     
     }
+    handleClick(productId) {
+        const productArea = document.getElementsByName('productArea')[0]
+
+        const selectedCatalogId = this.state.selectedCatalogId
+        const scrollTop = productArea.scrollTop
+        const record = {selectedCatalogId, scrollTop}
+        this.props.history.push({ pathname: '/product/detail/'+productId, state: {productId, record}})
+
+    }
+    handleAddShoppingCart(e, productId) { 
+        e.stopPropagation()
+        const url = server+'/api/cart/add'
+        const id = productId
+        const count = 1
+        const bodyData = JSON.stringify({
+            id,
+            count,
+
+        })
+
+
+        /*
+        网络
+        */
+        // fetch(url, {
+        //     body: bodyData, // must match 'Content-Type' header
+        //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        //     credentials: 'include', // include, same-origin, *omit
+        //     headers: {
+        //         'content-type': 'application/json'
+        //     },
+        //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        //     mode: 'no-cors', // no-cors, cors, *same-origin
+        //     //redirect: 'follow', // manual, *follow, error
+        //     //referrer: 'no-referrer', // *client, no-referrer
+        // })
+        // .then(response => response.json()) // parses response to JSON 
+        // .then(json => {
+        //     const result = json['result']
+        //     if (!result) { 
+        //         Toast('添加购物车失败', 403)
+                
+        //     }
+        // }).catch(Toast('网络故障', 403))
+        let element = e.target
+        console.log(element.tagName)
+        if (element.tagName == 'path') { 
+            element = element.parentNode
+        }
+        this.elementJump(element)
+    }
+
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
@@ -190,7 +308,7 @@ class CatalogsPage extends Component {
                                             height: "100%",
                                             borderStyle: 'hidden',
                                             cursor: 'pointer',
-                                            backgroundColor: this.state.selectedCatalogId == catalog.id ? 'lavender' : 'white',
+                                            backgroundColor: this.state.selectedCatalogId == catalog.id ? 'white' : 'lavender',
 
                                             
                                         }}>
@@ -201,12 +319,12 @@ class CatalogsPage extends Component {
                         })
                     }
                 </div>
-                {/* 推荐商品 */}
+                {/* 目录下所有商品 */}
                 <div style={{
                     flex: '1',
                     display: 'flex',
                     flexDirection: 'column',
-                    backgroundColor: 'lavender',
+                    backgroundColor: 'white',
                     overflowY: 'auto',
                     justifyContent: 'space-between',
                     scrollbarWidth: 'none',
@@ -214,20 +332,19 @@ class CatalogsPage extends Component {
                 }} name="productArea">
                     {this.state.products[this.state.selectedCatalogId].map((product) => { 
                         return (
-                        <div style={{
-                                
-                                width: '100%',
-                                height:'15vh',
-                                display: 'flex',
-                                backgroundColor: 'lavender',
-                            }} onClick={(e) => { this.handleClick(product.id) }}>
+                            //商品卡片
+                            <div style={{
+                            }}
+                                onClick={(e) => { this.handleClick(product.id) }}
+                                className={classes.productCard}
+                            >
                         
                             <img className={classes.image} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
                                 <div style={{
                                     flex:'1',
                                     display: 'flex',
                                     flexDirection: 'column', 
-                                    backgroundColor: 'lavender',
+                                    backgroundColor: 'white',
                                 }} className={classes.marginAround}>
                                 <span>{product.name}</span>
                                 <div>
@@ -235,7 +352,7 @@ class CatalogsPage extends Component {
                                     <span>/{product.unit}</span>
                                     </div>
                                 <div className={classes.rbCorner}>
-                                    <AddShoppingCartIcon className={classes.shoppingIcon}/>
+                                        <AddShoppingCartIcon onClick={(e) => { this.handleAddShoppingCart(e, product.id) }} className={classes.shoppingIcon}/>
 
                                 </div>
                                     </div>
