@@ -23,10 +23,25 @@ def allSupplierOrder():
     all_supplierOrders = []
     for supplierOrder in supplierOrders:
         product = [supplierOrder.product_id, supplierOrder.count]
-        storehouse = sess.query(Storehouse).filter_by(id=supplierOrder.storehouse_id).first()       
+        storehouse = sess.query(Storehouse).filter_by(id=supplierOrder.storehouse_id).first()
+        if supplierOrder.cancelled:
+            status="已取消"
+        elif supplierOrder.rejected:
+            status="已拒收"
+        elif supplierOrder.confirmed:
+            status="已收货"
+        elif supplierOrder.delivered:
+            status="已发货"
+        elif supplierOrder.accepted:
+            status="已被接单"
+        else:
+            status="待处理"
+        if supplierOrder.paid:
+            status=status+",已付款"
+        else:
+            status=status+",未付款"       
         all_supplierOrders.append([supplierOrder.id, product, storehouse.name, storehouse.phoneNumber,
-         storehouse.address, supplierOrder.createTime, supplierOrder.paid, supplierOrder.accepted,
-          supplierOrder.delivered, supplierOrder.confirmed, supplierOrder.rejected, supplierOrder.cancelled])
+         storehouse.address, supplierOrder.createTime, status])
     all_supplierOrders.sort(key=lambda x:x[5],reverse=True)
     return jsonify(supplierOrders=all_supplierOrders), 200
 

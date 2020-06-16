@@ -62,8 +62,13 @@ def productDatail():
 
     description_json = [description.title, description.thumbnail, description.remain, description.price,
      description.htmlDescription, description.active]  
-    return jsonify(name=product.name, shelved=product.shelved, category=product.category,
-     archived=product.archived, description=description_json), 200
+
+    if product.archived:
+        return jsonify(name=product.name, description=description_json, status="Archived"), 200
+    elif product.shelved:
+        return jsonify(name=product.name, description=description_json, status="On shelves"), 200
+    else:
+        return jsonify(name=product.name, description=description_json, status="Off shelves"), 200
 
 # 经理端创建新产品
 # Tested by Postman
@@ -180,7 +185,7 @@ def statistics():
     nowTime = datetime.datetime.now()
     virtual_orders = sess.query(Order).filter_by(storehouse_id=storehouse_id,virtual=True,cancelled=False).all()
     if not virtual_orders:
-        return jsonify({"msg": "No order record for this storehouse"}), 401
+        return jsonify({"msg": "No order record"}), 401
     product_count={}
     for virorder in virtual_orders:
         orders = sess.query(Order).filter_by(storehouse_id=storehouse_id,belonging_id=virorder.id,virtual=False).all()
