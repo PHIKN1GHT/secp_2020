@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
+import TopBar from '../components/TopBar';
+
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import TopBar from '../components/TopBar';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const styles = theme => ({
@@ -105,14 +106,18 @@ class MainPage extends Component {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
             {/* 搜索框 */}
-            {/* <TopBar canGoBack={false} canSearch={true} /> */}
-            <div className={classes.searchBar}>
+            <TopBar
+                backIconHidden={true}
+                fakeSearch={true}
+                cartHidden={true}
+                onSearch={this.handleSearch.bind(this)} />
+            {/* <div className={classes.searchBar}>
                 <ArrowBackIosIcon style={{visibility:'hidden', margin: '0 2vw',justifySelf:"flex-start", cursor:'pointer'}} />
                 <input className={classes.input} onClick={this.handleSearch.bind(this)} readonly="readOnly" style={{}} />
                 <div style={{ margin: '0 2vw', display:'flex', alignItems:'center', justifyContent:'center' }}>
                     <SearchIcon style={{cursor:'pointer'}} onClick={this.handleSearch.bind(this)} />
                 </div>
-            </div>
+            </div> */}
             <div style={{ flex:1, overflowY:'auto',scrollbarWidth: 'none',}}>
                 {/* 目录展示 */}
                 <div className={classes.rowBox} style={{flexWrap:'wrap'}}>

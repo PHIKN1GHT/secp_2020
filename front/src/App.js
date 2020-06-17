@@ -14,8 +14,7 @@ import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import UserInfoPage from './pages/UserInfo';
 import OrdersPage from './pages/Orders';
-import ProductView from './pages/ProductView';
-import ProductDetail from './pages/ProductDetail';
+
 import ShoppingCart from './pages/ShoppingCart';
 import MainPage from './pages/MainPage';
 import SearchResultPage from './pages/SearchResultPage';

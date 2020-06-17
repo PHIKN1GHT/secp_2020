@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
+import TopBar from '../components/TopBar'
 
 import { withStyles } from "@material-ui/core/styles";
 import { IconButton } from '@material-ui/core';
@@ -91,7 +92,7 @@ class SearchResultPage extends Component {
         this.props.history.push({ pathname: backUrl, state: {record}})
     }
     handleSearch(e) { 
-        const backUrl = '/product/catalogs'
+        const backUrl = this.props.location.state['backUrl']
         const record = this.props.location.state['record']
 
         this.props.history.push({ pathname: '/product/search', state:{backUrl, record}})
@@ -100,13 +101,19 @@ class SearchResultPage extends Component {
         const { classes } = this.props;
         return (<div className={classes.colBox}>
             {/* 搜索框 */}
-            <div className={classes.searchBar}>
+            <TopBar
+                backIconHidden={false}
+                fakeSearch={true}
+                cartHidden={false}
+                onGoBack={this.handleGoBack.bind(this)}
+                onSearch={this.handleSearch.bind(this)} />
+            {/* <div className={classes.searchBar}>
                 <ArrowBackIosIcon onClick={this.handleGoBack.bind(this)} style={{ margin: '0 2vw',justifySelf:"flex-start", cursor:'pointer'}} />
                 <input className={classes.input} onClick={this.handleSearch.bind(this)} readonly="readOnly" style={{}} />
                 <div style={{ margin: '0 2vw', display:'flex', alignItems:'center', justifyContent:'center' }}>
                     <SearchIcon style={{cursor:'pointer'}} onClick={this.handleSearch.bind(this)} />
                 </div>
-            </div>
+            </div> */}
             {/* <div className={classes.searchBar}>
                 <IconButton style={{'justifySelf':"flex-start"}} >
                     <ArrowBackIosIcon onClick={this.handleGoBack.bind(this)} />

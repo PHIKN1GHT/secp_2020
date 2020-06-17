@@ -239,8 +239,8 @@ class CatalogsPage extends Component {
         cloneElement.style.top = nowPosition.top + 'px'
         cloneElement.style.WebkitTransition ='top 1s, left 0.8s, width 1s, height 1s'
         cloneElement.style.transition = 'top 1s, left 0.8s, width 1s, height 1s'
-        cloneElement.style.width = element.width.baseVal.value+'px'
-        cloneElement.style.height = element.height.baseVal.value+'px'
+        cloneElement.style.width = '2vh'
+        cloneElement.style.height = '2vh'
 
         document.body.appendChild(cloneElement)
         setTimeout(
@@ -248,10 +248,10 @@ class CatalogsPage extends Component {
                 const cart = document.getElementsByName('cart')[0]
                 const cartPosition = this.calAbsPosition(cart)
                 console.log(cartPosition)
-                cloneElement.style.left = cartPosition.left+cart.offsetWidth/2+'px'
-                cloneElement.style.top = cartPosition.top+cart.offsetHeight/4 + 'px'
-                cloneElement.style.width = 0+'px'
-                cloneElement.style.height = 0+'px'
+                cloneElement.style.left = cartPosition.left+cart.offsetWidth/3+'px'
+                cloneElement.style.top = cartPosition.top+cart.offsetHeight/6 + 'px'
+                // cloneElement.style.width = 0+'px'
+                // cloneElement.style.height = 0+'px'
                 setTimeout(() => { document.body.removeChild(cloneElement) }, 1000)
             },
             0);
@@ -290,8 +290,9 @@ class CatalogsPage extends Component {
 
         const selectedCatalogId = this.state.selectedCatalogId
         const scrollTop = productArea.scrollTop
-        const record = {selectedCatalogId, scrollTop}
-        this.props.history.push({ pathname: '/product/detail/'+productId, state: {productId, record}})
+        const record = { selectedCatalogId, scrollTop }
+        const backUrl = '/product/catalogs'
+        this.props.history.push({ pathname: '/product/detail/'+productId, state: {productId, record, backUrl}})
 
     }
     handleAddShoppingCart(e, productId) { 
@@ -340,13 +341,14 @@ class CatalogsPage extends Component {
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
-            {/* document.getElementsByNames不识别svg元素？？ */}
+            {/* document.getElementsByNames不识别svg元素？Yes */}
             <div name='circle' style={{display:'none'}}>
                 <LensIcon name='circleSVG' style={{height:'100%', width:'100%'}}  />
             </div>
             <TopBar
                 backIconHidden={true}
                 fakeSearch={true}
+                cartHidden={true}
                 onGoBack={this.handleGoBack.bind(this)}
                 onSearch={this.handleSearch.bind(this)} />
             <div className={classes.rowBox} style={{overflow:'hidden'}}>
@@ -363,8 +365,6 @@ class CatalogsPage extends Component {
                                             borderStyle: 'hidden',
                                             cursor: 'pointer',
                                             backgroundColor: this.state.selectedCatalogId == catalog.id ? 'white' : 'lavender',
-
-                                            
                                         }}>
                                         {catalog.name}
                                     </button>    

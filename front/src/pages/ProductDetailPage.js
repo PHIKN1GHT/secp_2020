@@ -4,10 +4,11 @@ import { ReactDOM } from 'react-dom';
 import { server } from './Const' 
 import BottomNavBarForProductDetailPage from '../components/BottomNavBarForProductDetailPage'
 import TopBar from '../components/TopBar'
-
 import Slider from '../components/Slider'
 
 import { withStyles } from "@material-ui/core/styles";
+import LensIcon from '@material-ui/icons/Lens';
+
 const styles = theme => ({
     colBox: {
         height: '100vh',
@@ -89,6 +90,56 @@ class ProductDetailPage extends Component {
             })
         })
     }
+    calAbsPosition(element) { 
+        let actualLeft = element.offsetLeft;
+        let current = element.offsetParent;
+
+　　　　while (current != undefined){
+　　　　　　actualLeft += current.offsetLeft;
+　　　　　　current = current.offsetParent;
+        }
+        let actualTop = element.offsetTop;
+        current = element.offsetParent;
+
+　　　　while (current != undefined){
+　　　　　　actualTop += current.offsetTop;
+　　　　　　current = current.offsetParent;
+        }
+        return {left: actualLeft, top: actualTop}
+        
+    }
+    elementJump(element) { 
+        let cloneElement = document.getElementsByName('circle')[0].cloneNode(true)
+        console.log(cloneElement)
+        cloneElement.style.position = 'absolute'
+        cloneElement.style.zIndex = '99'
+        cloneElement.style.display = 'initial'
+        
+        let nowPosition = this.calAbsPosition(element)
+        console.log(nowPosition)
+        nowPosition.left+=element.offsetWidth/2
+        cloneElement.style.left = nowPosition.left+'px'
+        cloneElement.style.top = nowPosition.top + 'px'
+        cloneElement.style.WebkitTransition ='top 1s, left 0.8s, width 1s, height 1s'
+        cloneElement.style.transition = 'top 1s, left 0.8s, width 1s, height 1s'
+        cloneElement.style.width = '2vh'
+        cloneElement.style.height = '2vh'
+
+        document.body.appendChild(cloneElement)
+        setTimeout(
+            () => { 
+                const cart = document.getElementsByName('topBarCart')[0]
+                // const cartPosition = this.calAbsPosition(cart)
+                const cartPosition = {left: cart.offsetLeft, top:cart.offsetTop}
+                console.log(cartPosition)
+                cloneElement.style.left = cartPosition.left+cart.offsetWidth/3+'px'
+                cloneElement.style.top = cartPosition.top+'px'
+                // cloneElement.style.width = 0+'px'
+                // cloneElement.style.height = 0+'px'
+                setTimeout(() => { document.body.removeChild(cloneElement) }, 1000)
+            },
+            0);
+    }
     handleGoBack(){
         this.props.history.push({ pathname: '/product/catalogs', state: {record:this.props.location.state['record']}})
     }
@@ -103,13 +154,25 @@ class ProductDetailPage extends Component {
         // this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword } })
     
     }
+    handleAddToCart(e, productId) { 
+        let element = e.target
+        console.log(element.tagName)
+        if (element.tagName == 'FONT') { 
+            element = element.parentNode
+        }
+        this.elementJump(element)
+    }
 
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox}>
+             <div name='circle' style={{display:'none'}}>
+                <LensIcon style={{height:'100%', width:'100%'}}  />
+            </div>
             {/* 顶部栏 */}
             <TopBar
                 backIconHidden={false}
+                searchHidden={true}
                 fakeSearch={true}
                 onGoBack={this.handleGoBack.bind(this)}
                 onSearch={this.handleSearch.bind(this)} />
@@ -138,7 +201,7 @@ class ProductDetailPage extends Component {
                 }
             </div>
             {/* 底部功能条 */}
-            <BottomNavBarForProductDetailPage productId={this.state.product.id} />
+            <BottomNavBarForProductDetailPage onClick={(e) => { this.handleAddToCart(e,this.state.product.id)}} productId={this.state.product.id} />
         </div>);
     }
 }

@@ -8,6 +8,7 @@ import { IconButton } from '@material-ui/core';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import SearchIcon from '@material-ui/icons/Search';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 
 const styles = theme => ({
     colBox: {
@@ -21,7 +22,7 @@ const styles = theme => ({
         display: 'flex',
     },
     topBar: {
-        margin: '0 5vw 0 5vw',
+        margin: '0 1vw 0 1vw',
         height: '5vh',
         display: 'flex',
         alignItems: 'center',
@@ -81,16 +82,33 @@ class TopBar extends Component {
                         cursor: 'pointer',
                     }} />
                 <input
+                    
                     autoFocus={!this.props.fakeSearch}
                     name={'searchInput'}
                     className={classes.input} 
                     onClick={this.props.onSearch}
                     readOnly={this.props.fakeSearch?'readOnly':''}
-                    style={{}} />
+                    style={{
+                        visibility: this.props.searchHidden ? 'hidden' : 'visible',
+                    }} />
                 <div style={{ margin: '0 2vw', display:'flex', alignItems:'center', justifyContent:'center' }}>
                     <SearchIcon
-                        style={{ cursor: 'pointer' }}
+                        style={{
+                            cursor: 'pointer',
+                            visibility: this.props.searchHidden ? 'hidden' : 'visible',
+                        }}
                         onClick={this.props.onSearch} />
+                </div>
+                <div style={{
+                    margin: '0 2vw',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    visibility: this.props.cartHidden ? 'hidden' : 'visible',
+                }}
+                    name='topBarCart'
+                >
+                    <ShoppingCartIcon />
                 </div>
 
             </div>

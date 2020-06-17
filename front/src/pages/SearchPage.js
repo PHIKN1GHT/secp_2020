@@ -84,6 +84,7 @@ class SearchPage extends Component {
             <TopBar
                 backIconHidden={false}
                 fakeSearch={false}
+                cartHidden={true}
                 onGoBack={this.handleGoBack.bind(this)}
                 onSearch={this.handleSearch.bind(this)} />
             {/* <div className={classes.searchBar}>
