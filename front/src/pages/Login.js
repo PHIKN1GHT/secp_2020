@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 import Toast from '../components/Toast';
+import { server } from './Const';
 
 export default function LoginPage(props) {
-    const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
-
-    const handleChangeCaptcha = (event) => {
-        const url = '/api/account/captcha'
-        fetch(url).then(response => response.blob()) // parses response to blob
-            .then(imgData => {
-                setCaptchaURL(URL.createObjectURL(imgData))
-            })
+    if (localStorage.getItem('access_token')) {
+        // TODO
+        // 检测token时效后，有效则跳转
+    }
+    const server = 'http://188.131.174.176:8082'
+    const captchaURL = server + '/api/account/captcha?' + Date.now()
+    const [captchacaptchaTimes, setCaptchaTimes] = useState(0)
+    const handleChangeCaptcha = () => {
+        setCaptchaTimes(prevState => prevState + 1)
     }
     const handleLogin = (event) => {
         const username = document.getElementsByName('username')[0].value
@@ -22,40 +24,39 @@ export default function LoginPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = '/api/account/login'
+        const url = server + '/api/account/login'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
+            credentials: 'include', // include, same-origin, *omit
             headers: {
-                'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
-        }).then(response => response.json()) // parses response to JSON 
-            .then(json => {
-                if (json['result']) {
-                    // 成功登录
-                    Toast('登陆成功', 500)
-                    localStorage.setItem('token', json['token'])
-
-                    // 检验账号类型
-                    // TODO
-                    switch (json['type']) {
-                        case '':
-                            break;
-                        default:
-                            break;
-                    }
+            // redirect: 'follow', // manual, *follow, error
+            // referrer: 'no-referrer', // *client, no-referrer
+        }).then(response => response.json()
+        ).then(json => {
+            if (json['result']) {
+                // 成功登录
+                Toast('登陆成功', 500)
+                localStorage.setItem('access_token', json['access_token'])
+                // 检验账号类型
+                // TODO
+                switch (json['type']) {
+                    case '':
+                        break;
+                    default:
+                        props.history.push({ pathname: '/mainpage' })
+                        break;
                 }
-                else {
-                    //失败
-                    Toast('登陆失败，请检查用户名和密码是否正确', 500)
-                }
-            }).catch(Toast('访问服务器失败', 500))
+            }
+            else {
+                //失败
+                Toast('登陆失败，请检查用户名和密码是否正确', 500)
+                handleChangeCaptcha()
+            }
+        })
     }
     return (
         <div className='login'>
@@ -65,15 +66,21 @@ export default function LoginPage(props) {
                     <form className='login-wrapper'>
                         <div className='username-input'>
                             <TextField fullWidth variant='outlined'
-                                name='username' label='USERNAME'></TextField>
+                                name='username' label='USERNAME' defaultValue='SYSTEM'>
+                            </TextField>
                         </div>
                         <div className='password-input'>
                             <TextField fullWidth
-                                variant='outlined' name='password' label='PASSWORD'></TextField>
+                                variant='outlined' name='password' label='PASSWORD' type='password' defaultValue='This is a simple SALT'>
+                            </TextField>
                         </div>
                         <div className='captcha'>
-                            <img className='captcha-img' onClick={handleChangeCaptcha}
-                                src={captchaURL} name='captcha-img' />
+                            <img className='captcha-img'
+                                onClick={handleChangeCaptcha}
+                                crossOrigin='use-credentials'
+                                src={captchaURL}
+                                name='captcha-img'
+                                key={`captcha-${captchacaptchaTimes}`} />
                             <div className='captcha-input'>
                                 <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
                             </div>
@@ -81,7 +88,7 @@ export default function LoginPage(props) {
                         <div className='login-btn'>
                             <Button fullWidth className='login-btn-' onClick={handleLogin}>
                                 Login
-                        </Button>
+                            </Button>
                         </div>
                     </form>
                 </div>

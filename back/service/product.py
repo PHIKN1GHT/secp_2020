@@ -62,8 +62,13 @@ def productDatail():
 
     description_json = [description.title, description.thumbnail, description.remain, description.price,
      description.htmlDescription, description.active]  
-    return jsonify(name=product.name, shelved=product.shelved, category=product.category,
-     archived=product.archived, description=description_json), 200
+
+    if product.archived:
+        return jsonify(name=product.name, description=description_json, status="Archived"), 200
+    elif product.shelved:
+        return jsonify(name=product.name, description=description_json, status="On shelves"), 200
+    else:
+        return jsonify(name=product.name, description=description_json, status="Off shelves"), 200
 
 # 经理端创建新产品
 # Tested by Postman
@@ -166,12 +171,21 @@ def statistics():
     if not manager:
         return jsonify({"msg": "Bad manager_id"}), 401
 
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
     storehouse_id = request.json.get('storehouse_id')
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
 
+    storehouse = sess.query(Storehouse).filter_by(id=storehouse_id).first()
+    if not storehouse:
+        return jsonify({"msg": "Bad storehouseId"}), 401
+
     nowTime = datetime.datetime.now()
     virtual_orders = sess.query(Order).filter_by(storehouse_id=storehouse_id,virtual=True,cancelled=False).all()
+    if not virtual_orders:
+        return jsonify({"msg": "No order record"}), 401
     product_count={}
     for virorder in virtual_orders:
         orders = sess.query(Order).filter_by(storehouse_id=storehouse_id,belonging_id=virorder.id,virtual=False).all()

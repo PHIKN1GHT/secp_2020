@@ -14,8 +14,7 @@ import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import UserInfoPage from './pages/UserInfo';
 import OrdersPage from './pages/Orders';
-import ProductView from './pages/ProductView';
-import ProductDetail from './pages/ProductDetail';
+
 import ShoppingCart from './pages/ShoppingCart';
 import MainPage from './pages/MainPage';
 import SearchResultPage from './pages/SearchResultPage';
@@ -30,12 +29,14 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route path='/product/detail' component={ProductDetailPage} ></Route>
+
+
+        <Route path='/product/detail/:productId' component={ProductDetailPage} ></Route>
         <Route path='/product/search/:keyword' component={SearchResultPage} ></Route>
         <Route path='/product/search' component={SearchPage} ></Route>
         <Route path='/product/catalogs' component={CatalogsPage} ></Route>
         <Route path='/shoppingCart' component={ShoppingCart} ></Route>
-        <Route path='/product/detail/:product_id' component={ProductView} ></Route>
+        {/* <Route path='/product/detail/:product_id' component={ProductView} ></Route> */}
         <Route path='/login' component={LoginPage} ></Route>
         <Route path='/register' component={RegisterPage} ></Route>
         <Route path='/user-info' component={UserInfoPage} ></Route>

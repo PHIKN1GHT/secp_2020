@@ -1,14 +1,44 @@
 import React, {Component} from 'react';
 import { ReactDOM } from 'react-dom';
+import { server } from './Const'
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
+import TopBar from '../components/TopBar'
+import Toast from '../components/Toast'
 
+import LensIcon from '@material-ui/icons/Lens';
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import { Checkbox, Button } from '@material-ui/core';
 const styles = theme => ({
+    productCard: {
+        cursor: 'pointer',
+        width: '100%',
+        height: '15vh',
+        display: 'flex',
+        backgroundColor: 'white',
+        "&:hover": {
+            backgroundColor:'lavender',
+            // "&>*": {
+            //     backgroundColor:'lavender',
+            // },
+            "& span": {
+                backgroundColor:'lavender',
+            },
+            "& div": {
+                backgroundColor:'lavender',
+            }
+            
+        },
+        webkitBoxSizing: 'border-box',
+        mozBoxSizing: 'border-box',
+        boxSizing: 'border-box',
+
+
+        
+    },
     colBox: {
         height: '100vh',
         display: 'flex',
@@ -53,9 +83,17 @@ const styles = theme => ({
         margin:'auto 10px auto 10px',
     },
     rbCorner: {
-        marginLeft: 'auto',
+        display: 'flex',
+        flexDirection:'row-reverse',
+        // marginLeft: 'auto',
         marginTop: 'auto',
     },
+    shoppingIcon: {
+       
+       
+
+    },
+    
 });
 
 
@@ -69,6 +107,7 @@ class CatalogsPage extends Component {
         }
     }
     componentWillMount() { 
+        //this.fetchAndInitial()
         let catalogs = []
         for (let i = 1; i <= 10; ++i){
             catalogs.push({id:i, name:'catalog-'+i})
@@ -86,30 +125,247 @@ class CatalogsPage extends Component {
         this.setState({
             catalogs,
             products,
-
+        })
+        if (this.props.location.state != undefined) { 
+            const record = this.props.location.state['record']
+            if (record != undefined) { 
+                this.setState(
+                    { selectedCatalogId: record.selectedCatalogId },
+                    () => { 
+                        const productArea = document.getElementsByName('productArea')[0]
+                        productArea.scrollTop = record.scrollTop
+                    }
+                )
+            }
+        }
+    }
+    fetchProducts(catalogId) { 
+        const url = server + '/api/mall/catalog'
+        const catalog = catalogId
+        const page = 1
+        const bodyData = JSON.stringify({
+            catalog,
+            page,
+        })
+        fetch(url, {
+            body: bodyData, // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'include', // include, same-origin, *omit
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'no-cors', // no-cors, cors, *same-origin
+            //redirect: 'follow', // manual, *follow, error
+            //referrer: 'no-referrer', // *client, no-referrer
+        })
+        .then(response => response.json()) // parses response to JSON 
+        .then(json => {
+            const totalPage = json['totalPage']
+            const products = json['products']
+            this.setState({
+                totalPage,
+                products,
+            }, () => { 
+                    const record = this.props.location.state['record']
+                    if (record != undefined) { 
+                        const productArea = document.getElementsByName('productArea')[0]
+                        productArea.scrollTop = record.scrollTop
+                    }
+            })
         })
     }
+    fetchAndInitial() { 
+        const url = server + '/api/mall/catalogs'
+        // const bodyData = JSON.stringify({
+        // })
+        fetch(url, {
+            //body: bodyData, // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'include', // include, same-origin, *omit
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'no-cors', // no-cors, cors, *same-origin
+            // redirect: 'follow', // manual, *follow, error
+            // referrer: 'no-referrer', // *client, no-referrer
+        })
+        .then(response => response.json()) // parses response to JSON 
+        .then(json => {
+            const catalogs = json['catalogs']
+            const record = this.props.location.state['record']
+            this.setState({
+                selectedCatalogId: record == undefined?catalogs[0]:record.selectedCatalogId,
+                catalogs,
+            }, () => { 
+                this.fetchProducts(this.state.selectedCatalogId)
+            })
+        })
+    }
+    calAbsPosition(element) { 
+        let actualLeft = element.offsetLeft;
+        let current = element.offsetParent;
+
+　　　　while (current != undefined){
+　　　　　　actualLeft += current.offsetLeft;
+　　　　　　current = current.offsetParent;
+        }
+        let actualTop = element.offsetTop;
+        current = element.offsetParent;
+
+　　　　while (current != undefined){
+　　　　　　actualTop += current.offsetTop;
+　　　　　　current = current.offsetParent;
+        }
+        return {left: actualLeft, top: actualTop}
+        
+    }
+    elementJump(element) { 
+        //let cloneElement = element.cloneNode(true)
+        //
+        //取得底端购物车的元素，然后使用top, left, position确定最后的位置
+        //
+       
+        
+        let cloneElement = document.getElementsByName('circle')[0].cloneNode(true)
+        console.log(cloneElement)
+        cloneElement.style.position = 'absolute'
+        cloneElement.style.zIndex = '99'
+        cloneElement.style.display = 'initial'
+        
+        const nowPosition = element.getBoundingClientRect()
+        cloneElement.style.left = nowPosition.left+'px'
+        cloneElement.style.top = nowPosition.top + 'px'
+        cloneElement.style.WebkitTransition ='top 1s, left 0.8s, width 1s, height 1s'
+        cloneElement.style.transition = 'top 1s, left 0.8s, width 1s, height 1s'
+        cloneElement.style.width = '2vh'
+        cloneElement.style.height = '2vh'
+
+        document.body.appendChild(cloneElement)
+        setTimeout(
+            () => { 
+                const cart = document.getElementsByName('cart')[0]
+                const cartPosition = this.calAbsPosition(cart)
+                console.log(cartPosition)
+                cloneElement.style.left = cartPosition.left+cart.offsetWidth/3+'px'
+                cloneElement.style.top = cartPosition.top+cart.offsetHeight/6 + 'px'
+                // cloneElement.style.width = 0+'px'
+                // cloneElement.style.height = 0+'px'
+                setTimeout(() => { document.body.removeChild(cloneElement) }, 1000)
+            },
+            0);
+    }
+
+
     handleSearch(e) { 
         this.props.history.push({ pathname: '/product/search',})
     }
     handleSelectCatalog(e) { 
         this.setState({
             selectedCatalogId: e.target.id,
-        })
+        }, this.fetchProducts(this.state.selectedCatalogId))
         const productArea = document.getElementsByName('productArea')[0]
         productArea.scrollTop = 0
     }
+    handleGoBack(){
+        this.props.history.go(-1)
+    }
+    handleSearch(e) { 
+        const productArea = document.getElementsByName('productArea')[0]
+
+        const selectedCatalogId = this.state.selectedCatalogId
+        const scrollTop = productArea.scrollTop
+        const record = {selectedCatalogId, scrollTop}
+        const backUrl = '/product/catalogs'
+        this.props.history.push({ pathname: '/product/search', state: {backUrl, record}})
+
+        // const searchInput = document.getElementsByName('searchInput')[0]
+        // const keyword = searchInput.value
+        // this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword } })
+    
+    }
+    handleClick(productId) {
+        const productArea = document.getElementsByName('productArea')[0]
+
+        const selectedCatalogId = this.state.selectedCatalogId
+        const scrollTop = productArea.scrollTop
+        const record = { selectedCatalogId, scrollTop }
+        const backUrl = '/product/catalogs'
+        this.props.history.push({ pathname: '/product/detail/'+productId, state: {productId, record, backUrl}})
+
+    }
+    handleAddShoppingCart(e, productId) { 
+        e.stopPropagation()
+        const url = server+'/api/cart/add'
+        const id = productId
+        const count = 1
+        const bodyData = JSON.stringify({
+            id,
+            count,
+
+        })
+
+
+        /*
+        网络
+        */
+        // fetch(url, {
+        //     body: bodyData, // must match 'Content-Type' header
+        //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        //     credentials: 'include', // include, same-origin, *omit
+        //     headers: {
+        //         'content-type': 'application/json'
+        //     },
+        //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        //     mode: 'no-cors', // no-cors, cors, *same-origin
+        //     //redirect: 'follow', // manual, *follow, error
+        //     //referrer: 'no-referrer', // *client, no-referrer
+        // })
+        // .then(response => response.json()) // parses response to JSON 
+        // .then(json => {
+        //     const result = json['result']
+        //     if (!result) { 
+        //         Toast('添加购物车失败', 403)
+                
+        //     }
+        // }).catch(Toast('网络故障', 403))
+        let element = e.target
+        console.log(element.tagName)
+        if (element.tagName == 'path') { 
+            element = element.parentNode
+        }
+        this.elementJump(element)
+    }
+
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
+            {/* document.getElementsByNames不识别svg元素？Yes */}
+            <div name='circle' style={{display:'none'}}>
+                <LensIcon name='circleSVG' style={{height:'100%', width:'100%'}}  />
+            </div>
+            <TopBar
+                backIconHidden={true}
+                fakeSearch={true}
+                cartHidden={true}
+                onGoBack={this.handleGoBack.bind(this)}
+                onSearch={this.handleSearch.bind(this)} />
             <div className={classes.rowBox} style={{overflow:'hidden'}}>
                 {/* 商品目录 */}
                 <div style={{ overflowY: 'auto',scrollbarWidth:'none' }}>
                     {
                         this.state.catalogs.map((catalog) => { 
                             return (
-                                <div style={{width:'15vw', height:'10vh'}}>
-                                    <button onClick={this.handleSelectCatalog.bind(this)} id={catalog.id} style={{ width: '100%', height: "100%" }}>
+                                <div style={{width:'15vw', height:'6vh'}}>
+                                    <button onClick={this.handleSelectCatalog.bind(this)} id={catalog.id}
+                                        style={{
+                                            width: '100%',
+                                            height: "100%",
+                                            borderStyle: 'hidden',
+                                            cursor: 'pointer',
+                                            backgroundColor: this.state.selectedCatalogId == catalog.id ? 'white' : 'lavender',
+                                        }}>
                                         {catalog.name}
                                     </button>    
                                 </div>
@@ -117,12 +373,12 @@ class CatalogsPage extends Component {
                         })
                     }
                 </div>
-                {/* 推荐商品 */}
+                {/* 目录下所有商品 */}
                 <div style={{
                     flex: '1',
                     display: 'flex',
                     flexDirection: 'column',
-                    backgroundColor: 'lavender',
+                    backgroundColor: 'white',
                     overflowY: 'auto',
                     justifyContent: 'space-between',
                     scrollbarWidth: 'none',
@@ -130,20 +386,19 @@ class CatalogsPage extends Component {
                 }} name="productArea">
                     {this.state.products[this.state.selectedCatalogId].map((product) => { 
                         return (
-                        <div style={{
-                                
-                                width: '100%',
-                                height:'15vh',
-                                display: 'flex',
-                                backgroundColor: 'lavender',
-                            }} onClick={(e) => { this.handleClick(product.id) }}>
+                            //商品卡片
+                            <div style={{
+                            }}
+                                onClick={(e) => { this.handleClick(product.id) }}
+                                className={classes.productCard}
+                            >
                         
                             <img className={classes.image} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
                                 <div style={{
                                     flex:'1',
                                     display: 'flex',
                                     flexDirection: 'column', 
-                                    backgroundColor: 'lavender',
+                                    backgroundColor: 'white',
                                 }} className={classes.marginAround}>
                                 <span>{product.name}</span>
                                 <div>
@@ -151,7 +406,7 @@ class CatalogsPage extends Component {
                                     <span>/{product.unit}</span>
                                     </div>
                                 <div className={classes.rbCorner}>
-                                    <AddShoppingCartIcon className={classes.shoppingIcon}/>
+                                        <AddShoppingCartIcon  onClick={(e) => { this.handleAddShoppingCart(e, product.id) }} className={classes.shoppingIcon}/>
 
                                 </div>
                                     </div>

@@ -6,16 +6,13 @@ import Toast from '../components/Toast';
 
 // 和logincard共用css
 export default function RegisterPage(props) {
-    const [captchaURL, setCaptchaURL] = useState('https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
+    const server = 'http://188.131.174.176:8082'
+    const captchaURL = server + '/api/account/captcha?' + Date.now()
+    const [captchaTimes, setCaptchaTimes] = useState(0)
 
     const handleChangeCaptcha = (event) => {
-        const url = '/api/account/captcha'
-        fetch(url).then(response => response.blob()) // parses response to blob
-            .then(imgData => {
-                setCaptchaURL(URL.createObjectURL(imgData))
-            })
+        setCaptchaTimes(prevState => prevState + 1)
     }
-
 
     const handleRegister = (event) => {
         const username = document.getElementsByName('username')[0].value
@@ -26,13 +23,12 @@ export default function RegisterPage(props) {
             password: password,
             captcha: captcha
         })
-        const url = '/api/account/registery'
+        const url = server + '/api/account/registery'
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, same-origin, *omit
+            credentials: 'include', // include, same-origin, *omit
             headers: {
-                'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -45,12 +41,14 @@ export default function RegisterPage(props) {
                     // 成功注册
                     localStorage.setItem('token', json['token'])
                     Toast('注册成功', 500)
+                    props.history.push({ pathname: '/mainpage' })
                 }
                 else {
                     //失败
                     Toast('注册失败', 500)
+                    handleChangeCaptcha()
                 }
-            }).catch(Toast('访问服务器失败', 500))
+            })
     }
     return (
         <div className='login'>
@@ -65,8 +63,11 @@ export default function RegisterPage(props) {
                             <TextField fullWidth variant='outlined' name='password' label='PASSWORD'></TextField>
                         </div>
                         <div className='captcha'>
-                            <img className='captcha-img' onClick={handleChangeCaptcha}
-                                src={captchaURL} name='captcha-img' />
+                            <img className='captcha-img'
+                                onClick={handleChangeCaptcha}
+                                src={captchaURL}
+                                name='captcha-img'
+                                key={`captcha-${captchaTimes} `} />
                             <div className='captcha-input'>
                                 <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
                             </div>

@@ -1,16 +1,12 @@
-import { server } from './Const'
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
-import TopBar from '../components/TopBar';
-
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const styles = theme => ({
     colBox: {
@@ -24,20 +20,11 @@ const styles = theme => ({
         display: 'flex',
     },
     searchBar: {
-        margin: '0 5vw 0 5vw',
-        //width:'100vw',
+        width:'100vw',
         height: '5vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    input: {
-        height: '70%',
-        flex: '1 1',
-        borderRadius: '20px',
-        border: 'mediumaquamarine 1px solid',
-        overflow: 'hidden',
-
     }
 });
 
@@ -47,78 +34,42 @@ class MainPage extends Component {
         super(props)
         this.state = {
             catalogs: [],
-            products: [],
-            totalPage: 0,
+            products:[],
         }
     }
-    componentWillMount() {
-        this.fetchAndInitial()
-        // let catalogs = []
-        // for (let i = 1; i <= 10; ++i){
-        //     catalogs.push({id:i, name:'catalog-'+i})
-        // }
-        // let products = []
-        // for (let i = 1; i <= 20; ++i){
-        //     products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
-        // }
-        // this.setState({
-        //     catalogs,
-        //     products,
+    componentWillMount() { 
+        let catalogs = []
+        for (let i = 1; i <= 10; ++i){
+            catalogs.push({id:i, name:'catalog-'+i})
+        }
+        let products = []
+        for (let i = 1; i <= 20; ++i){
+            products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
+        }
+        this.setState({
+            catalogs,
+            products,
 
-        // })
-    }
-    fetchAndInitial() { 
-        // totalPage: number,
-        // catalogs: [id: number, name: str],
-        // products: [number: [id: number, name: str, price: number, unit: str, cover: '']]
-        const url = server + '/api/mall/homepage'
-        fetch(url, {
-            // body: bodyData, // must match 'Content-Type' header
-            //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'include', // include, same-origin, *omit
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'GET', // *GET, POST, PUT, DELETE, etc.
-            mode: 'no-cors', // no-cors, cors, *same-origin
-            //redirect: 'follow', // manual, *follow, error
-            //referrer: 'no-referrer', // *client, no-referrer
-        })
-        .then(response => response.json()) // parses response to JSON 
-        .then(json => {
-            const catalogs = json['catalogs']
-            const products = json['products']
-            const totalPage = json['totalPage']
-            this.setState({
-                catalogs,
-                products,
-                totalPage,
-            })
         })
     }
     handleSearch(e) { 
         //const searchInput = document.getElementsByName('searchInput')[0]
         //const keyword = searchInput.value
-        const backUrl = '/'
-        this.props.history.push({ pathname: '/product/search', state: {backUrl}})
+        this.props.history.push({ pathname: '/product/search',})
     }
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
             {/* 搜索框 */}
-            <TopBar
-                backIconHidden={true}
-                fakeSearch={true}
-                cartHidden={true}
-                onSearch={this.handleSearch.bind(this)} />
-            {/* <div className={classes.searchBar}>
-                <ArrowBackIosIcon style={{visibility:'hidden', margin: '0 2vw',justifySelf:"flex-start", cursor:'pointer'}} />
-                <input className={classes.input} onClick={this.handleSearch.bind(this)} readonly="readOnly" style={{}} />
-                <div style={{ margin: '0 2vw', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                    <SearchIcon style={{cursor:'pointer'}} onClick={this.handleSearch.bind(this)} />
+            <div className={classes.searchBar}>
+                <input onClick={this.handleSearch.bind(this)} readonly="readonly" style={{ width: '60%', height: '70%', }} />
+                <div style={{ margin: '0' }}>
+                    <IconButton onClick={this.handleSearch.bind(this)} >
+                        <SearchIcon />
+                    </IconButton>
                 </div>
-            </div> */}
-            <div style={{ flex:1, overflowY:'auto',scrollbarWidth: 'none',}}>
+            </div>
+            <div style={{overflowY:'auto',scrollbarWidth: 'none',}}>
                 {/* 目录展示 */}
                 <div className={classes.rowBox} style={{flexWrap:'wrap'}}>
                     {this.state.catalogs.map((catalog) => { 

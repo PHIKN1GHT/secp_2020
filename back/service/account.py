@@ -31,7 +31,7 @@ def verify():
 def cheat():
     if inDebugging():
         if 'captcha' in session.keys():
-            return session['captcha']
+            return str(session['captcha'])
         else:
             return "UKNOWN"
     else:

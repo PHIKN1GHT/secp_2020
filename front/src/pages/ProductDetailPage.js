@@ -1,17 +1,22 @@
 import React, {Component} from 'react';
 import { ReactDOM } from 'react-dom';
 
-import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
-
+import { server } from './Const' 
+import BottomNavBarForProductDetailPage from '../components/BottomNavBarForProductDetailPage'
+import TopBar from '../components/TopBar'
 import Slider from '../components/Slider'
 
 import { withStyles } from "@material-ui/core/styles";
+import LensIcon from '@material-ui/icons/Lens';
+
 const styles = theme => ({
     colBox: {
         height: '100vh',
         width: '100vw',
         display: 'flex',
         flexDirection: 'column', 
+        backgroundColor: 'lavender',
+        scrollbarWidth: 'none',
     },
 });
 
@@ -21,20 +26,182 @@ class ProductDetailPage extends Component {
         super(props)
         this.state = {
             index: 0,
-            images: [
+            images: [],
+            detailImages: [],
+            product: {},
+        }
+    }
+    componentWillMount() { 
+        //this.fetchAndInitial()
+        const index = 0
+        const images = [
                 'https://material-ui.com/static/images/cards/live-from-space.jpg',
                 'https://material-ui.com/static/images/cards/live-from-space.jpg',
                 'https://material-ui.com/static/images/cards/live-from-space.jpg',
             ]
+        const detailImages= [
+                'https://img.alicdn.com/imgextra/i2/2627785630/O1CN01I9eJx71rSaR8R3tzW_!!2627785630.jpg',
+                'https://img.alicdn.com/imgextra/i3/2627785630/O1CN01Q6ZV1m1rSaR3oqq7N_!!2627785630.jpg',
+                'https://img.alicdn.com/imgextra/i2/2627785630/O1CN01zBTa8M1rSaR3yrxPt_!!2627785630.jpg',
+                'https://img.alicdn.com/imgextra/i2/2627785630/O1CN01lHLMnk1rSaR6ojQAb_!!2627785630.jpg',
+            ]
+        const product= {
+                id: this.props.location.state['productId'],
+                name: this.props.location.state['productId']+'御牛满地澳洲肥牛卷火锅食材牛肉片',
+                price: 178,
+                unit: '件',
+                cover: '',
+                quantity: 15
         }
+        this.setState({index, images, detailImages, product})
+
+    }
+    fetchAndInitial() { 
+        const url = server+'/api/product/detail'
+        const id = this.props.location.state['productId']
+        const bodyData = JSON.stringify({
+            id,
+        })
+        fetch(url, {
+            body: bodyData, // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'include', // include, same-origin, *omit
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+        })
+        .then(response => response.json()) // parses response to JSON 
+        .then(json => {
+            const images = json['images']
+            const detailImages = json['detailImages']
+            const name = json['name']
+            const price = json['price']
+            const unit = json['unit']
+            this.setState({
+                images,
+                detailImages,
+                name,
+                price,
+                unit,
+            })
+        })
+    }
+    calAbsPosition(element) { 
+        let actualLeft = element.offsetLeft;
+        let current = element.offsetParent;
+
+　　　　while (current != undefined){
+　　　　　　actualLeft += current.offsetLeft;
+　　　　　　current = current.offsetParent;
+        }
+        let actualTop = element.offsetTop;
+        current = element.offsetParent;
+
+　　　　while (current != undefined){
+　　　　　　actualTop += current.offsetTop;
+　　　　　　current = current.offsetParent;
+        }
+        return {left: actualLeft, top: actualTop}
+        
+    }
+    elementJump(element) { 
+        let cloneElement = document.getElementsByName('circle')[0].cloneNode(true)
+        console.log(cloneElement)
+        cloneElement.style.position = 'absolute'
+        cloneElement.style.zIndex = '99'
+        cloneElement.style.display = 'initial'
+        
+        let nowPosition = this.calAbsPosition(element)
+        console.log(nowPosition)
+        nowPosition.left+=element.offsetWidth/2
+        cloneElement.style.left = nowPosition.left+'px'
+        cloneElement.style.top = nowPosition.top + 'px'
+        cloneElement.style.WebkitTransition ='top 1s, left 0.8s, width 1s, height 1s'
+        cloneElement.style.transition = 'top 1s, left 0.8s, width 1s, height 1s'
+        cloneElement.style.width = '2vh'
+        cloneElement.style.height = '2vh'
+
+        document.body.appendChild(cloneElement)
+        setTimeout(
+            () => { 
+                const cart = document.getElementsByName('topBarCart')[0]
+                // const cartPosition = this.calAbsPosition(cart)
+                const cartPosition = {left: cart.offsetLeft, top:cart.offsetTop}
+                console.log(cartPosition)
+                cloneElement.style.left = cartPosition.left+cart.offsetWidth/3+'px'
+                cloneElement.style.top = cartPosition.top+'px'
+                // cloneElement.style.width = 0+'px'
+                // cloneElement.style.height = 0+'px'
+                setTimeout(() => { document.body.removeChild(cloneElement) }, 1000)
+            },
+            0);
+    }
+    handleGoBack(){
+        this.props.history.push({ pathname: '/product/catalogs', state: {record:this.props.location.state['record']}})
+    }
+    handleSearch(e) { 
+        const backUrl = '/product/catalogs'
+        const record = this.props.location.state['record']
+
+        this.props.history.push({ pathname: '/product/search', state: {backUrl, record}})
+
+        // const searchInput = document.getElementsByName('searchInput')[0]
+        // const keyword = searchInput.value
+        // this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword } })
+    
+    }
+    handleAddToCart(e, productId) { 
+        let element = e.target
+        console.log(element.tagName)
+        if (element.tagName == 'FONT') { 
+            element = element.parentNode
+        }
+        this.elementJump(element)
     }
 
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox}>
-            <div style={{ height: '50vh', width: '100vw' }}>
-                <Slider images={this.state.images} />
+             <div name='circle' style={{display:'none'}}>
+                <LensIcon style={{height:'100%', width:'100%'}}  />
             </div>
+            {/* 顶部栏 */}
+            <TopBar
+                backIconHidden={false}
+                searchHidden={true}
+                fakeSearch={true}
+                onGoBack={this.handleGoBack.bind(this)}
+                onSearch={this.handleSearch.bind(this)} />
+            <div style={{overflowY:'auto', overflowX:'hidden', flex:1, scrollbarWidth:'none', }}>
+                {/* 轮播图 */}
+                <div style={{ height: '100vw', width: '100vw' }}>
+                    <Slider images={this.state.images} />
+                </div>
+                {/* 商品信息 */}
+                <div style={{display:'flex', flexDirection:'column'}}>
+                    <span>{this.state.product.name}</span>
+                    <div>
+                        <span>￥{this.state.product.price}</span>
+                        <span>/{this.state.product.unit}</span>
+                    </div>
+                </div>
+                {/* 商品详情图片 */}
+                {
+                    this.state.detailImages.map((detailImage) => { 
+                        return (
+                            <div style={{ width: '100%' }}>
+                                <img style={{ width: '100%' }} src={detailImage} />
+                            </div>
+                        )
+                    })
+                }
+            </div>
+            {/* 底部功能条 */}
+            <BottomNavBarForProductDetailPage onClick={(e) => { this.handleAddToCart(e,this.state.product.id)}} productId={this.state.product.id} />
         </div>);
     }
 }

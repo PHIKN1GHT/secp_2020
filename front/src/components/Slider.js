@@ -58,7 +58,7 @@ class Slider extends Component {
     }
     render() {
         const { classes } = this.props;
-        return (<div style={{ position: 'relative' }}>
+        return (<div style={{ width:"100%", height:'100%',position: 'relative' }}>
             {
                 this.state.index == 0 ?
                     null :
@@ -73,7 +73,7 @@ class Slider extends Component {
                 </IconButton>
             }
             
-            <div name={'slider'} style={{width:"100%", height:'100%', display:'block ruby', webkitTransition:'marginleft 1s', transition:'margin-left 1s'}}>
+            <div name={'slider'} style={{width:"100%", height:'100%', display:'-webkit-box', WebkitTransition:'marginleft 1s', transition:'margin-left 1s'}}>
                 {
                     this.props.images.map((image) => { 
                         return (

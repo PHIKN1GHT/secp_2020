@@ -202,7 +202,11 @@ class ShoppingCartCard extends Component {
 
             <div className={classes.rowBox} onClick={(e) => { this.handleClick(this.props.product.id) }}>
               
-                    <Checkbox onClick={this.props.update} name='checkbox' id={this.props.product.id} />
+                    <Checkbox
+                        disableRipple={true}
+                        onClick={this.props.update}
+                        name='checkbox'
+                        id={this.props.product.id} />
             
                 <img className={classes.image} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
                 <div className={classes.colBox+" "+classes.marginAround}>

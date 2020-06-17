@@ -21,8 +21,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 const styles = theme => ({
     input: {
         height: '15px',
-        width:'15px',
-
+        width: '15px',
+        textAlign: 'center',
     },
     rowBox: {
         display:'flex',
@@ -165,14 +165,15 @@ class ChangeQuantity extends Component {
                 </DialogActions>
             </Dialog>
             <div className={classes.rowBox}>
-                <IconButton className={classes.removePadding}>
-                <AddIcon onClick={this.handleAdd.bind(this)}/>
+            <IconButton className={classes.removePadding}>
+                        
+                <AddIcon disableRipple={true} onClick={this.handleAdd.bind(this)}/>
             </IconButton>
             
                 <input onChange={this.handleChange.bind(this)} value={this.state.quantity} className={classes.input}/>
             {/* <TextField onClick={this.handleClickOpen.bind(this)} InputLabelProps={{ shrink: true }} value={this.state.quantity}/> */}
             <IconButton className={classes.removePadding}>
-                <RemoveIcon onClick={this.handleSub.bind(this)}/>
+                <RemoveIcon disableRipple={true} onClick={this.handleSub.bind(this)}/>
             </IconButton>
             </div>
     </div>);

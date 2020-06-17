@@ -2,7 +2,6 @@ from testing.fixture import client, check
 from config import OPERATORNAME, OPERATORPSWD
 from flask import jsonify
 from functools import partial
-from testing import *
 
 class TestServiceAccountLogin:
     def test_captcha(self, client):
@@ -21,7 +20,7 @@ class TestServiceAccountLogin:
         response = client.get('/api/account/state')
         assert b'logged_in_as_anonymous' in response.data
 
-    def test_login_failed_without_verify(self, client):
+    def test_login_failed_without_captcha(self, client):
         response = client.post('/api/account/login')
         assert b'Please reload captcha first' in response.data
 
