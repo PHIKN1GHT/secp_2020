@@ -9,7 +9,7 @@ import datetime
 bp = Blueprint('product',__name__)
 
 # 目前只包含了经理端查看商品列表
-# Tested by Postman
+# Tested by Pytest
 @bp.route("/all", methods=['POST'])
 @jwt_required
 def allProduct():
@@ -35,7 +35,7 @@ def allProduct():
     return jsonify(products=all_products), 200
 
 # 经理端查看商品详情
-# Tested by Postman
+# Tested by Pytest
 @bp.route("/detail", methods=['POST'])
 @jwt_required
 def productDatail():
@@ -71,7 +71,7 @@ def productDatail():
         return jsonify(name=product.name, description=description_json, status="Off shelves"), 200
 
 # 经理端创建新产品
-# Tested by Postman
+# Tested by Pytest
 @bp.route("/create", methods=['POST'])
 @jwt_required
 def createProduct():
@@ -110,7 +110,7 @@ def createProduct():
     return jsonify(isCreated=True, productID=product.id)
 
 # 经理端更改商品信息
-# Tested by Postman
+# Tested by Pytest
 @bp.route("/update", methods=['POST'])
 @jwt_required
 def updateProduct():
@@ -161,7 +161,7 @@ def updateProduct():
     return jsonify(isUpdated=True), 200
 
 # 经理端查看销售统计，不知道放哪儿先放这儿了
-# Tested by Postman
+# Tested by Pytest
 @bp.route("/statistics", methods=['POST'])
 @jwt_required
 def statistics():
