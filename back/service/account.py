@@ -38,6 +38,33 @@ def cheat():
     else:
         return "FORBIDDEN"
 
+
+@bp.route("/registery", methods=['POST'])
+def registery():
+    if (not 'captcha' in session.keys()) or (session['captcha'] == None):
+        return jsonify(result=False,reason="Please reload captcha first"), 400
+
+    pipeline = Pipeline(request)
+    pipeline.add(ensureJson)
+    pipeline.add(ensureCaptcha, [request, session])
+    pipeline.add(ensureParam, [request, 'username', lambda: invalidateSession(session, 'captcha')])
+    pipeline.add(ensureParam, [request, 'password', lambda: invalidateSession(session, 'captcha')])
+
+    broken, retvs = pipeline.run()
+    if broken:
+        return retvs
+    
+    _, _, username, password = retvs
+
+    sess = DBSession()
+    user = User(username)
+    user.setPassword(password)
+    sess.add(user)
+    sess.commit()
+
+    session['captcha'] = None
+    return jsonify(result=True), 200
+
 # POST: 登入，若成功返回Auth Token
 @bp.route("/login", methods=['POST'])
 def login():
@@ -66,7 +93,8 @@ def login():
     expires = datetime.timedelta(days=1)
     token = create_access_token(identity=user.id, expires_delta=expires)
     session['captcha'] = None
-    return jsonify(result=True,access_token=token), 200
+    return jsonify(result=True,access_token=token,user_type=user.getUserType()), 200
+
 
 # Tested by Postman
 @bp.route("/loginAs", methods=['POST'])
