@@ -14,7 +14,7 @@ export default function AddressManagerPage(props) {
     const [selectInd, setSelectInd] = useState(-1)
     const [diaType, setDiaType] = useState('null')
     const [init, setInit] = useState(true)
-    const _token = 'Bearer' + localStorage.getItem('token').access_token
+    const _token = 'Bearer ' + localStorage.getItem('access_token')
     const GetAddrData = () => {
         const url = server + '/api/address/all'
         fetch(url, { // must match 'Content-Type' header

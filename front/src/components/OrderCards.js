@@ -26,7 +26,7 @@ export default function OrderCards(props) {
     })
     const [ordersInfo, setOrderInfo] = useState(orders)
     const [init, setInit] = useState(true)
-    const _token = 'Bearer ' + localStorage.getItem('token').access_token
+    const _token = 'Bearer ' + localStorage.getItem('access_token')
     const GetOrdersInfo = () => {
         const url = server + '/api/order/all'
         fetch(url, {

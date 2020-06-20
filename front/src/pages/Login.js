@@ -34,13 +34,11 @@ export default function LoginPage(props) {
             mode: 'cors', // no-cors, cors, *same-origin
         }).then(response => response.json()
         ).then(json => {
-            if (json['result']) {
+            if (json.result) {
                 // 成功登录
                 Toast('登陆成功', 500)
-                localStorage.setItem('token', {
-                    access_token: json.access_token,
-                    user_type: json.user_type
-                })
+                localStorage.setItem('access_token', json.access_token)
+                localStorage.setItem('user_type', json.user_type)
                 // 检验账号类型
                 // TODO
                 switch (json['user_type']) {

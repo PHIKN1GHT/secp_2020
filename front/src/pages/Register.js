@@ -37,10 +37,8 @@ export default function RegisterPage(props) {
             .then(json => {
                 if (json['result']) {
                     // 成功注册
-                    localStorage.setItem('token', {
-                        access_token: json.access_token,
-                        user_type: 'customer'
-                    })
+                    localStorage.setItem('access_token', json.access_token)
+                    localStorage.setItem('user_type', 'customer')
                     Toast('注册成功', 500)
                     props.history.push({ pathname: '/mainpage' })
                 }
