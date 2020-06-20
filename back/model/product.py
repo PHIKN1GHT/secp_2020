@@ -9,8 +9,8 @@ class Storehouse(db.Model):
     phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
     manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
     manager = db.relationship('User', foreign_keys = 'Storehouse.manager_id')
-    operator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
-    operator = db.relationship('User', foreign_keys = 'Storehouse.operator_id') 
+    #operator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=True)
+    #operator = db.relationship('User', foreign_keys = 'Storehouse.operator_id') 
 
     def __init__(self, name, address, phoneNumber, manager_id):
         self.name = name
@@ -20,22 +20,28 @@ class Storehouse(db.Model):
 
     def __repr__(self):
         return '<Storehouse [%r]>' % (self.name)
+    
+    @classmethod 
+    def all(cls):
+        sess = DBSession()
+        storehouses = sess.query(Storehouse).all()
+        return [s.name for s in storehouses]
 
 class Category(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
-    title = db.Column(db.String(64), unique=False, nullable=False, default="")
+    name = db.Column(db.String(64), unique=True, nullable=False, default="")
 
-    def __init__(self, title = "", parent_id=None):
-        self.title = title
+    def __init__(self, name = "", parent_id=None):
+        self.name = name
         self.parent_id = parent_id
 
     def __repr__(self):
-        return '<Category [%r] >' % (self.title)
+        return '<Category [%r] >' % (self.name)
     
     def children(self):
         sess = DBSession()
         categories = sess.query(Category).filter_by(parent_id=self.id).all()
-        return [category.title for category in categories]
+        return [category.name for category in categories]
         #return 
 
     @classmethod 
@@ -44,7 +50,7 @@ class Category(db.Model):
         categories = sess.query(Category).filter_by(parent_id=None).all()
         total = {}
         for category in categories:
-            total[category.title] = category.children()
+            total[category.name] = category.children()
         return total
 
 Category.parent_id = db.Column(db.BigInteger, db.ForeignKey(Category.id), nullable=True)
@@ -73,15 +79,14 @@ class Product(db.Model):
         self.storehouse_id = storehouse_id
         
     def update(self, dictdata):
-        self.title = tryLookUp(dictdata, 'title', '')
-        self.thumbnail = tryLookUp(dictdata, 'thumbnail', '')
-        self.htmlDescription = tryLookUp(dictdata, 'htmlDescription', '')
-        self.remain = tryLookUp(dictdata, 'remain', 0)
-        self.price = tryLookUp(dictdata, 'price', 0)
-        self.unit = tryLookUp(dictdata, 'unit', '')
-        self.category = tryLookUp(dictdata, 'category', 0)
-        self.shelved = tryLookUp(dictdata, 'shelved', False)
-        self.archived = tryLookUp(dictdata, 'archived', False)
+        self.title = tryLookUp(dictdata, 'title', self.title)
+        self.thumbnail = tryLookUp(dictdata, 'thumbnail', self.thumbnail)
+        self.htmlDescription = tryLookUp(dictdata, 'htmlDescription', self.htmlDescription)
+        self.remain = tryLookUp(dictdata, 'remain', self.remain)
+        self.price = tryLookUp(dictdata, 'price', self.price)
+        self.unit = tryLookUp(dictdata, 'unit', self.unit)
+        self.shelved = tryLookUp(dictdata, 'shelved', self.shelved)
+        self.archived = tryLookUp(dictdata, 'archived', self.archived)
 
     def __repr__(self):
         return '<Product [%r]>' % (self.title)
@@ -103,7 +108,8 @@ class Product(db.Model):
             'remain': self.remain,
             'price': self.price,
             'unit': self.unit,
-            'category': self.category,
+            'category': self.category.value.name if self.category else self.category_id,
+            'storehouse': self.storehouse.value.name if self.storehouse else self.storehouse_id,
             'shelved': self.shelved,
             'archived': self.archived
         }
