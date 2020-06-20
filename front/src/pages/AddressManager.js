@@ -1,7 +1,7 @@
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import React, { useState, useEffect, useRef } from 'react';
 import { IconButton, ListItemAvatar, Avatar, List, ListItem, Tooltip, DialogTitle, Dialog, DialogContent, DialogContentText, DialogActions, Button, TextField } from '@material-ui/core';
-import { server, EQ } from './Const';
+import { server, IsLoggedIn } from './Const';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import EditIcon from '@material-ui/icons/Edit';
@@ -25,8 +25,6 @@ export default function AddressManagerPage(props) {
             },
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            // redirect: 'follow', // manual, *follow, error
-            // referrer: 'no-referrer', // *client, no-referrer
         }).then(response => {
             return response.json()
         }).then(json => {
@@ -200,81 +198,91 @@ export default function AddressManagerPage(props) {
                 }
             })
     }
-
+    let loggedIn = true
+    IsLoggedIn(() => {
+    }, () => {
+        loggedIn = false
+        props.history.push({ pathname: '/login' })
+    })
     return (<>
-        <div className='address-manager'>
-            <div className='backicon-con'>
-                <ArrowBackIosIcon className='backicon' onClick={handleGoBack} />
-                <div className='head'>地址列表</div>
-            </div>
-            <div className='content'>
-                <div className='list-con'>
-                    <List className='list'>
-                        {addrs.map((val) =>
-                            <ListItem className='item'>
-                                <ListItemAvatar>
-                                    <Avatar>
-                                        <HomeWorkIcon />
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <div className='texts'>
-                                    <div className='receiver'>{val.receiver}</div>
-                                    <div className='phone'>{val.phone}</div>
-                                    <div className='addr'>{val.addr}</div>
-                                </div>
-                                <div className='icons'>
-                                    <Tooltip title='修改地址' placement='top'>
-                                        <IconButton number={val.number} id={val.id} onClick={handleChangeAddr}>
-                                            <EditIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title='删除地址' placement='top'>
-                                        <IconButton number={val.number} id={val.id} onClick={handleDeleteAddr}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                </div>
-                            </ListItem>
-                        )}
-                    </List>
+        {loggedIn ?
+            <>
+                <div className='address-manager'>
+                    <div className='backicon-con'>
+                        <ArrowBackIosIcon className='backicon' onClick={handleGoBack} />
+                        <div className='head'>地址列表</div>
+                    </div>
+                    <div className='content'>
+                        <div className='list-con'>
+                            <List className='list'>
+                                {addrs.map((val) =>
+                                    <ListItem className='item'>
+                                        <ListItemAvatar>
+                                            <Avatar>
+                                                <HomeWorkIcon />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <div className='texts'>
+                                            <div className='receiver'>{val.receiver}</div>
+                                            <div className='phone'>{val.phone}</div>
+                                            <div className='addr'>{val.addr}</div>
+                                        </div>
+                                        <div className='icons'>
+                                            <Tooltip title='修改地址' placement='top'>
+                                                <IconButton number={val.number} id={val.id} onClick={handleChangeAddr}>
+                                                    <EditIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title='删除地址' placement='top'>
+                                                <IconButton number={val.number} id={val.id} onClick={handleDeleteAddr}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                    </ListItem>
+                                )}
+                            </List>
+                        </div>
+                    </div>
+                    <div className='add-icon-con'>
+                        <IconButton className='add-icon' onClick={handleAddAddr}>
+                            <AddIcon />
+                        </IconButton>
+                    </div>
                 </div>
-            </div>
-            <div className='add-icon-con'>
-                <IconButton className='add-icon' onClick={handleAddAddr}>
-                    <AddIcon />
-                </IconButton>
-            </div>
-        </div>
-        <Dialog open={openDia} onClose={handleCancelDia}>
-            <DialogTitle>修改地址</DialogTitle>
-            <DialogContent>
-                <TextField
-                    margin="dense"
-                    id="modify-name"
-                    label='收货人姓名'
-                    defaultValue={selectInd >= 0 ? addrs[selectInd].receiver : ''}
-                    fullWidth
-                />
-                <TextField
-                    margin="dense"
-                    id="modify-phone"
-                    label='收货人电话'
-                    type='number'
-                    defaultValue={selectInd >= 0 ? addrs[selectInd].phone : ''}
-                    fullWidth
-                />
-                <TextField
-                    margin="dense"
-                    id="modify-addr"
-                    label='收货人地址'
-                    defaultValue={selectInd >= 0 ? addrs[selectInd].addr : ''}
-                    fullWidth
-                />
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleCancelDia} color="primary">取消</Button>
-                <Button onClick={handleConfirmDia} color="primary">确认</Button>
-            </DialogActions>
-        </Dialog>
+                <Dialog open={openDia} onClose={handleCancelDia}>
+                    <DialogTitle>修改地址</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            margin="dense"
+                            id="modify-name"
+                            label='收货人姓名'
+                            defaultValue={selectInd >= 0 ? addrs[selectInd].receiver : ''}
+                            fullWidth
+                        />
+                        <TextField
+                            margin="dense"
+                            id="modify-phone"
+                            label='收货人电话'
+                            type='number'
+                            defaultValue={selectInd >= 0 ? addrs[selectInd].phone : ''}
+                            fullWidth
+                        />
+                        <TextField
+                            margin="dense"
+                            id="modify-addr"
+                            label='收货人地址'
+                            defaultValue={selectInd >= 0 ? addrs[selectInd].addr : ''}
+                            fullWidth
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCancelDia} color="primary">取消</Button>
+                        <Button onClick={handleConfirmDia} color="primary">确认</Button>
+                    </DialogActions>
+                </Dialog>
+            </>
+            : null
+        }
     </>)
 }
