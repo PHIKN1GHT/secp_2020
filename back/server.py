@@ -37,12 +37,12 @@ services = [
     "service.mall",
     #"service.cart",
     "service.product",
-    "service.supplierOrder"
+    "service.supplierOrder",
+    "service.order"
 #    "service.admin",
 #    "service.indexing",
 #    "service.fake",
 #    "service.consumption"
-#    "service.manager_business"
 ]
 
 from utils import jwt

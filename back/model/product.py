@@ -9,6 +9,8 @@ class Storehouse(db.Model):
     phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
     manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
     manager = db.relationship('User', foreign_keys = 'Storehouse.manager_id')
+    operator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
+    operator = db.relationship('User', foreign_keys = 'Storehouse.operator_id') 
 
     def __init__(self, name, address, phoneNumber, manager_id):
         self.name = name
