@@ -49,7 +49,7 @@ def productDetail():
     
     product_id = request.json.get('id')
     if not product_id:
-        return jsonify({"msg": "Missing product_id parameter"}), 400
+        return jsonify({"msg": "Missing id parameter"}), 400
 
     product = sess.query(Product).filter_by(id=product_id).first()
     if not product:

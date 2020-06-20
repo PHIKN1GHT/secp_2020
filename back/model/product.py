@@ -1,5 +1,6 @@
 from utils import tryLookUp
 from model import *
+from server import DBSession
 
 class Storehouse(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
@@ -9,13 +10,37 @@ class Storehouse(db.Model):
     manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
     manager = db.relationship('User', foreign_keys = 'Storehouse.manager_id')
 
-    def __init__(self, name, address, phoneNumber):
+    def __init__(self, name, address, phoneNumber, manager_id):
         self.name = name
         self.address = address
         self.phoneNumber = phoneNumber
+        self.manager_id = manager_id
 
     def __repr__(self):
         return '<Storehouse [%r]>' % (self.name)
+
+class Category(db.Model):
+    id = db.Column(db.BigInteger, primary_key=True)
+    title = db.Column(db.String(64), unique=False, nullable=False, default="")
+
+    def __init__(self, title = "", parent_id=None):
+        self.title = title
+        self.parent_id = parent_id
+
+    def __repr__(self):
+        return '<Category [%r] >' % (self.title)
+    
+    def children(self):
+        sess = DBSession()
+        pass
+        #return 
+
+    @classmethod 
+    def all():
+        pass
+
+Category.parent_id = db.Column(db.BigInteger, db.ForeignKey(Category.id), nullable=True)
+Category.parent = db.relationship('Category', foreign_keys = 'Category.parent_id')
 
 class Product(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)

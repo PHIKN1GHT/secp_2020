@@ -11,7 +11,8 @@ bp = Blueprint('address',__name__)
 @jwt_required
 def all():
     current_user = get_jwt_identity()
-    addresses = Address.query.filter_by(owner_id=current_user).all()
+    sess = DBSession()
+    addresses = sess.query(Address).filter_by(owner_id=current_user).all()
     addresses = [{'receiver':addr.receiver, 'phonenumber': addr.phonenumber, 'address':addr.address, 'id':addr.id } for addr in addresses]
     return jsonify(addresses), 200
 

@@ -55,7 +55,8 @@ def login():
     
     _, _, username, password = retvs
 
-    user = User.query.filter_by(username=username).first()
+    sess = DBSession()
+    user = sess.query(User).filter_by(username=username).first()
 
     if not user or not cmparePswd(password, user.password):
         session['captcha'] = None
@@ -79,8 +80,8 @@ def loginAs():
         return retvs
     
     _, username = retvs
-
-    user = User.query.filter_by(username=username).first()
+    sess = DBSession()
+    user = sess.query(User).filter_by(username=username).first()
     token = create_access_token(identity=user.id)
     return jsonify(msg="Login successfully as "+user.username,access_token=token), 200
 
