@@ -9,19 +9,15 @@ import datetime
 bp = Blueprint('product',__name__)
 
 # 目前只包含了经理端查看商品列表
-# Tested by Pytest
 @bp.route("/all", methods=['POST'])
-@jwt_required
+@jwt_optional
 def allProduct():
     sess = DBSession()
     current_user = get_jwt_identity()
-    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
-    if not manager:
-        return jsonify({"msg": "Bad manager_id"}), 401
 
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
-    
+
     storehouse_id = request.json.get('storehouse_id')
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
@@ -30,48 +26,45 @@ def allProduct():
     if not storehouse:
         return jsonify({"msg": "Bad storehouseId"}), 401
 
-    products = sess.query(Product).filter_by(storehouse_id=storehouse_id).all()
-    all_products = [(product.id, product.name, product.shelved, product.category) for product in products]
+    if current_user:
+        user = sess.query(User).filter_by(id=current_user).first()
+        if user.isManager:
+            products = sess.query(Product).filter_by(storehouse_id=storehouse_id).all()
+        
+    if not products:
+        products = sess.query(Product).filter_by(storehouse_id=storehouse_id,shelved=True,archived=False).all()
+        
+    all_products = [product.brief() for product in products]
     return jsonify(products=all_products), 200
 
 # 经理端查看商品详情
-# Tested by Pytest
 @bp.route("/detail", methods=['POST'])
-@jwt_required
-def productDatail():
+@jwt_optional
+def productDetail():
     sess = DBSession()
     current_user = get_jwt_identity()
-    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
-    if not manager:
-        return jsonify({"msg": "Bad manager_id"}), 401
-      
+
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
-
-    product_id = request.json.get('product_id')
+    
+    product_id = request.json.get('id')
     if not product_id:
         return jsonify({"msg": "Missing product_id parameter"}), 400
 
-    product = sess.query(Product).filter_by(id=product_id,removed=False).first()
+    product = sess.query(Product).filter_by(id=product_id).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
-
-    description = sess.query(Description).filter_by(product_id=product_id,removed=False).first()
-    if not description:
-        return jsonify({"msg": "Bad description"}), 401
-
-    description_json = [description.title, description.thumbnail, description.remain, description.price,
-     description.htmlDescription, description.active]  
-
+    
     if product.archived:
-        return jsonify(name=product.name, description=description_json, status="Archived"), 200
-    elif product.shelved:
-        return jsonify(name=product.name, description=description_json, status="On shelves"), 200
+        if current_user:
+            user = sess.query(User).filter_by(id=current_user).first()
+            if user and user.isManager:
+                return jsonify(product.detailed()), 200
+        return jsonify({"msg": "No Permission"}), 401
     else:
-        return jsonify(name=product.name, description=description_json, status="Off shelves"), 200
+        return jsonify(product.detailed()), 200
 
 # 经理端创建新产品
-# Tested by Pytest
 @bp.route("/create", methods=['POST'])
 @jwt_required
 def createProduct():
@@ -92,7 +85,7 @@ def createProduct():
     if not category:
         return jsonify({"msg": "Missing category parameter"}), 400
 
-    all_description = request.json.get('description')
+    all_description = request.json.get('despycription')
     if not all_description:
         return jsonify({"msg": "Missing description parameter"}), 400
 

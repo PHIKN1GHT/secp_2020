@@ -19,7 +19,7 @@ def uploadImages():
 @bp.route("/image/<filename>", methods=['GET'])
 def image(filename):
     return send_file(os.path.join('resource', 'image', filename), mimetype='image/png')
-
+'''
 # 给商品列表用
 @bp.route("/productBrief", methods=['POST'])
 def productBrief():
@@ -97,3 +97,5 @@ def articles():
 @bp.route("/article/<name>")
 def article(name):
     pass
+'''
+

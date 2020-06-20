@@ -52,7 +52,7 @@ class Product(db.Model):
     def __repr__(self):
         return '<Product [%r]>' % (self.title)
 
-    def brief():
+    def brief(self):
         return {
             "id": self.id,
             "title": self.title,
@@ -61,7 +61,7 @@ class Product(db.Model):
             "thumbnail": self.thumbnail
         }
 
-    def detailed():
+    def detailed(self):
         return {
             'title': self.title,
             'thumbnail': self.thumbnail,

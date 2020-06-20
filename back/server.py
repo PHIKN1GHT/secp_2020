@@ -32,15 +32,17 @@ DBSession = sessionmaker(bind=db.engine)
 
 services = [
     "service.resource",
-    "service.account",
-    "service.address",
+    "service.account", # FINISHED
+    "service.address", # FINISHED
+    "service.mall",
+    #"service.cart",
+    "service.product",
+    "service.supplierOrder"
 #    "service.admin",
 #    "service.indexing",
 #    "service.fake",
 #    "service.consumption"
 #    "service.manager_business"
-    "service.product",
-    "service.supplierOrder"
 ]
 
 from utils import jwt
