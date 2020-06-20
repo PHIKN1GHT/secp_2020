@@ -34,7 +34,6 @@ export default function LoginPage(props) {
             mode: 'cors', // no-cors, cors, *same-origin
         }).then(response => response.json()
         ).then(json => {
-            console.log(json)
             if (json['result']) {
                 // 成功登录
                 Toast('登陆成功', 500)

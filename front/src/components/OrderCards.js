@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ListItem, List, IconButton } from '@material-ui/core';
 import { server, EQ } from '../pages/Const';
 import Toast from '../components/Toast';
@@ -25,6 +25,7 @@ export default function OrderCards(props) {
         price: Math.ceil(Math.random() * 100) * 0.89,
     })
     const [ordersInfo, setOrderInfo] = useState(orders)
+    const [init, setInit] = useState(true)
     const _token = 'Bearer ' + localStorage.getItem('token').access_token
     const GetOrdersInfo = () => {
         const url = server + '/api/order/all'
@@ -32,7 +33,7 @@ export default function OrderCards(props) {
             credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json',
-                //'Authorization': _token
+                'Authorization': _token
             },
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
@@ -40,9 +41,15 @@ export default function OrderCards(props) {
             .then(json => {
                 console.log(json)
             })
-    };
-    // wait
-    // GetOrdersInfo()
+    }
+    useEffect(() => {
+        if (init) {
+            GetOrdersInfo()
+            setInit(false)
+        } else {
+
+        }
+    }, [])
     const handleChangeOrderStatus = (event) => {
         event.stopPropagation()
         const status = event.currentTarget.getAttribute('status')

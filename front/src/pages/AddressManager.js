@@ -105,9 +105,8 @@ export default function AddressManagerPage(props) {
                 },
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 mode: 'cors', // no-cors, cors, *same-origin
-            }).then(response => { console.log(response); return response.json() })
+            }).then(response => { return response.json() })
                 .then(json => {
-                    console.log(json)
                     if (json['result']) {
                         //修改成功
                         Toast('修改成功', 500)
