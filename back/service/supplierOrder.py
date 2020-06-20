@@ -9,7 +9,7 @@ import datetime
 bp = Blueprint('supplierOrder',__name__)
 
 # 经理端进货订单列表
-# Tested by Postman                                                           
+# Tested by Pytest                                                           
 @bp.route("/all", methods=['POST'])
 @jwt_required
 def allSupplierOrder():
@@ -46,7 +46,7 @@ def allSupplierOrder():
     return jsonify(supplierOrders=all_supplierOrders), 200
 
 # 经理端创建新的进货订单
-# Tested by Postman
+# Tested by Pytest
 @bp.route("/create", methods=['POST'])
 @jwt_required
 def createSupplierOrder():
@@ -71,7 +71,7 @@ def createSupplierOrder():
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
 
-    product = sess.query(Product).filter_by(id=product_id).first()
+    product = sess.query(Product).filter_by(id=product_id, removed=False).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
 
