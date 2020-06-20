@@ -9,7 +9,6 @@ export default function LoginPage(props) {
         // TODO
         // 检测token时效后，有效则跳转
     }
-    const server = 'http://188.131.174.176:8082'
     const captchaURL = server + '/api/account/captcha?' + Date.now()
     const [captchacaptchaTimes, setCaptchaTimes] = useState(0)
     const handleChangeCaptcha = () => {
@@ -33,27 +32,32 @@ export default function LoginPage(props) {
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            // redirect: 'follow', // manual, *follow, error
-            // referrer: 'no-referrer', // *client, no-referrer
         }).then(response => response.json()
         ).then(json => {
-            if (json['result']) {
+            if (json.result) {
                 // 成功登录
                 Toast('登陆成功', 500)
-                localStorage.setItem('access_token', json['access_token'])
+                localStorage.setItem('access_token', json.access_token)
+                localStorage.setItem('user_type', json.user_type)
                 // 检验账号类型
                 // TODO
-                switch (json['type']) {
-                    case '':
+                switch (json['user_type']) {
+                    // 仓库经理
+                    case 'manager':
                         break;
-                    default:
+                    // 仓库管理员
+                    case 'operator':
+                        break;
+                    // 普通用户
+                    case 'customer':
                         props.history.push({ pathname: '/mainpage' })
                         break;
+                    default: break;
                 }
             }
             else {
                 //失败
-                Toast('登陆失败，请检查用户名和密码是否正确', 500)
+                Toast('登陆失败', 500)
                 handleChangeCaptcha()
             }
         })

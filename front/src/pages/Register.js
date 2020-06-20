@@ -33,13 +33,12 @@ export default function RegisterPage(props) {
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
         }).then(response => response.json()) // parses response to JSON 
             .then(json => {
                 if (json['result']) {
                     // 成功注册
-                    localStorage.setItem('token', json['token'])
+                    localStorage.setItem('access_token', json.access_token)
+                    localStorage.setItem('user_type', 'customer')
                     Toast('注册成功', 500)
                     props.history.push({ pathname: '/mainpage' })
                 }

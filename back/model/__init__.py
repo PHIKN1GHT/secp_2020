@@ -49,11 +49,14 @@ class Order(db.Model):
     virtual = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     createTime = db.Column(db.DateTime)
     paid = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    processed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    accepted = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    delivered = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     archived = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     belonging_id = db.Column(db.BigInteger, db.ForeignKey("order.id"), nullable=True)
     belonging = db.relationship('Order', foreign_keys='Order.belonging_id')
+    address_id = db.Column(db.BigInteger, db.ForeignKey("address.id"), nullable=True)
+    address = db.relationship('Order', foreign_keys='Order.address_id')
 
     def __init__(self, creator_id, storehouse_id, virtual=True):
         self.creator_id = creator_id
@@ -113,6 +116,7 @@ class SupplierOrder(db.Model):
     confirmed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     rejected = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    rejectReason = db.Column(db.String(64), unique=True, index=True, nullable=True)
 
     def __init__(self, creator_id):
         self.creator_id = creator_id

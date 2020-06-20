@@ -6,10 +6,14 @@ import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import { server } from './Const';
+import Toast from '../components/Toast';
 export default function UserInfoCard(props) {
     const [username, setUsername] = useState('default')
     const [avaterURL, setAvaterURL] = useState(
         'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
+    const _token = 'Bearer ' + localStorage.getItem('access_token')
     const handleJumptoOrdersPage = (event) => {
         let tmpTarget = Object.assign(event.target)
         let type = tmpTarget.getAttribute('type')
@@ -23,6 +27,27 @@ export default function UserInfoCard(props) {
     }
     const handleJumptoAddressPage = (event) => {
         props.history.push({ pathname: '/address', state: { mes: 'a' } })
+    }
+    const handleLogout = () => {
+        const url = server + '/api/account/logout'
+        fetch(url, {
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'include', // include, same-origin, *omit
+            headers: {
+                'Authorization': _token
+            },
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+        }).then(response => response.json())
+            .then(json => {
+                if (json.result) {
+                    Toast('成功退出登录', 500)
+                    localStorage.removeItem('access_token')
+                    props.history.push({ pathname: '/login' })
+                } else {
+                    Toast('退出登录失败', 500)
+                }
+            })
     }
     return (<>
         <div className='user-info'>
@@ -65,9 +90,14 @@ export default function UserInfoCard(props) {
                         <div className='main'>收货地址</div>
                         <ChevronRightIcon className='icon' />
                     </div>
+                    <div className='log-out' onClick={handleLogout}>
+                        <PowerSettingsNewIcon className='icon' />
+                        <div className='text'>退出登录</div>
+                    </div>
                 </div>
             </div>
-            <div className='bottom'><BottomNavBarForCustomer /></div>
+            <div className='bottom'><BottomNavBarForCustomer />
+            </div>
         </div>
     </>)
 }
