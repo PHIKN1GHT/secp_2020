@@ -32,12 +32,18 @@ class Category(db.Model):
     
     def children(self):
         sess = DBSession()
-        pass
+        categories = sess.query(Category).filter_by(parent_id=self.id).all()
+        return [category.title for category in categories]
         #return 
 
     @classmethod 
-    def all():
-        pass
+    def all(cls):
+        sess = DBSession()
+        categories = sess.query(Category).filter_by(parent_id=None).all()
+        total = {}
+        for category in categories:
+            total[category.title] = category.children()
+        return total
 
 Category.parent_id = db.Column(db.BigInteger, db.ForeignKey(Category.id), nullable=True)
 Category.parent = db.relationship('Category', foreign_keys = 'Category.parent_id')
@@ -50,17 +56,18 @@ class Product(db.Model):
     remain = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     price = db.Column(db.Numeric(10,2), unique=False, nullable=False, default=0)
     unit = db.Column(db.String(16), unique=False, nullable=False, default="")
-    category = db.Column(db.BigInteger, nullable=False, default=0)
 
     shelved = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     archived = db.Column(db.Boolean, unique=False, nullable=False, default=False)
 
-    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
+    category_id = db.Column(db.BigInteger, db.ForeignKey(Category.id), nullable=False, unique=False)
+    category = db.relationship('Category', foreign_keys = 'Product.category_id')
+    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False, unique=False)
     storehouse = db.relationship('Storehouse', foreign_keys = 'Product.storehouse_id')
 
-    def __init__(self, title, category, storehouse_id):
+    def __init__(self, title, category_id, storehouse_id):
         self.title = title
-        self.category = category
+        self.category_id = category_id
         self.storehouse_id = storehouse_id
         
     def update(self, dictdata):

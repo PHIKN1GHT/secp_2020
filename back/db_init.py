@@ -5,7 +5,7 @@ import model, random
 from model import *
 import random
 
-def create_initial_accounts():
+def add_initial_accounts():
     db.session.add(User('SYSTEM').setPassword(SECRETKEY).setVisible(False))
     db.session.add(User(OPERATORNAME).setPassword(OPERATORPSWD).setVisible(False))
     db.session.add(User('10109062').setPassword('12345678').setIsManager(True))
@@ -16,6 +16,36 @@ def create_initial_accounts():
         name = 'User'+word
         db.session.add(User(name).setPassword('12345678'))
         db.session.commit()
+
+def add_storehouse():
+    words = ['黄浦区','徐汇区','长宁区','静安区','普陀区','虹口区','杨浦区','浦东新区','闵行区','奉贤区']
+    for word in words:
+        name = word+' 仓库'
+        address = 'address_'+word
+        phone = 'phone_'+word
+        db.session.add(Storehouse(name,address,phone,3))
+        db.session.commit()
+
+def add_catagories():
+    catagories = {
+        '时令水果': ['瓜类', '柑橘柚橙', '浆果莓类', '热带水果'],
+        '蔬菜菌菇': ['特色鲜蔬', '豆类', '叶菜', '南北干货'],
+        '肉蛋水产': ['猪肉', '牛肉', '禽肉', '蛋类'], 
+        '乳品烘焙': ['西式面包', '冰激凌', '乳酸饮料', '冷藏鲜奶'],
+    }
+    for k, v in catagories.items():
+        cate = Category(k)
+        db.session.add(cate)
+        db.session.commit()
+        for subitem in v:
+            db.session.add(Category(subitem, cate.id))
+            db.session.commit()
+
+def init_database():
+    add_initial_accounts()
+    add_storehouse()
+    add_catagories()
+
 
 #alphabet_shelved
 def add_test_product():
@@ -33,15 +63,6 @@ def add_test_product():
         db.session.commit()
     db.session.add(Product('nodes',0,1))
     db.session.commit()
-
-def add_test_storehouse():
-    words = '0123456789'
-    for word in words:
-        name = 'storehouse'+word
-        address = 'address'+word
-        phone = 'phone'+word
-        db.session.add(Storehouse(name,address,phone,3))
-        db.session.commit()
 
 def add_test_order():
     creator_id=random.randint(5,14)
@@ -61,10 +82,14 @@ def add_test_supplierOrder():
         db.session.add(sup)
         db.session.commit()
 
-
 if __name__ == '__main__':
-    create_initial_accounts()
-    add_test_storehouse()
+    init_database()
+    #create_catagories()
+    #print(Category.all())
+    #print(Category.query.filter_by(title="乳品烘焙").first().children())
+    #create_initial_accounts()
+    
+    #add_test_storehouse()
     # add_test_product()
     
     # add_test_order()

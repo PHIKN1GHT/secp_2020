@@ -132,9 +132,9 @@ def identity():
 def state():
     current_user = get_jwt_identity()
     if current_user:
-        return jsonify(logged_in_as_user=current_user), 200
+        return jsonify(logged_in_as=current_user), 200
     else:
-        return jsonify(logged_in_as_anonymous='anonymous user'), 200
+        return jsonify(logged_in_as='anonymous user'), 200
 
 
 @bp.route("/changepswd", methods=['POST'])
