@@ -74,9 +74,64 @@ def createSupplierOrder():
     product = sess.query(Product).filter_by(id=product_id, removed=False).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
-
+    
     supplierOrder = SupplierOrder(current_user)
     supplierOrder.fill(product_id,storehouse_id,count)
     sess.add(supplierOrder)
     sess.commit()
     return jsonify(supplierOrderId=supplierOrder.id), 200
+
+# 管理员端确认进货订单
+@bp.route("/confirm", methods=['POST'])
+@jwt_required
+def confirmSupplierOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+    operator = sess.query(User).filter_by(id=current_user,isOperator=True).first()
+    if not operator:
+        return jsonify({"msg": "Bad operator_id"}), 401
+
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    supplierOrder_id = request.json.get('supplierOrder_id')
+    if not supplierOrder_id:
+        return jsonify({"msg": "Missing supplierOrder_id parameter"}), 400
+
+    supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,accepted=True,delivered=True,rejected=False,cancelled=False).first()
+    if not supplierOrder:
+        return jsonify({"msg": "Bad supplierOrderId"}), 401
+
+    supplierOrder.confirmed = True
+    sess.commit()
+    return jsonify(isConfirmed=True), 200
+
+# 管理员端拒接进货订单
+@bp.route("/reject", methods=['POST'])
+@jwt_required
+def rejectSupplierOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+    operator = sess.query(User).filter_by(id=current_user,isOperator=True).first()
+    if not operator:
+        return jsonify({"msg": "Bad operator_id"}), 401
+
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    supplierOrder_id = request.json.get('supplierOrder_id')
+    if not supplierOrder_id:
+        return jsonify({"msg": "Missing supplierOrder_id parameter"}), 400
+
+    reason = request.json.get('reason')
+    if not reason:
+        return jsonify({"msg": "Missing reason parameter"}), 400
+
+    supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,accepted=True,delivered=True,confirmed=False,cancelled=False).first()
+    if not supplierOrder:
+        return jsonify({"msg": "Bad supplierOrderId"}), 401
+
+    supplierOrder.rejected = True
+    supplierOrder.rejectReason = reason
+    sess.commit()
+    return jsonify(isRejected=True), 200

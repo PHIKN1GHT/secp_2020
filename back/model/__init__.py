@@ -113,6 +113,7 @@ class SupplierOrder(db.Model):
     confirmed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     rejected = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    rejectReason = db.Column(db.String(64), unique=True, index=True, nullable=True)
 
     def __init__(self, creator_id):
         self.creator_id = creator_id
