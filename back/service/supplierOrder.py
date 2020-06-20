@@ -89,7 +89,7 @@ def confirmSupplierOrder():
     current_user = get_jwt_identity()
     operator = sess.query(User).filter_by(id=current_user,isOperator=True).first()
     if not operator:
-        return jsonify({"msg": "Bad operator_id"}), 401
+        return jsonify({"msg": "No Permission"}), 401
 
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -100,7 +100,7 @@ def confirmSupplierOrder():
 
     supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,accepted=True,delivered=True,rejected=False,cancelled=False).first()
     if not supplierOrder:
-        return jsonify({"msg": "Bad supplierOrderId"}), 401
+        return jsonify({"msg": "Bad supplierOrder_id"}), 401
 
     supplierOrder.confirmed = True
     sess.commit()
@@ -114,7 +114,7 @@ def rejectSupplierOrder():
     current_user = get_jwt_identity()
     operator = sess.query(User).filter_by(id=current_user,isOperator=True).first()
     if not operator:
-        return jsonify({"msg": "Bad operator_id"}), 401
+        return jsonify({"msg": "No Permission"}), 401
 
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -129,7 +129,7 @@ def rejectSupplierOrder():
 
     supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,accepted=True,delivered=True,confirmed=False,cancelled=False).first()
     if not supplierOrder:
-        return jsonify({"msg": "Bad supplierOrderId"}), 401
+        return jsonify({"msg": "Bad supplierOrder_id"}), 401
 
     supplierOrder.rejected = True
     supplierOrder.rejectReason = reason
