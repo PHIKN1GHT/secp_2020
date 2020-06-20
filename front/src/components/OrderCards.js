@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ListItem, List, IconButton } from '@material-ui/core';
-
+import { server, EQ } from '../pages/Const';
+import Toast from '../components/Toast';
 
 export default function OrderCards(props) {
     let orders = []
@@ -24,8 +25,33 @@ export default function OrderCards(props) {
         price: Math.ceil(Math.random() * 100) * 0.89,
     })
     const [ordersInfo, setOrderInfo] = useState(orders)
+    const GetOrdersInfo = () => {
+        const url = server + '/api/order/all'
+        fetch(url, {
+            credentials: 'include', // include, same-origin, *omit
+            headers: {
+                'content-type': 'application/json',
+                //'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+            },
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+        }).then(response => response.json())
+            .then(json => {
+                console.log(json)
+            })
+    };
+    // wait
+    // GetOrdersInfo()
     const handleChangeOrderStatus = (event) => {
         event.stopPropagation()
+        const status = event.currentTarget.getAttribute('status')
+        if (status === '待付款') {
+            Toast('付款！', 500)
+        } else if (status === '待发货') {
+            Toast('催货成功！', 500)
+        } else if (status === '待收货') {
+            Toast('收货成功！', 500)
+        }
     }
     const handleJumptoOrderDetail = (event) => {
         let i = 0
@@ -54,6 +80,7 @@ export default function OrderCards(props) {
                                         <div className='button-box'>
                                             <IconButton className='button'
                                                 variant='text' size='small'
+                                                status={val.status}
                                                 onClick={handleChangeOrderStatus}>
                                                 {
                                                     val.status === '待付款' ?

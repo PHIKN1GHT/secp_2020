@@ -9,7 +9,6 @@ export default function LoginPage(props) {
         // TODO
         // 检测token时效后，有效则跳转
     }
-    const server = 'http://188.131.174.176:8082'
     const captchaURL = server + '/api/account/captcha?' + Date.now()
     const [captchacaptchaTimes, setCaptchaTimes] = useState(0)
     const handleChangeCaptcha = () => {
@@ -53,7 +52,7 @@ export default function LoginPage(props) {
             }
             else {
                 //失败
-                Toast('登陆失败，请检查用户名和密码是否正确', 500)
+                Toast('登陆失败', 500)
                 handleChangeCaptcha()
             }
         })

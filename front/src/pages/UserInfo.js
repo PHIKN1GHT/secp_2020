@@ -6,6 +6,7 @@ import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 export default function UserInfoCard(props) {
     const [username, setUsername] = useState('default')
     const [avaterURL, setAvaterURL] = useState(
@@ -23,6 +24,10 @@ export default function UserInfoCard(props) {
     }
     const handleJumptoAddressPage = (event) => {
         props.history.push({ pathname: '/address', state: { mes: 'a' } })
+    }
+    const handleLogout = () => {
+        localStorage.removeItem('access_token')
+        props.history.push({ pathname: '/login' })
     }
     return (<>
         <div className='user-info'>
@@ -65,9 +70,14 @@ export default function UserInfoCard(props) {
                         <div className='main'>收货地址</div>
                         <ChevronRightIcon className='icon' />
                     </div>
+                    <div className='log-out' onClick={handleLogout}>
+                        <PowerSettingsNewIcon className='icon' />
+                        <div className='text'>退出登录</div>
+                    </div>
                 </div>
             </div>
-            <div className='bottom'><BottomNavBarForCustomer /></div>
+            <div className='bottom'><BottomNavBarForCustomer />
+            </div>
         </div>
     </>)
 }
