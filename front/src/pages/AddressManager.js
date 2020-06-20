@@ -1,34 +1,34 @@
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import React, { useState, useEffect, useRef } from 'react';
 import { IconButton, ListItemAvatar, Avatar, List, ListItem, Tooltip, DialogTitle, Dialog, DialogContent, DialogContentText, DialogActions, Button, TextField } from '@material-ui/core';
-import { server } from './Const';
+import { server, EQ } from './Const';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 
 export default function AddressManagerPage(props) {
-    let tmpAaddrs = []
-    for (let i = 0; i < 5; ++i) {
-        tmpAaddrs.push({
-            number: i,
-            id: i + 1,
-            addr: '上海市奉贤区xx路xx号',
-            receiver: '张三',
-            phone: Math.random()
-        })
-    }
-    const [addrs, setAddrs] = useState(tmpAaddrs)
+    // let tmpAaddrs = []
+    // for (let i = 0; i < 5; ++i) {
+    //     tmpAaddrs.push({
+    //         number: i,
+    //         id: i + 1,
+    //         addr: '上海市奉贤区xx路xx号',
+    //         receiver: '张三',
+    //         phone: Math.random()
+    //     })
+    // }
+    const [addrs, setAddrs] = useState([])
     const [openDia, setOpenDia] = useState(false)
     const [selectInd, setSelectInd] = useState(-1)
     const [diaType, setDiaType] = useState('null')
-    useEffect(() => {
+    const GetAddrData = () => {
         const url = server + '/api/address/all'
         fetch(url, { // must match 'Content-Type' header
             credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json',
-                'Authorization': localStorage.getItem('access_token')
+                'Authorization': 'Bearer ' + localStorage.getItem('access_token')
             },
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
@@ -37,22 +37,27 @@ export default function AddressManagerPage(props) {
         }).then(response => response.json())
             .then(json => {
                 console.log(json)
-                // 等待后端修复
-                // setAddrs(() => {
-                //     let tmp = []
-                //     json.map((val, ind) => {
-                //         tmp.push({
-                //             number: ind,
-                //             id: val['id'],
-                //             addr: val['address'],
-                //             phone: val['phonenumber'],
-                //             receiver: val['receiver']
-                //         })
-                //     })
-                //     return tmp
-                // })
+                //如果是数组
+                if (json instanceof Array) {
+                    setAddrs((prevState) => {
+                        let tmp = []
+                        json.map((val, ind) => {
+                            tmp.push({
+                                number: ind,
+                                id: val['id'],
+                                addr: val['address'],
+                                phone: val['phonenumber'],
+                                receiver: val['receiver']
+                            })
+                        })
+                        if (!EQ(prevState, tmp))
+                            return tmp
+                        else return prevState
+                    })
+                }
             })
-    })
+    }
+    GetAddrData()
     const handleGoBack = (event) => {
         props.history.goBack()
     }
