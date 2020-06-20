@@ -11,7 +11,7 @@ def test_allSupplierOrder_failed_wrong_manager_id(client):
     global wrong_token
     response = client.post('/api/account/loginAs', json={
         "username": 10130497
-    }, headers={'Origin': 'SALT'})
+    })
     wrong_token = response.json['access_token']
     response = client.post('/api/supplierOrder/all',headers={
         'Authorization': 'Bearer '+ wrong_token,
@@ -22,7 +22,7 @@ def test_allSupplierOrder_success(client):
     global token
     response = client.post('/api/account/loginAs', json={
         "username": 10109062
-    }, headers={'Origin': 'SALT'})
+    })
     token = response.json['access_token']
     response = client.post('/api/supplierOrder/all',headers={
         'Authorization': 'Bearer '+ token,
@@ -33,20 +33,17 @@ def test_allSupplierOrder_success(client):
 # Test createSupplierOrder()
 def test_createSupplierOrder_failed_wrong_manager_id(client):
     response = client.post('/api/supplierOrder/create',headers={
-        'Authorization': 'Bearer '+ wrong_token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ wrong_token})
     assert b'Bad manager_id' in response.data
 
 def test_createSupplierOrder_failed_no_json(client):
     response = client.post('/api/supplierOrder/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ token})
     assert b'Missing JSON in request' in response.data
 
 def test_createSupplierOrder_failed_no_product_id(client):
     response = client.post('/api/supplierOrder/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product":3
     })
@@ -54,8 +51,7 @@ def test_createSupplierOrder_failed_no_product_id(client):
 
 def test_createSupplierOrder_failed_no_count(client):
     response = client.post('/api/supplierOrder/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":3
     })
@@ -63,8 +59,7 @@ def test_createSupplierOrder_failed_no_count(client):
 
 def test_createSupplierOrder_failed_no_storehouse_id(client):
     response = client.post('/api/supplierOrder/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":3,
         "count":100
@@ -73,8 +68,7 @@ def test_createSupplierOrder_failed_no_storehouse_id(client):
 
 def test_createSupplierOrder_failed_bad_productId(client):
     response = client.post('/api/supplierOrder/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":14,
         "count":100,
@@ -84,8 +78,7 @@ def test_createSupplierOrder_failed_bad_productId(client):
 
 def test_createSupplierOrder_success(client):
     response = client.post('/api/supplierOrder/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":5,
         "count":100,
