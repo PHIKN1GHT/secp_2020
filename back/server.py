@@ -19,12 +19,9 @@ app.config['JWT_SECRET_KEY'] = SECRETKEY
     
 @app.after_request
 def cors(environ):
-    if 'Origin' in request.headers:
-        environ.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
-    else:
-        environ.headers['Access-Control-Allow-Origin'] = '*'
+    environ.headers['Access-Control-Allow-Origin'] = request.headers['Origin'] if 'Origin' in request.headers else '*'
     environ.headers['Access-Control-Allow-Method'] = '*'
-    environ.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type,authorization'
+    environ.headers['Access-Control-Allow-Headers'] = '*'
     environ.headers['Access-Control-Allow-Credentials'] = 'true'
     return environ
 

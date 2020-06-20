@@ -1,25 +1,9 @@
 from model.account import *
+from model.product import *
 
 from server import db
 from utils import encodePswd, tryLookUp
 import datetime
-
-
-class Storehouse(db.Model):
-    id = db.Column(db.BigInteger, primary_key=True)
-    name = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    address = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
-    manager = db.relationship('User', foreign_keys = 'Storehouse.manager_id')
-
-    def __init__(self, name, address, phoneNumber):
-        self.name = name
-        self.address = address
-        self.phoneNumber = phoneNumber
-
-    def __repr__(self):
-        return '<Storehouse [%r] (%r)>' % (self.name)
 
 class Permission(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
@@ -30,59 +14,6 @@ class Permission(db.Model):
 
     def __repr__(self):
         return '<Permission [%r]>' % (self.name)
-
-class Product(db.Model):
-    id = db.Column(db.BigInteger, primary_key=True)
-    name = db.Column(db.String(64), unique=False)
-    category = db.Column(db.BigInteger, nullable=False, default=0)
-    # 是否上架
-    shelved = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    # 是否归档（无效化）
-    archived = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    removed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
-    storehouse = db.relationship('Storehouse', foreign_keys = 'Product.storehouse_id')
-
-    def __init__(self, name, category, storehouse_id):
-        self.name = name
-        self.storehouse_id = storehouse_id
-        self.category = category
-
-    def modify(self, jsondata):
-        self.shelved = tryLookUp(jsondata, 'shelved', False)
-        self.archived = tryLookUp(jsondata, 'archived', False)
-        self.removed = tryLookUp(jsondata, 'removed', False)
-
-    def __repr__(self):
-        return '<Product %r>' % (self.name)
-
-class Description(db.Model):
-    id = db.Column(db.BigInteger, primary_key=True)
-    title = db.Column(db.UnicodeText, unique=False, nullable=False, default="")
-    thumbnail = db.Column(db.String(256), unique=False, nullable=True, default="")
-    remain = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    price = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    limit = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    htmlDescription = db.Column(db.UnicodeText, unique=False, nullable=False, default="")
-    removed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    active = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    product_id = db.Column(db.BigInteger, db.ForeignKey(Product.id), nullable=True)
-    product = db.relationship('Product', foreign_keys = 'Description.product_id')
-
-    def __init__(self, jsondata, product_id):
-        self.product_id = product_id
-        self.modify(jsondata)
-
-    def modify(self, jsondata):
-        self.title = tryLookUp(jsondata, 'title')
-        self.thumbnail = tryLookUp(jsondata, 'thumbnail')
-        self.remain = tryLookUp(jsondata, 'remain', 0)
-        self.price = tryLookUp(jsondata, 'price', 0)
-        self.limit = tryLookUp(jsondata, 'limit', 0)
-        self.htmlDescription = tryLookUp(jsondata, 'htmlDescription')
-
-    def __repr__(self):
-        return '<Description of [%r]>' % (self.name)
 
 class Cart(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)

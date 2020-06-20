@@ -3,7 +3,7 @@ from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
 import io
-from model import Storehouse, User, Product, Description, Order
+from model import Storehouse, User, Product, Order
 import datetime
 
 bp = Blueprint('product',__name__)

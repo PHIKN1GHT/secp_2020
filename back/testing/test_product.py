@@ -39,8 +39,8 @@ def test_allProduct_failed_no_storehouse_id(client):
 
 def test_allProduct_failed_wrong_storehouse_id(client):
     response = client.post('/api/product/all',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token
+        },
     json={
         "storehouse_id":99
     })

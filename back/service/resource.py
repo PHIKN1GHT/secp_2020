@@ -2,7 +2,7 @@ from server import app
 from flask import render_template, send_file, Blueprint, request, jsonify
 from PIL import Image
 import os, uuid
-from model import User, Product, Description
+from model import User, Product
 
 bp = Blueprint('resource',__name__)
 
