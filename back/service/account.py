@@ -4,6 +4,7 @@ from utils import captcha, cmparePswd, invalid, invalidate, Pipeline, ensureJson
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
 import io
 from model import User
+import datetime
 
 bp = Blueprint('account',__name__)
 
@@ -62,7 +63,8 @@ def login():
         session['captcha'] = None
         return jsonify(result=False,reason="Bad username or password"), 401
     
-    token = create_access_token(identity=user.id)
+    expires = datetime.timedelta(days=1)
+    token = create_access_token(identity=user.id, expires_delta=expires)
     session['captcha'] = None
     return jsonify(result=True,access_token=token), 200
 
@@ -85,11 +87,11 @@ def loginAs():
     token = create_access_token(identity=user.id)
     return jsonify(msg="Login successfully as "+user.username,access_token=token), 200
 
-@bp.route("/logout", methods=['POST'])
+@bp.route("/logout")
 @jwt_required
 def logout():
     invalidate(get_raw_jwt())
-    return jsonify({"msg": "Successfully logged out"}), 200
+    return jsonify(result=True, msg="Successfully logged out"), 200
 
 @bp.route("/identity")
 @jwt_required

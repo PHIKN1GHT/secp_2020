@@ -16,7 +16,7 @@ def all():
     addresses = [{'receiver':addr.receiver, 'phonenumber': addr.phonenumber, 'address':addr.address, 'id':addr.id } for addr in addresses]
     return jsonify(addresses), 200
 
-@bp.route("/add")
+@bp.route("/add", methods=['POST'])
 @jwt_required
 def add():
     current_user = get_jwt_identity()
@@ -42,7 +42,7 @@ def add():
         sess.commit()
     return jsonify(result=True,id=addr.id), 200
 
-@bp.route("/del")
+@bp.route("/del", methods=['POST'])
 @jwt_required
 def delete():
     current_user = get_jwt_identity()
@@ -69,7 +69,7 @@ def delete():
         return jsonify(result=True), 200
     return jsonify(result=False,reson="BAD ADDRESS ID"), 200
 
-@bp.route("/update")
+@bp.route("/update", methods=['POST'])
 @jwt_required
 def update():
     current_user = get_jwt_identity()
