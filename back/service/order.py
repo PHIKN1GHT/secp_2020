@@ -91,7 +91,6 @@ def acceptOrder():
 
         else:
             return jsonify({"msg": "No Permission"}), 403
-
     else:
         return jsonify({"msg": "Please login"}), 401
 
@@ -112,7 +111,7 @@ def deliverOrder():
             if not order_id:
                 return jsonify({"msg": "Missing order_id parameter"}), 400
 
-            order = sess.query(Order).filter_by(id=order_id,paid=True,accepted=True,delivered=False,virtual=True).first()
+            order = sess.query(Order).filter_by(id=order_id,accepted=True,delivered=False,virtual=True).first()
             if not order:
                 return jsonify({"msg": "Bad order_id"}), 401
             
@@ -122,6 +121,5 @@ def deliverOrder():
 
         else:
             return jsonify({"msg": "No Permission"}), 403
-
     else:
         return jsonify({"msg": "Please login"}), 401

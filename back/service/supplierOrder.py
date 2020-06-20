@@ -87,24 +87,29 @@ def createSupplierOrder():
 def confirmSupplierOrder():
     sess = DBSession()
     current_user = get_jwt_identity()
-    operator = sess.query(User).filter_by(id=current_user,isOperator=True).first()
-    if not operator:
-        return jsonify({"msg": "No Permission"}), 401
+    
+    if current_user:
+        user = sess.query(User).filter_by(id=current_user).first()
+        if user.isOperator:
+            if not request.is_json:
+                return jsonify({"msg": "Missing JSON in request"}), 400
 
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
+            supplierOrder_id = request.json.get('supplierOrder_id')
+            if not supplierOrder_id:
+                return jsonify({"msg": "Missing supplierOrder_id parameter"}), 400
 
-    supplierOrder_id = request.json.get('supplierOrder_id')
-    if not supplierOrder_id:
-        return jsonify({"msg": "Missing supplierOrder_id parameter"}), 400
+            supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,delivered=True,confirmed=False,rejected=False,cancelled=False).first()
+            if not supplierOrder:
+                return jsonify({"msg": "Bad supplierOrder_id"}), 401
 
-    supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,accepted=True,delivered=True,rejected=False,cancelled=False).first()
-    if not supplierOrder:
-        return jsonify({"msg": "Bad supplierOrder_id"}), 401
+            supplierOrder.confirmed = True
+            sess.commit()
+            return jsonify(isConfirmed=True), 200
 
-    supplierOrder.confirmed = True
-    sess.commit()
-    return jsonify(isConfirmed=True), 200
+        else:
+            return jsonify({"msg": "No Permission"}), 403
+    else:
+        return jsonify({"msg": "Please login"}), 401
 
 # 管理员端拒接进货订单
 @bp.route("/reject", methods=['POST'])
@@ -112,26 +117,31 @@ def confirmSupplierOrder():
 def rejectSupplierOrder():
     sess = DBSession()
     current_user = get_jwt_identity()
-    operator = sess.query(User).filter_by(id=current_user,isOperator=True).first()
-    if not operator:
-        return jsonify({"msg": "No Permission"}), 401
 
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
+    if current_user:
+        user = sess.query(User).filter_by(id=current_user).first()
+        if user.isOperator:
+            if not request.is_json:
+                return jsonify({"msg": "Missing JSON in request"}), 400
 
-    supplierOrder_id = request.json.get('supplierOrder_id')
-    if not supplierOrder_id:
-        return jsonify({"msg": "Missing supplierOrder_id parameter"}), 400
+            supplierOrder_id = request.json.get('supplierOrder_id')
+            if not supplierOrder_id:
+                return jsonify({"msg": "Missing supplierOrder_id parameter"}), 400
 
-    reason = request.json.get('reason')
-    if not reason:
-        return jsonify({"msg": "Missing reason parameter"}), 400
+            reason = request.json.get('reason')
+            if not reason:
+                return jsonify({"msg": "Missing reason parameter"}), 400
 
-    supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,accepted=True,delivered=True,confirmed=False,cancelled=False).first()
-    if not supplierOrder:
-        return jsonify({"msg": "Bad supplierOrder_id"}), 401
+            supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,delivered=True,confirmed=False,rejected=False,cancelled=False).first()
+            if not supplierOrder:
+                return jsonify({"msg": "Bad supplierOrder_id"}), 401
 
-    supplierOrder.rejected = True
-    supplierOrder.rejectReason = reason
-    sess.commit()
-    return jsonify(isRejected=True), 200
+            supplierOrder.rejected = True
+            supplierOrder.rejectReason = reason
+            sess.commit()
+            return jsonify(isRejected=True), 200
+
+        else:
+            return jsonify({"msg": "No Permission"}), 403
+    else:
+        return jsonify({"msg": "Please login"}), 401
