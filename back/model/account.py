@@ -25,6 +25,14 @@ class User(db.Model):
         self.visible = visible
         return self
 
+    def setIsManager(self, isManager):
+        self.isManager = isManager
+        return self
+
+    def setIsOperator(self, isOperator):
+        self.isOperator = isOperator
+        return self
+
     def getUserType(self):
         if self.isManager:
             return 'manager'

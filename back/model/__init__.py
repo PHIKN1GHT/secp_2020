@@ -13,10 +13,11 @@ class Storehouse(db.Model):
     manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
     manager = db.relationship('User', foreign_keys = 'Storehouse.manager_id')
 
-    def __init__(self, name, address, phoneNumber):
+    def __init__(self, name, address, phoneNumber, manager_id):
         self.name = name
         self.address = address
         self.phoneNumber = phoneNumber
+        self.manager_id = manager_id
 
     def __repr__(self):
         return '<Storehouse [%r] (%r)>' % (self.name)
@@ -124,17 +125,17 @@ class Order(db.Model):
     belonging_id = db.Column(db.BigInteger, db.ForeignKey("order.id"), nullable=True)
     belonging = db.relationship('Order', foreign_keys='Order.belonging_id')
 
-    def __init__(self, creator_id, virtual=True):
+    def __init__(self, creator_id, storehouse_id, virtual=True):
         self.creator_id = creator_id
+        self.storehouse_id = storehouse_id
         self.virtual = virtual
         self.createTime = datetime.datetime.now()
     
-    def fill(self, product_id, count, monoprice, storehouse_id, belonging_id=None):
+    def fill(self, product_id, count, monoprice, belonging_id=None):
         self.virtual = False
         self.product_id = product_id
         self.count = count
         self.monoprice = monoprice
-        self.storehouse_id = storehouse_id
         self.belonging_id = belonging_id
 
     def cost(self):
