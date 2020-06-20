@@ -32,22 +32,30 @@ export default function LoginPage(props) {
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            // redirect: 'follow', // manual, *follow, error
-            // referrer: 'no-referrer', // *client, no-referrer
         }).then(response => response.json()
         ).then(json => {
+            console.log(json)
             if (json['result']) {
                 // 成功登录
                 Toast('登陆成功', 500)
-                localStorage.setItem('access_token', json['access_token'])
+                localStorage.setItem('token', {
+                    access_token: json.access_token,
+                    user_type: json.user_type
+                })
                 // 检验账号类型
                 // TODO
-                switch (json['type']) {
-                    case '':
+                switch (json['user_type']) {
+                    // 仓库经理
+                    case 'manager':
                         break;
-                    default:
+                    // 仓库管理员
+                    case 'operator':
+                        break;
+                    // 普通用户
+                    case 'customer':
                         props.history.push({ pathname: '/mainpage' })
                         break;
+                    default: break;
                 }
             }
             else {

@@ -25,13 +25,14 @@ export default function OrderCards(props) {
         price: Math.ceil(Math.random() * 100) * 0.89,
     })
     const [ordersInfo, setOrderInfo] = useState(orders)
+    const _token = 'Bearer ' + localStorage.getItem('token').access_token
     const GetOrdersInfo = () => {
         const url = server + '/api/order/all'
         fetch(url, {
             credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json',
-                //'Authorization': 'Bearer ' + localStorage.getItem('access_token')
+                //'Authorization': _token
             },
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
