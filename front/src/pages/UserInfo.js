@@ -13,7 +13,7 @@ export default function UserInfoCard(props) {
     const [username, setUsername] = useState('default')
     const [avaterURL, setAvaterURL] = useState(
         'https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture')
-    const _token = 'Bearer ' + localStorage.getItem('token').access_token
+    const _token = 'Bearer ' + localStorage.getItem('access_token')
     const handleJumptoOrdersPage = (event) => {
         let tmpTarget = Object.assign(event.target)
         let type = tmpTarget.getAttribute('type')
@@ -34,7 +34,7 @@ export default function UserInfoCard(props) {
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'include', // include, same-origin, *omit
             headers: {
-                'Authorization': 'Bearer ' + _token
+                'Authorization': _token
             },
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
@@ -42,12 +42,12 @@ export default function UserInfoCard(props) {
             .then(json => {
                 if (json.result) {
                     Toast('成功退出登录', 500)
+                    localStorage.removeItem('access_token')
+                    props.history.push({ pathname: '/login' })
                 } else {
                     Toast('退出登录失败', 500)
                 }
             })
-        localStorage.removeItem('access_token')
-        props.history.push({ pathname: '/login' })
     }
     return (<>
         <div className='user-info'>
