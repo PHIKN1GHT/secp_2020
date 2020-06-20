@@ -10,28 +10,25 @@ def test_allProduct_failed_wrong_manager_id(client):
     global wrong_token
     response = client.post('/api/account/loginAs', json={
         "username": 10130497
-    }, headers={'Origin': 'SALT'})
+    })
     wrong_token = response.json['access_token']
     response = client.post('/api/product/all',headers={
-        'Authorization': 'Bearer '+ wrong_token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ wrong_token})
     assert b'Bad manager_id' in response.data
 
 def test_allProduct_failed_no_json(client):
     global token
     response = client.post('/api/account/loginAs', json={
         "username": 10109062
-    }, headers={'Origin': 'SALT'})
+    })
     token = response.json['access_token']
     response = client.post('/api/product/all',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ token})
     assert b'Missing JSON in request' in response.data
 
 def test_allProduct_failed_no_storehouse_id(client):
     response = client.post('/api/product/all',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "storehouse":1
     })
@@ -48,8 +45,7 @@ def test_allProduct_failed_wrong_storehouse_id(client):
 
 def test_allProduct_success(client):
     response = client.post('/api/product/all',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "storehouse_id":1
     })
@@ -59,20 +55,17 @@ def test_allProduct_success(client):
 # Test productDatail()
 def test_productDatail_failed_wrong_manager_id(client):
     response = client.post('/api/product/detail',headers={
-        'Authorization': 'Bearer '+ wrong_token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ wrong_token})
     assert b'Bad manager_id' in response.data
 
 def test_productDatail_failed_no_json(client):
     response = client.post('/api/product/detail',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ token})
     assert b'Missing JSON in request' in response.data
 
 def test_productDatail_failed_no_product_id(client):
     response = client.post('/api/product/detail',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product":3
     })
@@ -80,8 +73,7 @@ def test_productDatail_failed_no_product_id(client):
 
 def test_productDatail_failed_wrong_product_id(client):
     response = client.post('/api/product/detail',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":999
     })
@@ -89,8 +81,7 @@ def test_productDatail_failed_wrong_product_id(client):
 
 def test_productDatail_failed_bad_description(client):
     response = client.post('/api/product/detail',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":11
     })
@@ -98,8 +89,7 @@ def test_productDatail_failed_bad_description(client):
 
 def test_productDatail_success(client):
     response = client.post('/api/product/detail',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":15
     })
@@ -109,20 +99,17 @@ def test_productDatail_success(client):
 # Test createProduct()
 def test_createProduct_failed_wrong_manager_id(client):
     response = client.post('/api/product/create',headers={
-        'Authorization': 'Bearer '+ wrong_token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ wrong_token})
     assert b'Bad manager_id' in response.data
 
 def test_createProduct_failed_no_json(client):
     response = client.post('/api/product/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ token})
     assert b'Missing JSON in request' in response.data
 
 def test_createProduct_failed_no_name(client):
     response = client.post('/api/product/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "notName":"wow"
     })
@@ -130,8 +117,7 @@ def test_createProduct_failed_no_name(client):
 
 def test_createProduct_failed_no_category(client):
     response = client.post('/api/product/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "name":"test create a product"
     })
@@ -139,8 +125,7 @@ def test_createProduct_failed_no_category(client):
 
 def test_createProduct_failed_no_description(client):
     response = client.post('/api/product/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "name":"test create a product",
         "category":1
@@ -149,8 +134,7 @@ def test_createProduct_failed_no_description(client):
 
 def test_createProduct_failed_no_storehouse_id(client):
     response = client.post('/api/product/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "name":"test create a product",
         "category":1,
@@ -163,8 +147,7 @@ def test_createProduct_failed_no_storehouse_id(client):
 
 def test_createProduct_succeed(client):
     response = client.post('/api/product/create',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "name":"test create a product",
         "category":1,
@@ -180,20 +163,17 @@ def test_createProduct_succeed(client):
 # Test updateProduct()
 def test_updateProduct_failed_wrong_manager_id(client):
     response = client.post('/api/product/update',headers={
-        'Authorization': 'Bearer '+ wrong_token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ wrong_token})
     assert b'Bad manager_id' in response.data
 
 def test_updateProduct_failed_no_json(client):
     response = client.post('/api/product/update',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ token})
     assert b'Missing JSON in request' in response.data
 
 def test_updateProduct_failed_no_product_id(client):
     response = client.post('/api/product/update',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product":17
     })
@@ -201,8 +181,7 @@ def test_updateProduct_failed_no_product_id(client):
 
 def test_updateProduct_failed_no_name(client):
     response = client.post('/api/product/update',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":17
     })
@@ -210,8 +189,7 @@ def test_updateProduct_failed_no_name(client):
 
 def test_updateProduct_failed_no_category(client):
     response = client.post('/api/product/update',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":17,
         "name":"test update a product"
@@ -220,8 +198,7 @@ def test_updateProduct_failed_no_category(client):
 
 def test_updateProduct_failed_no_status(client):
     response = client.post('/api/product/update',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":17,
         "name":"test update a product",
@@ -231,8 +208,7 @@ def test_updateProduct_failed_no_status(client):
 
 def test_updateProduct_failed_no_description(client):
     response = client.post('/api/product/update',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":17,
         "name":"test update a product",
@@ -246,8 +222,7 @@ def test_updateProduct_failed_no_description(client):
 
 def test_updateProduct_success(client):
     response = client.post('/api/product/update',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "product_id":17,
         "name":"test update a product",
@@ -267,20 +242,17 @@ def test_updateProduct_success(client):
 # Test statistics()
 def test_statistics_failed_wrong_manager_id(client):
     response = client.post('/api/product/statistics',headers={
-        'Authorization': 'Bearer '+ wrong_token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ wrong_token})
     assert b'Bad manager_id' in response.data
 
 def test_statistics_failed_no_json(client):
     response = client.post('/api/product/statistics',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ token})
     assert b'Missing JSON in request' in response.data
 
 def test_statistics_failed_no_storehouse_id(client):
     response = client.post('/api/product/statistics',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "storehouse":3
     })
@@ -288,8 +260,7 @@ def test_statistics_failed_no_storehouse_id(client):
 
 def test_statistics_failed_bad_storehouse_id(client):
     response = client.post('/api/product/statistics',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "storehouse_id":4
     })
@@ -297,8 +268,7 @@ def test_statistics_failed_bad_storehouse_id(client):
 
 def test_statistics_failed_no_order_record(client):
     response = client.post('/api/product/statistics',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "storehouse_id":2
     })
@@ -306,8 +276,7 @@ def test_statistics_failed_no_order_record(client):
 
 def test_statistics_success(client):
     response = client.post('/api/product/statistics',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'},
+        'Authorization': 'Bearer '+ token},
     json={
         "storehouse_id":1
     })
