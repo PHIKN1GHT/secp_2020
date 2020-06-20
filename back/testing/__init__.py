@@ -1,4 +1,3 @@
-
 from testing.fixture import client, check
 from config import OPERATORNAME, OPERATORPSWD
 from flask import jsonify

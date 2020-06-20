@@ -2,7 +2,6 @@ from server import db
 from utils import encodePswd, tryLookUp
 import datetime
 
-
 class User(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     username = db.Column(db.String(16), unique=True, index=True, nullable=False)
@@ -23,6 +22,14 @@ class User(db.Model):
 
     def setVisible(self, visible):
         self.visible = visible
+        return self
+
+    def setIsManager(self, isManager):
+        self.isManager = isManager
+        return self
+
+    def setIsOperator(self, isOperator):
+        self.isOperator = isOperator
         return self
 
     def getUserType(self):
@@ -54,5 +61,5 @@ class Address(db.Model):
     def __repr__(self):
         return '<Address %r>' % (self.creater_id)
 
-# User.default_address_id = db.Column(db.BigInteger, db.ForeignKey(Address.id), nullable=True, unique=False)
-# User.default_address = db.relationship('Address', foreign_keys = 'User.default_address_id')
+User.default_address_id = db.Column(db.BigInteger, db.ForeignKey(Address.id), nullable=True, unique=False)
+User.default_address = db.relationship('Address', foreign_keys = 'User.default_address_id')

@@ -1,7 +1,10 @@
+
 from testing.fixture import client, check
 from config import OPERATORNAME, OPERATORPSWD
 from flask import jsonify
 from functools import partial
+import pytest
+from testing import *
 
 class TestServiceAccountLogin:
     def test_captcha(self, client):
@@ -60,18 +63,6 @@ class TestServiceAccountLogin:
         assert response.json['result'] == True
 
 class TestServiceAccount(WithToken):
-    token = ''
-
-    @pytest.fixture(autouse=True)
-    def _require_token(self, client):
-        _, code = loadCaptcha(client)
-        response = client.post('/api/account/login', json={
-            'captcha': code,
-            "username": OPERATORNAME,
-            "password": OPERATORPSWD
-        })
-        self.token = response.json['access_token']
-
     def test_after_login_succeed(self, client):
         response = client.get('/api/account/identity', headers={
             'Authorization': 'Bearer '+ self.token
