@@ -4,6 +4,7 @@ from utils import captcha, cmparePswd, invalid, invalidate, Pipeline, ensureJson
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
 import io
 from model import User
+import datetime
 
 bp = Blueprint('account',__name__)
 
@@ -37,6 +38,33 @@ def cheat():
     else:
         return "FORBIDDEN"
 
+
+@bp.route("/registery", methods=['POST'])
+def registery():
+    if (not 'captcha' in session.keys()) or (session['captcha'] == None):
+        return jsonify(result=False,reason="Please reload captcha first"), 400
+
+    pipeline = Pipeline(request)
+    pipeline.add(ensureJson)
+    pipeline.add(ensureCaptcha, [request, session])
+    pipeline.add(ensureParam, [request, 'username', lambda: invalidateSession(session, 'captcha')])
+    pipeline.add(ensureParam, [request, 'password', lambda: invalidateSession(session, 'captcha')])
+
+    broken, retvs = pipeline.run()
+    if broken:
+        return retvs
+    
+    _, _, username, password = retvs
+
+    sess = DBSession()
+    user = User(username)
+    user.setPassword(password)
+    sess.add(user)
+    sess.commit()
+
+    session['captcha'] = None
+    return jsonify(result=True), 200
+
 # POST: 登入，若成功返回Auth Token
 @bp.route("/login", methods=['POST'])
 def login():
@@ -62,9 +90,11 @@ def login():
         session['captcha'] = None
         return jsonify(result=False,reason="Bad username or password"), 401
     
-    token = create_access_token(identity=user.id)
+    expires = datetime.timedelta(days=1)
+    token = create_access_token(identity=user.id, expires_delta=expires)
     session['captcha'] = None
-    return jsonify(result=True,access_token=token), 200
+    return jsonify(result=True,access_token=token,user_type=user.getUserType()), 200
+
 
 # Tested by Postman
 @bp.route("/loginAs", methods=['POST'])
@@ -85,11 +115,11 @@ def loginAs():
     token = create_access_token(identity=user.id)
     return jsonify(msg="Login successfully as "+user.username,access_token=token), 200
 
-@bp.route("/logout", methods=['POST'])
+@bp.route("/logout")
 @jwt_required
 def logout():
     invalidate(get_raw_jwt())
-    return jsonify({"msg": "Successfully logged out"}), 200
+    return jsonify(result=True, msg="Successfully logged out"), 200
 
 @bp.route("/identity")
 @jwt_required
@@ -102,9 +132,9 @@ def identity():
 def state():
     current_user = get_jwt_identity()
     if current_user:
-        return jsonify(logged_in_as_user=current_user), 200
+        return jsonify(logged_in_as=current_user), 200
     else:
-        return jsonify(logged_in_as_anonymous='anonymous user'), 200
+        return jsonify(logged_in_as='anonymous user'), 200
 
 
 @bp.route("/changepswd", methods=['POST'])
