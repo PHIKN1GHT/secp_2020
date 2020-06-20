@@ -21,7 +21,7 @@ def add_test_product():
     words = 'ABCDEFGHIJKLMNOPQRSTUVWXYZαβγδεζνξοπρσηθικλμτυφχψω'
     for word in words:
         title = '便当套餐组合' + word
-        pro = Product(title)
+        pro = Product(title,0,1)
         pro.shelved = True
         db.session.add(pro)
         db.session.commit()
@@ -30,6 +30,8 @@ def add_test_product():
         des.active = True
         db.session.add(des)
         db.session.commit()
+    db.session.add(Product('nodes',0,1))
+    db.session.commit()
 
 def add_test_storehouse():
     words = '0123456789'
@@ -61,9 +63,9 @@ def add_test_supplierOrder():
 
 if __name__ == '__main__':
     # create_initial_accounts()
-    #add_test_product()
+    add_test_product()
     # add_test_storehouse()
-    add_test_order()
+    # add_test_order()
     # add_test_supplierOrder()
 
 

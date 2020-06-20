@@ -14,8 +14,7 @@ def test_allSupplierOrder_failed_wrong_manager_id(client):
     })
     wrong_token = response.json['access_token']
     response = client.post('/api/supplierOrder/all',headers={
-        'Authorization': 'Bearer '+ wrong_token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ wrong_token})
     assert b'Bad manager_id' in response.data
 
 def test_allSupplierOrder_success(client):
@@ -25,8 +24,7 @@ def test_allSupplierOrder_success(client):
     })
     token = response.json['access_token']
     response = client.post('/api/supplierOrder/all',headers={
-        'Authorization': 'Bearer '+ token,
-        'Origin': 'SALT'})
+        'Authorization': 'Bearer '+ token})
     supplierOrders = response.json.get('supplierOrders')
     assert supplierOrders
 
@@ -70,7 +68,7 @@ def test_createSupplierOrder_failed_bad_productId(client):
     response = client.post('/api/supplierOrder/create',headers={
         'Authorization': 'Bearer '+ token},
     json={
-        "product_id":14,
+        "product_id":1.1,
         "count":100,
         "storehouse_id":3
     })

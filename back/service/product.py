@@ -38,7 +38,7 @@ def allProduct():
 # Tested by Pytest
 @bp.route("/detail", methods=['POST'])
 @jwt_required
-def productDatail():
+def productDetail():
     sess = DBSession()
     current_user = get_jwt_identity()
     manager = sess.query(User).filter_by(id=current_user,isManager=True).first()

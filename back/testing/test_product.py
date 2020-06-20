@@ -51,18 +51,18 @@ def test_allProduct_success(client):
     products = response.json.get('products')
     assert products
 
-# Test productDatail()
-def test_productDatail_failed_wrong_manager_id(client):
+# Test productDetail()
+def test_productDetail_failed_wrong_manager_id(client):
     response = client.post('/api/product/detail',headers={
         'Authorization': 'Bearer '+ wrong_token})
     assert b'Bad manager_id' in response.data
 
-def test_productDatail_failed_no_json(client):
+def test_productDetail_failed_no_json(client):
     response = client.post('/api/product/detail',headers={
         'Authorization': 'Bearer '+ token})
     assert b'Missing JSON in request' in response.data
 
-def test_productDatail_failed_no_product_id(client):
+def test_productDetail_failed_no_product_id(client):
     response = client.post('/api/product/detail',headers={
         'Authorization': 'Bearer '+ token},
     json={
@@ -70,7 +70,7 @@ def test_productDatail_failed_no_product_id(client):
     })
     assert b'Missing product_id parameter' in response.data
 
-def test_productDatail_failed_wrong_product_id(client):
+def test_productDetail_failed_wrong_product_id(client):
     response = client.post('/api/product/detail',headers={
         'Authorization': 'Bearer '+ token},
     json={
@@ -78,15 +78,15 @@ def test_productDatail_failed_wrong_product_id(client):
     })
     assert b'Bad productId' in response.data
 
-def test_productDatail_failed_bad_description(client):
+def test_productDetail_failed_bad_description(client):
     response = client.post('/api/product/detail',headers={
         'Authorization': 'Bearer '+ token},
     json={
-        "product_id":11
+        "product_id":51
     })
     assert b'Bad description' in response.data
 
-def test_productDatail_success(client):
+def test_productDetail_success(client):
     response = client.post('/api/product/detail',headers={
         'Authorization': 'Bearer '+ token},
     json={
