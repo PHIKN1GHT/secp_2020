@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 import Toast from '../components/Toast';
@@ -44,6 +44,7 @@ export default function LoginPage(props) {
                         break;
                     // 仓库管理员
                     case 'operator':
+                        props.history.push({ pathname: '/operator-customer-order' })
                         break;
                     // 普通用户
                     case 'customer':
@@ -59,21 +60,26 @@ export default function LoginPage(props) {
             }
         })
     }
-    let loggedIn = false
-    IsLoggedIn(() => {
-        const user_type = localStorage.getItem('user_type')
-        switch (user_type) {
-            case 'manager': break;
-            case 'operator': break;
-            case 'customer':
-                props.history.push({ pathname: '/mainpage' })
-                break;
-            default: break;
-        }
-        loggedIn = true
-    }, () => {
-        loggedIn = false
-    })
+    const [loggedIn, setL] = useState(false)
+    useEffect(() => {
+        IsLoggedIn(['managet', 'operator', 'customer'], () => {
+            const user_type = localStorage.getItem('user_type')
+            switch (user_type) {
+                case 'manager': break;
+                case 'operator':
+                    props.history.push({ pathname: '/operator-customer-order' })
+                    break;
+                case 'customer':
+                    props.history.push({ pathname: '/mainpage' })
+                    break;
+                default: break;
+            }
+            setL(true)
+        }, () => {
+            setL(false)
+        })
+    }, [])
+
     return (<>
         {loggedIn ?
             <div style={{ fontSize: '30px', }}>您已登录，跳转中</div> :

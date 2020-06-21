@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Tab, Tabs, IconButton } from '@material-ui/core';
 import OrderCards from '../components/OrderCards';
@@ -24,14 +24,10 @@ function TabPanel(props) {
 }
 
 export default function OrdersPage(props) {
-    let loggedIn = true
+
     //直接访问
     let directly = false
-    IsLoggedIn(() => {
-    }, () => {
-        loggedIn = false
-        props.history.push({ pathname: '/login' })
-    })
+
 
     let defaultType = ''
     if (props.location.state != undefined) {
@@ -49,6 +45,15 @@ export default function OrdersPage(props) {
         props.history.go(-1)
     }
 
+    const [loggedIn, setL] = useState(false)
+    useEffect(() => {
+        IsLoggedIn(['customer'], () => {
+            setL(true)
+        }, () => {
+            setL(false)
+            props.history.push({ pathname: '/login' })
+        })
+    }, [])
     return (<>
         {loggedIn ?
             directly ?

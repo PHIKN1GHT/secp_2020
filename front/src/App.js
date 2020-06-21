@@ -9,7 +9,7 @@ import './css/Orders.css';
 import './css/OrderCards.css';
 import './css/OrderDetail.css';
 import './css/AddressManager.css';
-import './css/OperatorInfo.css';
+//import './css/OperatorInfo.css';
 import './css/OperatorCustomerOrder.css';
 import './css/OperatorSupplierOrder.css';
 

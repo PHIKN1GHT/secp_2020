@@ -110,7 +110,7 @@ const EQ = (a, b) => {
 
 
 // 第一个函数是登录状态要执行的内容，第二个就是相反的
-const IsLoggedIn = (logged_in_do, not_logged_in_do) => {
+const IsLoggedIn = (user_type, logged_in_do, not_logged_in_do) => {
     const localtoken = localStorage.getItem('access_token')
     if (localtoken !== undefined && localtoken !== null) {
         const url = server + '/api/account/state'
@@ -124,7 +124,8 @@ const IsLoggedIn = (logged_in_do, not_logged_in_do) => {
             mode: 'cors', // no-cors, cors, *same-origin
         }).then(response => response.json())
             .then(json => {
-                if (typeof (json.logged_in_as) === 'number') {
+                if (typeof (json.logged_in_as) === 'number' &&
+                    user_type.includes(localStorage.getItem('user_type'))) {
                     //登录用户
                     logged_in_do()
                     localStorage.setItem('logged_in_as', json.logged_in_as)
