@@ -27,7 +27,7 @@ export default function OrderDetailPage(props) {
                         mode: 'cors', // no-cors, cors, *same-origin
                     }).then(response => response.json())
                         .then(json => {
-                            
+
                             return {
                                 name: json.product.name,
                                 count: val.count,
@@ -113,11 +113,6 @@ export default function OrderDetailPage(props) {
                                         <div className='text'>{val.unit}</div>
                                         <div className='text'>{val.unitprice}</div>
                                         <div className='text'>{val.price}</div>
-                                        {/* <div className='name'>{val.name}</div>
-                            <div className='count'>{val.count}</div>
-                            <div className='unit'>{val.unit}</div>
-                            <div className='unitprice'>{val.unitprice}</div>
-                            <div className='price'>{val.price}</div> */}
                                     </div>
                                 ) : null
                         }
