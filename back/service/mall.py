@@ -15,8 +15,6 @@ def homepage():
     sess = DBSession()
     current_page = request.json['page'] if request.is_json and ('page' in request.json.keys()) else 1
     per_page = request.json['per_page'] if request.is_json and ('per_page' in request.json.keys()) else 20
-    roots = sess.query(Category).filter_by(parent_id=None).all()
-    
     idx = (current_page - 1) * per_page
     result = sess.query(Product).filter_by(shelved=True,archived=False).all()
     total = len(result)
@@ -24,8 +22,14 @@ def homepage():
     idx_start = max(min(idx, len(result)), 0)
     idx_end = max(min(idx+per_page, len(result)), 0)
     result = result[idx_start : idx_end]
-
-    cates = [{"id":r.id, "name":r.name} for r in roots]
+    roots = Category.all()
+    cates = []
+    for k, v in roots.items():
+        cate = sess.query(Category).filter_by(name=k).first()
+        for sk in v:
+            subcates = sess.query(Category).filter_by(parent_id=cate.id).all()
+        cates += [{"id":sc.id, "name":sc.name} for sc in subcates]
+        #cates.append({"id":cate.id, "name":cate.name, "subcate":[{"id":sc.id, "name":sc.name} for sc in subcates]})
     prods = [p.brief() for p in result] if result else []
     return jsonify(total=total,totalPages=pages,categories=cates,products=prods), 200
 
@@ -58,8 +62,23 @@ def category():
     prods = [p.brief() for p in result] if result else []
     return jsonify(total=total,totalPages=pages,products=prods), 200
 
+@bp.route("/catalogs")
+def catalogs():
+    sess = DBSession()
+    roots = Category.all()
+    cates = []
+    for k, v in roots.items():
+        cate = sess.query(Category).filter_by(name=k).first()
+        for sk in v:
+            subcates = sess.query(Category).filter_by(parent_id=cate.id).all()
+        cates += [{"id":sc.id, "name":sc.name} for sc in subcates]
+    return jsonify(catalogs=cates), 200
+
 @bp.route("/search")
 def search():
+    #tag = request.form["tag"]
+    #search = "%{}%".format(tag)
+    #posts = Post.query.filter(Post.tags.like(search)).all()
     pass
 
 
