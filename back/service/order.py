@@ -93,6 +93,7 @@ def allOrder():
         return jsonify({"msg": "Please login"}), 401
 
 # 管理员接受订单
+# Tested by Postman
 @bp.route("/accept", methods=['POST'])
 @jwt_required
 def acceptOrder():
