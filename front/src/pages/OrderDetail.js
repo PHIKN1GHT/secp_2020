@@ -33,6 +33,7 @@ export default function OrderDetailPage(props) {
                         mode: 'cors', // no-cors, cors, *same-origin
                     }).then(response => response.json())
                         .then(json => {
+                            
                             return {
                                 name: json.name,
                                 count: val.count,

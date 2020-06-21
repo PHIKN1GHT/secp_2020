@@ -1,9 +1,12 @@
-import { server } from './Const'
 import React, { Component } from 'react';
 import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
 import TopBar from '../components/TopBar'
+import {handleToCart} from '../components/JumpToCart'
+import JumpToCart from '../components/JumpToCart'
+import { server } from './Const'
+
 
 import { withStyles } from "@material-ui/core/styles";
 import { IconButton } from '@material-ui/core';
@@ -58,20 +61,30 @@ class SearchResultPage extends Component {
         //     products,
 
         // })
+        
     }
     fetchAndInitial() { 
-        const filter = this.props.location.state['keyword']
+        //console.log(this.props.location)
+        const filter = this.props.match.params.keyword
+
+        // const filter = this.props.location.state['keyword'] == undefined ?
+        //     this.props.location.state['record'].keyword :
+        //     this.props.location.state['keyword']
         const page = 1
+        const bodyData = JSON.stringify({
+            filter,
+            page,
+        })
         const url = server + '/api/mall/search'
         fetch(url, {
-            // body: bodyData, // must match 'Content-Type' header
+            body: bodyData, // must match 'Content-Type' header
             //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'include', // include, same-origin, *omit
             headers: {
                 'content-type': 'application/json'
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'no-cors', // no-cors, cors, *same-origin
+            mode: 'cors', // no-cors, cors, *same-origin
             //redirect: 'follow', // manual, *follow, error
             //referrer: 'no-referrer', // *client, no-referrer
         })
@@ -82,29 +95,61 @@ class SearchResultPage extends Component {
             this.setState({
                 products,
                 totalPage,
+            }, () => { 
+                if (this.props.location.state != undefined) { 
+                    const record = this.props.location.state['record']
+                    if (record != undefined ) { 
+                        const productArea = document.getElementsByName('productArea')[0]
+                        productArea.scrollTop = record.scrollTop
+                    }
+                }
             })
         })
     }
     handleGoBack() {
-        const backUrl = this.props.location.state['backUrl']
+        let backUrl = this.props.location.state['backUrl']
+        if (this.props.location.state['record'] != undefined) {
+            backUrl = this.props.location.state['record']['backUrl']
+        }
         const record = this.props.location.state['record']
 
         this.props.history.push({ pathname: backUrl, state: {record}})
     }
     handleSearch(e) { 
-        const backUrl = this.props.location.state['backUrl']
+        let backUrl = this.props.location.state['backUrl']
+        if (this.props.location.state['record'] != undefined) {
+            backUrl = this.props.location.state['record']['backUrl']
+        }
         const record = this.props.location.state['record']
 
         this.props.history.push({ pathname: '/product/search', state:{backUrl, record}})
     }
+    handleClick(productId) { 
+
+        const productArea = document.getElementsByName('productArea')[0]
+       
+        const scrollTop = productArea.scrollTop
+        
+        const keyword = this.props.match.params.keyword
+        const backUrl = '/product/search/' + keyword
+        const preBackUrl = this.props.location.state['backUrl']
+        const record = { scrollTop, backUrl:preBackUrl }
+        this.props.history.push({ pathname: '/product/detail/'+productId, state: {productId, record, backUrl}})
+  
+    }
+    handleAddToCart(e, productId) { 
+        e.stopPropagation()
+        handleToCart(e, productId)
+    }
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox}>
+            <JumpToCart />
             {/* 搜索框 */}
             <TopBar
                 backIconHidden={false}
                 fakeSearch={true}
-                cartHidden={false}
+                cartHidden={true}
                 onGoBack={this.handleGoBack.bind(this)}
                 onSearch={this.handleSearch.bind(this)} />
             {/* <div className={classes.searchBar}>
@@ -125,15 +170,15 @@ class SearchResultPage extends Component {
                     </IconButton>
                 </div>
             </div> */}
-            {this.props.location.state['keyword']}
+            {/* {this.props.location.state['keyword']} */}
 
-            <div style={{overflowY:'auto', flex:'1'}}>
+            <div name={'productArea'} style={{overflowY:'auto', flex:'1'}}>
             {/* 推荐商品 */}
                 <div className={classes.rowBox} style={{justifyContent: 'space-evenly',flexWrap:'wrap'}}>
                 {this.state.products.map((product) => { 
                     return (
-                        <div style={{borderRadius:'5px',  border:"1px solid", margin:'2vh 0 0 0', width: '48vw', height: '60vw', display: 'flex', flexDirection: 'column', alignItems:'center',borderColor: 'thistle',}}>
-                            <img style={{borderRadius:'5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
+                        <div onClick={(e) => { this.handleClick.bind(this)(product.id)}} style={{ cursor:'pointer', borderRadius:'5px',  border:"1px solid", margin:'2vh 0 0 0', width: '48vw', height: '60vw', display: 'flex', flexDirection: 'column', alignItems:'center',borderColor: 'thistle',}}>
+                            <img style={{ borderRadius: '5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src={product.images[0]} />
                             <span>
                                 {product.name}
                             </span>
@@ -146,7 +191,7 @@ class SearchResultPage extends Component {
                                 </span>
                             </div>
                             <div style={{alignSelf:'flex-end'}} >
-                                <AddShoppingCartIcon className={classes.shoppingIcon}/>
+                                <AddShoppingCartIcon onClick={(e) => { this.handleAddToCart.bind(this)(e, product.id) }} className={classes.shoppingIcon}/>
                             </div>    
                         </div>
   

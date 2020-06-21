@@ -101,107 +101,160 @@ class CatalogsPage extends Component {
     constructor(props) { 
         super(props)
         this.state = {
-            selectedCatalogId: 1,
+            selectedCatalogId: -1,
             products: {},
             catalogs:[],
         }
+        //this.record=undefined
     }
-    componentWillMount() { 
-        //this.fetchAndInitial()
-        let catalogs = []
-        for (let i = 1; i <= 10; ++i){
-            catalogs.push({id:i, name:'catalog-'+i})
-        }
-        let products = {}
-        for (let catalog = 1; catalog <= 15; ++catalog){
-            for (let i = 1; i <= 20; ++i){
-                if (products[catalog] == undefined) {
-                    products[catalog] = []
-                }
-                products[catalog].push({id:catalog*100+i, name:'products-'+catalog*100+i, price:'price-'+catalog*100+i, unit:'unit-'+catalog*100+i,cover:'cover-'+catalog*100+i})
-            }
-        }
+    componentDidMount() { 
+        this.fetchAndInitial()
+        //console.log(data)
+        // this.setState({
+        //     selectedCatalogId,
+        //     catalogs,
+        //     products,
+        //     totalPage
+        // })
+        // let catalogs = []
+        // for (let i = 1; i <= 10; ++i){
+        //     catalogs.push({id:i, name:'catalog-'+i})
+        // }
+        // let products = {}
+        // for (let catalog = 1; catalog <= 15; ++catalog){
+        //     for (let i = 1; i <= 20; ++i){
+        //         if (products[catalog] == undefined) {
+        //             products[catalog] = []
+        //         }
+        //         products[catalog].push({id:catalog*100+i, name:'products-'+catalog*100+i, price:'price-'+catalog*100+i, unit:'unit-'+catalog*100+i,cover:'cover-'+catalog*100+i})
+        //     }
+        // }
         
-        this.setState({
-            catalogs,
-            products,
-        })
-        if (this.props.location.state != undefined) { 
-            const record = this.props.location.state['record']
-            if (record != undefined) { 
-                this.setState(
-                    { selectedCatalogId: record.selectedCatalogId },
-                    () => { 
-                        const productArea = document.getElementsByName('productArea')[0]
-                        productArea.scrollTop = record.scrollTop
-                    }
-                )
-            }
-        }
+        // this.setState({
+        //     catalogs,
+        //     products,
+        // })
+        
+        // if (this.props.location.state != undefined) { 
+        //     const record = this.props.location.state['record']
+        //     if (record != undefined) { 
+        //         this.setState(
+        //             { selectedCatalogId: record.selectedCatalogId },
+        //             () => { 
+        //                 const productArea = document.getElementsByName('productArea')[0]
+        //                 productArea.scrollTop = record.scrollTop
+        //             }
+        //         )
+        //     }
+        // }
     }
     fetchProducts(catalogId) { 
-        const url = server + '/api/mall/catalog'
-        const catalog = catalogId
-        const page = 1
-        const bodyData = JSON.stringify({
-            catalog,
-            page,
-        })
-        fetch(url, {
-            body: bodyData, // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'include', // include, same-origin, *omit
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'no-cors', // no-cors, cors, *same-origin
-            //redirect: 'follow', // manual, *follow, error
-            //referrer: 'no-referrer', // *client, no-referrer
-        })
-        .then(response => response.json()) // parses response to JSON 
-        .then(json => {
-            const totalPage = json['totalPage']
-            const products = json['products']
-            this.setState({
-                totalPage,
-                products,
-            }, () => { 
-                    const record = this.props.location.state['record']
-                    if (record != undefined) { 
-                        const productArea = document.getElementsByName('productArea')[0]
-                        productArea.scrollTop = record.scrollTop
-                    }
+        const url = server + '/api/mall/category'
+            const catalog = catalogId
+            const page = 1
+            const bodyData = JSON.stringify({
+                catalog,
+                page,
             })
-        })
+            fetch(url, {
+                body: bodyData, // must match 'Content-Type' header
+                credentials: 'include', // include, same-origin, *omit
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+            })
+            .then(response => response.json()) // parses response to JSON 
+            .then(json => {
+                const totalPage = json['totalPage']
+                const products = json['products']
+                this.setState({ 
+                    totalPage,
+                    products
+                })
+            })
+        
     }
     fetchAndInitial() { 
-        const url = server + '/api/mall/catalogs'
+        let promise = []
+        //this.record = this.props.location.state['record']
         // const bodyData = JSON.stringify({
         // })
-        fetch(url, {
-            //body: bodyData, // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'include', // include, same-origin, *omit
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'no-cors', // no-cors, cors, *same-origin
-            // redirect: 'follow', // manual, *follow, error
-            // referrer: 'no-referrer', // *client, no-referrer
+        let tmpSelectedCatalogId = 0
+        const p1 = new Promise((resolve, reject) => {
+            const url = server + '/api/mall/catalogs'
+
+            fetch(url, {
+                credentials: 'include', // include, same-origin, *omit
+                headers: {
+                },
+                method: 'GET', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+            })
+                .then(response => response.json()) // parses response to JSON 
+                .then((json) => {
+                    const catalogs = json['catalogs']
+                    const record = this.props.location.state['record']
+                    const selectedCatalogId = record == undefined ? catalogs[0].id : record.selectedCatalogId
+                    tmpSelectedCatalogId = selectedCatalogId
+                    return { catalogs, selectedCatalogId }
+                }).then(data => { resolve(data) })
         })
-        .then(response => response.json()) // parses response to JSON 
-        .then(json => {
-            const catalogs = json['catalogs']
-            const record = this.props.location.state['record']
+        promise.push(p1)
+        const p2 = new Promise((resolve, reject) => {
+            const url = server + '/api/mall/category'
+            const catalog = tmpSelectedCatalogId
+            const page = 1
+            const bodyData = JSON.stringify({
+                catalog,
+                page,
+            })
+            fetch(url, {
+                body: bodyData, // must match 'Content-Type' header
+                credentials: 'include', // include, same-origin, *omit
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+            })
+            .then(response => response.json()) // parses response to JSON 
+            .then(json => {
+                const totalPage = json['totalPage']
+                const products = json['products']
+                return {totalPage, products}
+
+                // this.setState({
+                //     selectedCatalogId: data.selectedCatalogId,
+                //     catalogs:data.catalogs,
+                //     totalPage,
+                //     products,
+                // }, () => { 
+                //         const record = this.props.location.state['record']
+                //         if (record != undefined) { 
+                //             const productArea = document.getElementsByName('productArea')[0]
+                //             productArea.scrollTop = record.scrollTop
+                //         }
+                // })
+            }).then(data => { resolve(data) })
+        })
+        promise.push(p2)
+        Promise.all(promise).then((values) => {
+            const selectedCatalogId = values[0].selectedCatalogId
+            const catalogs = values[0].catalogs
+            const products = values[1].products
+            const totalPage = values[1].totalPage
+            console.log(products)
             this.setState({
-                selectedCatalogId: record == undefined?catalogs[0]:record.selectedCatalogId,
+                selectedCatalogId,
                 catalogs,
-            }, () => { 
-                this.fetchProducts(this.state.selectedCatalogId)
+                products,
+                totalPage
             })
         })
+            
+        
     }
     calAbsPosition(element) { 
         let actualLeft = element.offsetLeft;
@@ -340,7 +393,8 @@ class CatalogsPage extends Component {
 
     render() {
         const { classes } = this.props;
-        return (<div className={classes.colBox} style={{}}>
+        return (
+        <div className={classes.colBox} style={{}}>
             {/* document.getElementsByNames不识别svg元素？Yes */}
             <div name='circle' style={{display:'none'}}>
                 <LensIcon name='circleSVG' style={{height:'100%', width:'100%'}}  />
@@ -350,7 +404,12 @@ class CatalogsPage extends Component {
                 fakeSearch={true}
                 cartHidden={true}
                 onGoBack={this.handleGoBack.bind(this)}
-                onSearch={this.handleSearch.bind(this)} />
+                    onSearch={this.handleSearch.bind(this)} />
+            {
+            this.state.selectedCatalogId == -1 ?
+            <div className={classes.rowBox} style={{ overflow: 'hidden' }}></div>
+                    :
+                        
             <div className={classes.rowBox} style={{overflow:'hidden'}}>
                 {/* 商品目录 */}
                 <div style={{ overflowY: 'auto',scrollbarWidth:'none' }}>
@@ -384,7 +443,7 @@ class CatalogsPage extends Component {
                     scrollbarWidth: 'none',
      
                 }} name="productArea">
-                    {this.state.products[this.state.selectedCatalogId].map((product) => { 
+                    {this.state.products.map((product) => { 
                         return (
                             //商品卡片
                             <div style={{
@@ -393,7 +452,7 @@ class CatalogsPage extends Component {
                                 className={classes.productCard}
                             >
                         
-                            <img className={classes.image} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
+                                <img className={classes.image} src={product.images[0]} />
                                 <div style={{
                                     flex:'1',
                                     display: 'flex',
@@ -416,7 +475,9 @@ class CatalogsPage extends Component {
                     })}
                 </div>
             </div>    
-            <BottomNavBarForCustomer />
+            }
+            
+                        <BottomNavBarForCustomer />
         </div>);
     }
 }

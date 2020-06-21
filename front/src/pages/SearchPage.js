@@ -66,10 +66,15 @@ class SearchPage extends Component {
     handleSearch(e) { 
         const searchInput = document.getElementsByName('searchInput')[0]
         const keyword = searchInput.value
+        console.log(keyword)
         const backUrl = this.props.location.state['backUrl']
-        const record = this.props.location.state['record']
+        //const record = {keyword}
+        // let record = this.props.location.state['record']
+        // if (record != undefined) { 
+        //     record['keyword'] = keyword
 
-        this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword, backUrl, record } })
+        // }
+        this.props.history.push({ pathname: '/product/search/'+keyword, state: { backUrl } })
     }
     handleGoBack() {
         const record = this.props.location.state['record']
