@@ -1,0 +1,8 @@
+.operator-supplier-order{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.operator-supplier-order .content{
+    flex:1;
+}
