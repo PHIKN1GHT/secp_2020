@@ -73,16 +73,18 @@ def init_database():
     add_catagories()
     add_products()
 
-def add_test_order():
-    creator_id=random.randint(5,14)
-    order=Order(creator_id,1)
-    db.session.add(order)
-    db.session.commit()
-    for num in range(0,5):
-        subord=Order(creator_id,1)
-        subord.fill(random.randint(1,20),random.randint(1,10),random.randint(1,100),order.id)
-        db.session.add(subord)
-        db.session.commit()
+
+
+#def add_test_order():
+#    creator_id=random.randint(5,14)
+#    order=Order(creator_id,1)
+#    db.session.add(order)
+#    db.session.commit()
+#    for num in range(0,5):
+#        subord=Order(creator_id,1)
+#        subord.fill(random.randint(1,20),random.randint(1,10),random.randint(1,100),order.id)
+#        db.session.add(subord)
+#        db.session.commit()
 
 def add_test_supplierOrder():
     for num in range(0,5):

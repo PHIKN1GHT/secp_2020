@@ -123,3 +123,90 @@ def deliverOrder():
             return jsonify({"msg": "No Permission"}), 403
     else:
         return jsonify({"msg": "Please login"}), 401
+
+
+@bp.route("/create", methods=['POST'])
+@jwt_required
+def createOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+    carts = sess.query(Cart).filter_by(creator_id=current_user,removed=False).all()
+
+    vir = Order(current_user)
+    sess.add(vir)
+    sess.commit()
+
+    orders = []
+    for cart in carts:
+        product = sess.query(Product).filter_by(id=cart.product_id,shelved=True,archived=False).first()
+        # 限购暂未实现
+        print(product.remain, cart.count)
+        if (not product) or (product.remain < cart.count):
+            orders.append([False,cart.id])
+            continue
+        product.remain = product.remain - cart.count
+        order = Order(current_user)
+        order.fill(cart.product_id,cart.count,product.price,vir.id)
+        sess.add(order)
+        cart.removed = True
+        sess.commit()
+        orders.append([True,cart.id,cart.product_id,cart.count,product.price])
+    return jsonify(orders=orders,price=vir.cost()), 200
+
+@bp.route("/pay", methods=['POST'])
+@jwt_required
+def payOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    if current_user:
+        user = sess.query(User).filter_by(id=current_user).first()
+        if user.isOperator:
+            order_id = request.json.get('order_id')
+            if not order_id:
+                return jsonify({"msg": "Missing order_id parameter"}), 400
+
+            order = sess.query(Order).filter_by(id=order_id,accepted=True,delivered=False,virtual=True).first()
+            if not order:
+                return jsonify({"msg": "Bad order_id"}), 401
+            
+            order.paid = True
+            sess.commit()
+            return jsonify(isDelivered=True), 200
+
+        else:
+            return jsonify({"msg": "No Permission"}), 403
+    else:
+        return jsonify({"msg": "Please login"}), 401
+
+@bp.route("/cancel", methods=['POST']) #
+@jwt_required
+def createOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    if current_user:
+        user = sess.query(User).filter_by(id=current_user).first()
+        if user.isOperator:
+            order_id = request.json.get('order_id')
+            if not order_id:
+                return jsonify({"msg": "Missing order_id parameter"}), 400
+
+            order = sess.query(Order).filter_by(id=order_id,accepted=True,delivered=False,virtual=True).first()
+            if not order:
+                return jsonify({"msg": "Bad order_id"}), 401
+            
+            order.cancelled = True
+            sess.commit()
+            return jsonify(isDelivered=True), 200
+
+        else:
+            return jsonify({"msg": "No Permission"}), 403
+    else:
+        return jsonify({"msg": "Please login"}), 401

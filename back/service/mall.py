@@ -15,8 +15,6 @@ def homepage():
     sess = DBSession()
     current_page = request.json['page'] if request.is_json and ('page' in request.json.keys()) else 1
     per_page = request.json['per_page'] if request.is_json and ('per_page' in request.json.keys()) else 20
-    #roots = sess.query(Category).filter_by(parent_id=None).all()
-    
     idx = (current_page - 1) * per_page
     result = sess.query(Product).filter_by(shelved=True,archived=False).all()
     total = len(result)
@@ -65,6 +63,9 @@ def category():
 
 @bp.route("/search")
 def search():
+    #tag = request.form["tag"]
+    #search = "%{}%".format(tag)
+    #posts = Post.query.filter(Post.tags.like(search)).all()
     pass
 
 
