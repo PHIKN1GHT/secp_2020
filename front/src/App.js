@@ -9,21 +9,23 @@ import './css/Orders.css';
 import './css/OrderCards.css';
 import './css/OrderDetail.css';
 import './css/AddressManager.css';
+import './css/Operator.css';
 
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import UserInfoPage from './pages/UserInfo';
 import OrdersPage from './pages/Orders';
+import AddressManagerPage from './pages/AddressManager';
+import OrderDetailPage from './pages/OrderDetail';
 
 import ShoppingCart from './pages/ShoppingCart';
 import MainPage from './pages/MainPage';
 import SearchResultPage from './pages/SearchResultPage';
 import SearchPage from './pages/SearchPage';
 import CatalogsPage from './pages/CatalogsPage';
-import OrderDetailPage from './pages/OrderDetail';
-import AddressManagerPage from './pages/AddressManager';
 import ProductDetailPage from './pages/ProductDetailPage';
 import OrderManagement from './pages/OrderManagement';
+import OperatorPage from './pages/Operator';
 
 function App() {
   return (
@@ -44,7 +46,8 @@ function App() {
         <Route path='/order-detail' component={OrderDetailPage} ></Route>
         <Route path='/address' component={AddressManagerPage} ></Route>
         <Route path='/orderManagement' component={OrderManagement} ></Route>
-        
+        <Router path='/operator' component={OperatorPage}></Router>
+
         {/* <Route path="/" component={ShoppingCart}></Route> */}
         <Route path="/" component={MainPage}></Route>
       </Switch>
