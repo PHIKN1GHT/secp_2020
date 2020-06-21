@@ -9,14 +9,15 @@ class Storehouse(db.Model):
     phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
     manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
     manager = db.relationship('User', foreign_keys = 'Storehouse.manager_id')
-    #operator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=True)
-    #operator = db.relationship('User', foreign_keys = 'Storehouse.operator_id') 
+    operator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=True)
+    operator = db.relationship('User', foreign_keys = 'Storehouse.operator_id') 
 
-    def __init__(self, name, address, phoneNumber, manager_id):
+    def __init__(self, name, address, phoneNumber, manager_id, operator_id):
         self.name = name
         self.address = address
         self.phoneNumber = phoneNumber
         self.manager_id = manager_id
+        self.operator_id = operator_id
 
     def __repr__(self):
         return '<Storehouse [%r]>' % (self.name)
@@ -94,22 +95,27 @@ class Product(db.Model):
     def brief(self):
         return {
             "id": self.id,
-            "title": self.title,
-            "price": self.price,
+            #"title": self.title,
+            'name': self.title,
+            "price": str(self.price),
             "unit": self.unit,
-            "thumbnail": self.thumbnail
+            #"thumbnail": self.thumbnail
+            'images': [self.thumbnail],
         }
 
     def detailed(self):
         return {
-            'title': self.title,
-            'thumbnail': self.thumbnail,
-            'htmlDescription': self.htmlDescription,
-            'remain': self.remain,
-            'price': self.price,
+            #'title': self.title,
+            'name': self.title,
+            #'thumbnail': self.thumbnail,
+            'images': [self.thumbnail],
+            #'htmlDescription': self.htmlDescription,
+            'detailImages': [self.htmlDescription],
+            #'remain': self.remain,
+            'price': str(self.price),
             'unit': self.unit,
-            'category': self.category.value.name if self.category else self.category_id,
-            'storehouse': self.storehouse.value.name if self.storehouse else self.storehouse_id,
-            'shelved': self.shelved,
-            'archived': self.archived
+            #'category': self.category.value.name if self.category else self.category_id,
+            #'storehouse': self.storehouse.value.name if self.storehouse else self.storehouse_id,
+            #'shelved': self.shelved,
+            #'archived': self.archived
         }

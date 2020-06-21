@@ -23,7 +23,7 @@ def add_storehouse():
         name = word+' 仓库'
         address = 'address_'+word
         phone = 'phone_'+word
-        db.session.add(Storehouse(name,address,phone,3))
+        db.session.add(Storehouse(name,address,phone,3,4))
         db.session.commit()
 
 def add_catagories():
@@ -60,7 +60,7 @@ def add_products():
                         'remain': random.randint(2, 233),
                         'price': random.uniform(0.01, 100.00),
                         'unit': '个',
-                        'shelved': False,
+                        'shelved': True,
                         'archived': False,
                     }
                     prod.update(datadict)
@@ -72,42 +72,181 @@ def init_database():
     add_storehouse()
     add_catagories()
     add_products()
+    add_order()
+    add_supplierOrder()
 
-def add_test_order():
-    creator_id=random.randint(5,14)
-    order=Order(creator_id,1)
-    db.session.add(order)
-    db.session.commit()
-    for num in range(0,5):
-        subord=Order(creator_id,1)
-        subord.fill(random.randint(1,20),random.randint(1,10),random.randint(1,100),order.id)
-        db.session.add(subord)
+def add_order():
+    for num in range(0,10):
+        creator_id=random.randint(5,14)
+        storehouse_id=random.randint(1,2)
+        order=Order(creator_id,storehouse_id)
+        db.session.add(order)
         db.session.commit()
+        for num1 in range(0,5):
+            subord=Order(creator_id,storehouse_id)
+            product_id=random.randint(1,800)
+            product = Product.query.filter_by(id=product_id).first()
+            subord.fill(product_id,random.randint(1,10),product.price,order.id)
+            db.session.add(subord)
+            db.session.commit()
 
-def add_test_supplierOrder():
-    for num in range(0,5):
+    for num in range(0,10):
+        creator_id=random.randint(5,14)
+        storehouse_id=random.randint(1,2)
+        order=Order(creator_id,storehouse_id)
+        order.paid=True
+        db.session.add(order)
+        db.session.commit()
+        for num1 in range(0,5):
+            subord=Order(creator_id,storehouse_id)
+            product_id=random.randint(1,800)
+            product = Product.query.filter_by(id=product_id).first()
+            subord.fill(product_id,random.randint(1,10),product.price,order.id)
+            db.session.add(subord)
+            db.session.commit()
+
+    for num in range(0,10):
+        creator_id=random.randint(5,14)
+        storehouse_id=random.randint(1,2)
+        order=Order(creator_id,storehouse_id)
+        order.paid=True
+        order.accepted=True
+        db.session.add(order)
+        db.session.commit()
+        for num1 in range(0,5):
+            subord=Order(creator_id,storehouse_id)
+            product_id=random.randint(1,800)
+            product = Product.query.filter_by(id=product_id).first()
+            subord.fill(product_id,random.randint(1,10),product.price,order.id)
+            db.session.add(subord)
+            db.session.commit()
+
+    for num in range(0,10):
+        creator_id=random.randint(5,14)
+        storehouse_id=random.randint(1,2)
+        order=Order(creator_id,storehouse_id)
+        order.paid=True
+        order.accepted=True
+        order.delivered=True
+        db.session.add(order)
+        db.session.commit()
+        for num1 in range(0,5):
+            subord=Order(creator_id,storehouse_id)
+            product_id=random.randint(1,800)
+            product = Product.query.filter_by(id=product_id).first()
+            subord.fill(product_id,random.randint(1,10),product.price,order.id)
+            db.session.add(subord)
+            db.session.commit()
+
+    for num in range(0,10):
+        creator_id=random.randint(5,14)
+        storehouse_id=random.randint(1,2)
+        order=Order(creator_id,storehouse_id)
+        order.paid=True
+        order.accepted=True
+        order.delivered=True
+        order.archived=True
+        db.session.add(order)
+        db.session.commit()
+        for num1 in range(0,5):
+            subord=Order(creator_id,storehouse_id)
+            product_id=random.randint(1,800)
+            product = Product.query.filter_by(id=product_id).first()
+            subord.fill(product_id,random.randint(1,10),product.price,order.id)
+            db.session.add(subord)
+            db.session.commit()
+
+    for num in range(0,10):
+        creator_id=random.randint(5,14)
+        storehouse_id=random.randint(1,2)
+        order=Order(creator_id,storehouse_id)
+        order.cancelled=True
+        db.session.add(order)
+        db.session.commit()
+        for num1 in range(0,5):
+            subord=Order(creator_id,storehouse_id)
+            product_id=random.randint(1,800)
+            product = Product.query.filter_by(id=product_id).first()
+            subord.fill(product_id,random.randint(1,10),product.price,order.id)
+            db.session.add(subord)
+            db.session.commit()
+
+def add_supplierOrder():
+    for num in range(0,10):
         sup=SupplierOrder(3)
-        sup.fill(random.randint(1,20),1,random.randint(100,1000))
+        storehouse_id=random.randint(1,2)
+        sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
         db.session.add(sup)
         db.session.commit()
 
+    for num in range(0,10):
+        sup=SupplierOrder(3)
+        storehouse_id=random.randint(1,2)
+        sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
+        sup.paid=True
+        db.session.add(sup)
+        db.session.commit()
+
+    for num in range(0,10):
+        sup=SupplierOrder(3)
+        storehouse_id=random.randint(1,2)
+        sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
+        sup.paid=True
+        sup.accept=True
+        db.session.add(sup)
+        db.session.commit()
+
+    for num in range(0,10):
+        sup=SupplierOrder(3)
+        storehouse_id=random.randint(1,2)
+        sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
+        sup.paid=True
+        sup.accepted=True
+        sup.delivered=True
+        db.session.add(sup)
+        db.session.commit()
+
+    for num in range(0,10):
+        sup=SupplierOrder(3)
+        storehouse_id=random.randint(1,2)
+        sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
+        sup.paid=True
+        sup.accepted=True
+        sup.delivered=True
+        sup.confirmed=True
+        db.session.add(sup)
+        db.session.commit()    
+
+    for num in range(0,10):
+        sup=SupplierOrder(3)
+        storehouse_id=random.randint(1,2)
+        sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
+        sup.paid=True
+        sup.accepted=True
+        sup.delivered=True
+        sup.rejected=True
+        db.session.add(sup)
+        db.session.commit()    
+    
+    for num in range(0,10):
+        sup=SupplierOrder(3)
+        storehouse_id=random.randint(1,2)
+        sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
+        sup.cancelled=True
+        db.session.add(sup)
+        db.session.commit()    
+
 if __name__ == '__main__':
     #init_database()
-    add_products()
-    #create_catagories()
-    #print(Category.all())
-    #print(Category.query.filter_by(title="乳品烘焙").first().children())
-    #create_initial_accounts()
+    add_order()
+    # add_products()
+    # create_catagories()
+    # print(Category.all())
+    # print(Category.query.filter_by(title="乳品烘焙").first().children())
+    # create_initial_accounts()
     
     #add_test_storehouse()
     # add_test_product()
     
-    # add_test_order()
-    # add_test_supplierOrder()
-
-
-
-
-
-
-
+    # add_order()
+    # add_supplierOrder()

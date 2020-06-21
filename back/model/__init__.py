@@ -1,5 +1,6 @@
 from model.account import *
 from model.product import *
+from model.cart import *
 
 from server import db
 from utils import encodePswd, tryLookUp
@@ -15,26 +16,6 @@ class Permission(db.Model):
     def __repr__(self):
         return '<Permission [%r]>' % (self.name)
 
-class Cart(db.Model):
-    id = db.Column(db.BigInteger, primary_key=True)
-
-    creator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False, unique=False)
-    creator = db.relationship('User', foreign_keys = 'Cart.creator_id')
-
-    product_id = db.Column(db.BigInteger, db.ForeignKey(Product.id), nullable=False, unique=False)
-    product = db.relationship('Product', foreign_keys = 'Cart.product_id')
-    
-    count = db.Column(db.BigInteger, nullable=False)
-    removed = db.Column(db.Boolean, nullable=False, default=False)
-
-    def __init__(self, creator_id, product_id, count):
-        self.creator_id = creator_id
-        self.product_id = product_id
-        self.count = count
-
-    def __repr__(self):
-        return '<Cart %r>' % (self.creater_id)
-
 class Order(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
 
@@ -45,7 +26,7 @@ class Order(db.Model):
     storehouse_id = db.Column(db.BigInteger, db.ForeignKey(Storehouse.id), nullable=False)
     storehouse = db.relationship('Storehouse', foreign_keys='Order.storehouse_id')
     count = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
-    monoprice = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
+    monoprice = db.Column(db.Numeric(10,2), unique=False, nullable=False, default=0)
     virtual = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     createTime = db.Column(db.DateTime)
     paid = db.Column(db.Boolean, unique=False, nullable=False, default=False)
@@ -53,10 +34,10 @@ class Order(db.Model):
     delivered = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     archived = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    #belonging_id = db.Column(db.BigInteger, db.ForeignKey("order.id"), nullable=True)
-    #belonging = db.relationship('Order', foreign_keys='Order.belonging_id')
-    #address_id = db.Column(db.BigInteger, db.ForeignKey("address.id"), nullable=True)
-    #address = db.relationship('Order', foreign_keys='Order.address_id')
+    belonging_id = db.Column(db.BigInteger, db.ForeignKey("order.id"), nullable=True)
+    belonging = db.relationship('Order', foreign_keys='Order.belonging_id')
+    # address_id = db.Column(db.BigInteger, db.ForeignKey("address.id"), nullable=True)
+    # address = db.relationship('Order', foreign_keys='Order.address_id')
 
     def __init__(self, creator_id, storehouse_id, virtual=True):
         self.creator_id = creator_id
