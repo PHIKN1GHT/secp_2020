@@ -95,7 +95,7 @@ class Product(db.Model):
         return {
             "id": self.id,
             "title": self.title,
-            "price": self.price,
+            "price": str(self.price),
             "unit": self.unit,
             "thumbnail": self.thumbnail
         }
@@ -106,7 +106,7 @@ class Product(db.Model):
             'thumbnail': self.thumbnail,
             'htmlDescription': self.htmlDescription,
             'remain': self.remain,
-            'price': self.price,
+            'price': str(self.price),
             'unit': self.unit,
             'category': self.category.value.name if self.category else self.category_id,
             'storehouse': self.storehouse.value.name if self.storehouse else self.storehouse_id,

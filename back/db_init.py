@@ -60,7 +60,7 @@ def add_products():
                         'remain': random.randint(2, 233),
                         'price': random.uniform(0.01, 100.00),
                         'unit': '个',
-                        'shelved': False,
+                        'shelved': True,
                         'archived': False,
                     }
                     prod.update(datadict)
