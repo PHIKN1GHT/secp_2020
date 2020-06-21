@@ -10,7 +10,7 @@ bp = Blueprint('order',__name__)
 
 # 查看所有订单
 # Tested by Postman
-@bp.route("/all", methods=['POST'])
+@bp.route("/all")
 @jwt_required
 def allOrder():
     sess = DBSession()
@@ -45,7 +45,11 @@ def allOrder():
                     _orders = sess.query(Order).filter_by(creator_id=current_user,belonging_id=virorder.id,virtual=False).all()
                 suborders = []
                 for order in _orders:
-                    suborders.append([order.product_id, order.count])
+                    #suborders.append([order.product_id, order.count])
+                    suborders.append({
+                        'id': order.product_id,
+                        'count': order.count,
+                    })
                 if virorder.cancelled:
                     status="已取消"
                 elif virorder.archived:
@@ -60,8 +64,29 @@ def allOrder():
                     status="未支付"
                 # addr=sess.query(Address).filter_by(id=virorder.address_id).first()
                 # orders.append((virorder.id, virorder.createTime, suborders, addr.receiver, addr.phonenumber, addr.address, status))
-                orders.append((virorder.id, virorder.createTime, suborders, status))
-                orders.sort(key=lambda x:x[1],reverse=True)
+
+                addr = sess.query(Address).filter_by(owner_id=virorder.creator_id).first()
+                if addr:
+                    orders.append({
+                        'orderid': virorder.id,
+                        'create_time': virorder.createTime,
+                        'products': suborders,
+                        'status': status,
+                        'receiver': addr.receiver,
+                        'phonenumber': addr.phonenumber,
+                        'address':addr.address,
+                    })
+                else:
+                    orders.append({
+                        'orderid': virorder.id,
+                        'create_time': virorder.createTime,
+                        'products': suborders,
+                        'status': status,
+                        'receiver': 'UKNOWN',
+                        'phonenumber': 'UKNOWN',
+                        'address': 'UKNOWN',
+                    })
+        orders.sort(key=lambda x:x['create_time'],reverse=True)
         return jsonify(orders), 200
     
     else:
@@ -187,7 +212,7 @@ def payOrder():
 
 @bp.route("/cancel", methods=['POST']) #
 @jwt_required
-def createOrder():
+def cancelOrder():
     sess = DBSession()
     current_user = get_jwt_identity()
 

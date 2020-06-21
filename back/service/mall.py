@@ -28,7 +28,8 @@ def homepage():
         cate = sess.query(Category).filter_by(name=k).first()
         for sk in v:
             subcates = sess.query(Category).filter_by(parent_id=cate.id).all()
-        cates.append({"id":cate.id, "name":cate.name, "subcate":[{"id":sc.id, "name":sc.name} for sc in subcates]})
+        cates += [{"id":sc.id, "name":sc.name} for sc in subcates]
+        #cates.append({"id":cate.id, "name":cate.name, "subcate":[{"id":sc.id, "name":sc.name} for sc in subcates]})
     prods = [p.brief() for p in result] if result else []
     return jsonify(total=total,totalPages=pages,categories=cates,products=prods), 200
 
@@ -60,6 +61,18 @@ def category():
     result = result[idx_start : idx_end]
     prods = [p.brief() for p in result] if result else []
     return jsonify(total=total,totalPages=pages,products=prods), 200
+
+@bp.route("/catalogs")
+def catalogs():
+    sess = DBSession()
+    roots = Category.all()
+    cates = []
+    for k, v in roots.items():
+        cate = sess.query(Category).filter_by(name=k).first()
+        for sk in v:
+            subcates = sess.query(Category).filter_by(parent_id=cate.id).all()
+        cates += [{"id":sc.id, "name":sc.name} for sc in subcates]
+    return jsonify(catalogs=cates), 200
 
 @bp.route("/search")
 def search():

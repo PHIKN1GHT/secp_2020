@@ -237,7 +237,8 @@ def add_supplierOrder():
         db.session.commit()    
 
 if __name__ == '__main__':
-    init_database()
+    #init_database()
+    add_order()
     # add_products()
     # create_catagories()
     # print(Category.all())
