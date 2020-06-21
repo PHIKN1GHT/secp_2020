@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ListItem, List, IconButton } from '@material-ui/core';
-import { server, EQ } from '../pages/Const';
+import { server } from '../pages/Const';
 import Toast from '../components/Toast';
 
 export default function OrderCards(props) {

@@ -3,6 +3,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Tab, Tabs, IconButton } from '@material-ui/core';
 import OrderCards from '../components/OrderCards';
 import SearchIcon from '@material-ui/icons/Search';
+import { IsLoggedIn } from './Const';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -23,7 +24,22 @@ function TabPanel(props) {
 }
 
 export default function OrdersPage(props) {
-    let defaultType = props.location.state['type']
+    let loggedIn = true
+    //直接访问
+    let directly = false
+    IsLoggedIn(() => {
+    }, () => {
+        loggedIn = false
+        props.history.push({ pathname: '/login' })
+    })
+
+    let defaultType = ''
+    if (props.location.state != undefined) {
+        defaultType = props.location.state['type']
+        directly = false
+    } else {
+        directly = true
+    }
     const [value, setValue] = React.useState(defaultType);
 
     const handleChange = (event, newValue) => {
@@ -32,46 +48,52 @@ export default function OrdersPage(props) {
     const handleGoBack = (event) => {
         props.history.go(-1)
     }
+
     return (<>
-        <div className='orders'>
-            <div className='head'>
-                <div className='search-bar'>
-                    <ArrowBackIosIcon className='backicon' onClick={handleGoBack} />
-                    <div className='input-box'><input className='search-input' /></div>
-                    <IconButton className='s-btn' color='primary'>
-                        <SearchIcon className='btn' />
-                    </IconButton>
-                </div>
-                <div className='baseline'></div>
-                <Tabs className='tabs'
-                    value={value}
-                    onChange={handleChange}
-                    centered
-                    variant='fullWidth'
-                    indicatorColor='primary'
-                >
-                    <Tab value='全部' label='全部' className='item'></Tab>
-                    <Tab value='待付款' label='待付款' className='item'></Tab>
-                    <Tab value='待发货' label='待发货' className='item'></Tab>
-                    <Tab value='待收货' label='待收货' className='item'></Tab>
-                    <Tab value='已收货' label='已收货' className='item'></Tab>
-                </Tabs>
-            </div>
-            <TabPanel value={value} index='全部' className='card-wrapper'>
-                <OrderCards type='全部' history={props.history} />
-            </TabPanel>
-            <TabPanel value={value} index='待付款' className='card-wrapper'>
-                <OrderCards type='待付款' history={props.history} />
-            </TabPanel>
-            <TabPanel value={value} index='待发货' className='card-wrapper'>
-                <OrderCards type='待发货' history={props.history} />
-            </TabPanel>
-            <TabPanel value={value} index='待收货' className='card-wrapper'>
-                <OrderCards type='待收货' history={props.history} />
-            </TabPanel>
-            <TabPanel value={value} index='已收货' className='card-wrapper'>
-                <OrderCards type='已收货' history={props.history} />
-            </TabPanel>
-        </div>
+        {loggedIn ?
+            directly ?
+                props.history.goBack() :
+                <div className='orders'>
+                    <div className='head'>
+                        <div className='search-bar'>
+                            <ArrowBackIosIcon className='backicon' onClick={handleGoBack} />
+                            <div className='input-box'><input className='search-input' /></div>
+                            <IconButton className='s-btn' color='primary'>
+                                <SearchIcon className='btn' />
+                            </IconButton>
+                        </div>
+                        <div className='baseline'></div>
+                        <Tabs className='tabs'
+                            value={value}
+                            onChange={handleChange}
+                            centered
+                            variant='fullWidth'
+                            indicatorColor='primary'
+                        >
+                            <Tab value='全部' label='全部' className='item'></Tab>
+                            <Tab value='待付款' label='待付款' className='item'></Tab>
+                            <Tab value='待发货' label='待发货' className='item'></Tab>
+                            <Tab value='待收货' label='待收货' className='item'></Tab>
+                            <Tab value='已收货' label='已收货' className='item'></Tab>
+                        </Tabs>
+                    </div>
+                    <TabPanel value={value} index='全部' className='card-wrapper'>
+                        <OrderCards type='全部' history={props.history} />
+                    </TabPanel>
+                    <TabPanel value={value} index='待付款' className='card-wrapper'>
+                        <OrderCards type='待付款' history={props.history} />
+                    </TabPanel>
+                    <TabPanel value={value} index='待发货' className='card-wrapper'>
+                        <OrderCards type='待发货' history={props.history} />
+                    </TabPanel>
+                    <TabPanel value={value} index='待收货' className='card-wrapper'>
+                        <OrderCards type='待收货' history={props.history} />
+                    </TabPanel>
+                    <TabPanel value={value} index='已收货' className='card-wrapper'>
+                        <OrderCards type='已收货' history={props.history} />
+                    </TabPanel>
+                </div> : null
+        }
+
     </>)
 }
