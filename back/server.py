@@ -35,7 +35,7 @@ services = [
     "service.account", # FINISHED
     "service.address", # FINISHED
     "service.mall",
-    #"service.cart",
+    "service.cart",
     "service.product",
     "service.supplierOrder",
     "service.order"
