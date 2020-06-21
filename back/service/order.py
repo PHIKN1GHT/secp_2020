@@ -62,10 +62,7 @@ def allOrder():
                     status="已支付"
                 else:
                     status="未支付"
-                #Address测试数据尚未创建
-                # addr=sess.query(Address).filter_by(id=virorder.address_id).first()
-                # orders.append((virorder.id, virorder.createTime, suborders, addr.receiver, addr.phonenumber, addr.address, status))
-
+                
                 addr = sess.query(Address).filter_by(owner_id=virorder.creator_id).first()
                 if addr:
                     orders.append({

@@ -92,6 +92,7 @@ def createSupplierOrder():
         return jsonify({"msg": "Please login"}), 401
 
 # 管理员端确认进货订单
+# Tested by Pytest
 @bp.route("/confirm", methods=['POST'])
 @jwt_required
 def confirmSupplierOrder():
@@ -124,6 +125,7 @@ def confirmSupplierOrder():
         return jsonify({"msg": "Please login"}), 401
 
 # 管理员端拒接进货订单
+# Tested by Pytest
 @bp.route("/reject", methods=['POST'])
 @jwt_required
 def rejectSupplierOrder():
