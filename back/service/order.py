@@ -51,18 +51,20 @@ def allOrder():
                         'count': order.count,
                     })
                 if virorder.cancelled:
-                    status="已取消"
-                elif virorder.archived:
-                    status="已收货"
+                    status="已撤销"
+                #elif virorder.archived:
+                #    status=
                 elif virorder.delivered:
-                    status="已发货"
+                    status="已收货"
                 elif virorder.accepted:
-                    status="已接单"
+                    status="待收货"
                 elif virorder.paid:
-                    status="已支付"
+                    status="待发货"
                 else:
-                    status="未支付"
-                
+                    status="已创建"
+                # addr=sess.query(Address).filter_by(id=virorder.address_id).first()
+                # orders.append((virorder.id, virorder.createTime, suborders, addr.receiver, addr.phonenumber, addr.address, status))
+
                 addr = sess.query(Address).filter_by(owner_id=virorder.creator_id).first()
                 if addr:
                     orders.append({
