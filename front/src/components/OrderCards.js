@@ -75,11 +75,11 @@ export default function OrderCards(props) {
         const status = event.currentTarget.getAttribute('status')
         const actid = Number(event.currentTarget.getAttribute('actid'))
         const actIndex = GetOrderIndex(actid)
+        const bodyData = JSON.stringify({ order_id: actid })
         if (status === '已创建') {
             //支付订单
             if (event.currentTarget.getAttribute('act') === 'pay') {
                 const url = server + '/api/order/pay'
-                const bodyData = JSON.stringify({ id: actid })
                 fetch(url, {
                     body: bodyData,
                     credentials: 'include', // include, same-origin, *omit
@@ -96,7 +96,11 @@ export default function OrderCards(props) {
                             setOrderInfo(prevState => {
                                 // 后端没有返回指定订单号的订单接口，自己编码吧
                                 prevState[actIndex].status = '待发货'
-                                return Object.assign(prevState)
+                                let tmp = []
+                                for (let i in prevState) {
+                                    tmp.push(prevState[i])
+                                }
+                                return tmp
                             })
                             Toast('付款成功', 500)
                         } else {
@@ -107,7 +111,6 @@ export default function OrderCards(props) {
             } else {
                 //取消订单
                 const url = server + '/api/order/cancel'
-                const bodyData = JSON.stringify({ id: actid })
                 fetch(url, {
                     body: bodyData,
                     credentials: 'include', // include, same-origin, *omit
@@ -124,7 +127,11 @@ export default function OrderCards(props) {
                             setOrderInfo(prevState => {
                                 // 后端没有返回指定订单号的订单接口，自己编码吧
                                 prevState[actIndex].status = '已撤销'
-                                return Object.assign(prevState)
+                                let tmp = []
+                                for (let i in prevState) {
+                                    tmp.push(prevState[i])
+                                }
+                                return tmp
                             })
                             Toast('取消成功', 500)
                         } else {
@@ -137,7 +144,6 @@ export default function OrderCards(props) {
         } else if (status === '待收货') {
             //确认收货
             const url = server + '/api/order/cancel'
-            const bodyData = JSON.stringify({ id: actid })
             fetch(url, {
                 body: bodyData,
                 credentials: 'include', // include, same-origin, *omit
@@ -154,7 +160,11 @@ export default function OrderCards(props) {
                         setOrderInfo(prevState => {
                             // 后端没有返回指定订单号的订单接口，自己编码吧
                             prevState[actIndex].status = '已收货'
-                            return Object.assign(prevState)
+                            let tmp = []
+                            for (let i in prevState) {
+                                tmp.push(prevState[i])
+                            }
+                            return tmp
                         })
                         Toast('收货成功', 500)
                     } else {
