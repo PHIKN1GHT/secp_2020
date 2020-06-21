@@ -2,6 +2,7 @@
 /__pycache__
 /.vscode
 key.py
+config.py
 db_repository
 /*/__pycache__
 *.py[cod]
