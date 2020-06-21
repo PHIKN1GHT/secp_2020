@@ -9,14 +9,15 @@ class Storehouse(db.Model):
     phoneNumber = db.Column(db.String(16), unique=True, index=True, nullable=False)
     manager_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=False)
     manager = db.relationship('User', foreign_keys = 'Storehouse.manager_id')
-    #operator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=True)
-    #operator = db.relationship('User', foreign_keys = 'Storehouse.operator_id') 
+    operator_id = db.Column(db.BigInteger, db.ForeignKey(User.id), nullable=True)
+    operator = db.relationship('User', foreign_keys = 'Storehouse.operator_id') 
 
-    def __init__(self, name, address, phoneNumber, manager_id):
+    def __init__(self, name, address, phoneNumber, manager_id, operator_id):
         self.name = name
         self.address = address
         self.phoneNumber = phoneNumber
         self.manager_id = manager_id
+        self.operator_id = operator_id
 
     def __repr__(self):
         return '<Storehouse [%r]>' % (self.name)
