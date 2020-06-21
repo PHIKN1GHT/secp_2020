@@ -58,6 +58,7 @@ def allOrder():
                     status="已支付"
                 else:
                     status="未支付"
+                #Address测试数据尚未创建
                 # addr=sess.query(Address).filter_by(id=virorder.address_id).first()
                 # orders.append((virorder.id, virorder.createTime, suborders, addr.receiver, addr.phonenumber, addr.address, status))
                 orders.append((virorder.id, virorder.createTime, suborders, status))
@@ -68,6 +69,7 @@ def allOrder():
         return jsonify({"msg": "Please login"}), 401
 
 # 管理员接受订单
+# Tested by Postman
 @bp.route("/accept", methods=['POST'])
 @jwt_required
 def acceptOrder():
