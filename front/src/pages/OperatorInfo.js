@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { server } from './Const';
+import { server, IsLoggedIn } from './Const';
 import Toast from '../components/Toast';
 
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
@@ -33,25 +33,33 @@ export default function OperatorInfoPage(props) {
                 }
             })
     }
-    return (<>
-        <div className='operator-info'>
-            <div className='content'>
-                <div className='header'>
-                    <div className='user-information'>
-                        <div className='avater-con'>
-                            <img className='avater' src={avaterURL} />
+    let loggedIn = true
+    IsLoggedIn(() => {
+    }, () => {
+        loggedIn = false
+        props.history.push({ pathname: '/login' })
+    })
+    return (<>{
+        loggedIn ?
+            <div className='operator-info'>
+                <div className='content'>
+                    <div className='header'>
+                        <div className='user-information'>
+                            <div className='avater-con'>
+                                <img className='avater' src={avaterURL} />
+                            </div>
+                            <div className='username'>{username}</div>
                         </div>
-                        <div className='username'>{username}</div>
+                    </div>
+                    <div className='cards'>
+                        <div className='log-out' onClick={handleLogout}>
+                            <PowerSettingsNewIcon className='icon' />
+                            <div className='text'>退出登录</div>
+                        </div>
                     </div>
                 </div>
-                <div className='cards'>
-                    <div className='log-out' onClick={handleLogout}>
-                        <PowerSettingsNewIcon className='icon' />
-                        <div className='text'>退出登录</div>
-                    </div>
-                </div>
-            </div>
-            <BottomNavBarForOperator />
-        </div>
+                <BottomNavBarForOperator />
+            </div> : null
+    }
     </>)
 }

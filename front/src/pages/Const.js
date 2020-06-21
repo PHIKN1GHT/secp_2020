@@ -128,6 +128,7 @@ const IsLoggedIn = (logged_in_do, not_logged_in_do) => {
                     //登录用户
                     logged_in_do()
                     localStorage.setItem('logged_in_as', json.logged_in_as)
+                    console.log(json.logged_in_as ? '' : '')
                 } else {
                     //非登录用户
                     not_logged_in_do()
