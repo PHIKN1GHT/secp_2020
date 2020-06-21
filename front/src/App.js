@@ -22,7 +22,8 @@ import SearchPage from './pages/SearchPage';
 import CatalogsPage from './pages/CatalogsPage';
 import OrderDetailPage from './pages/OrderDetail';
 import AddressManagerPage from './pages/AddressManager';
-import ProductDetailPage from './pages/ProductDetailPage'
+import ProductDetailPage from './pages/ProductDetailPage';
+import OrderManagement from './pages/OrderManagement';
 
 function App() {
   return (
@@ -39,10 +40,11 @@ function App() {
         <Route path='/login' component={LoginPage} ></Route>
         <Route path='/register' component={RegisterPage} ></Route>
         <Route path='/user-info' component={UserInfoPage} ></Route>
-        <Route path='/orders' component={OrdersPage}></Route>
-        <Route path='/order-detail' component={OrderDetailPage}></Route>
-        <Route path='/address' component={AddressManagerPage}></Route>
-
+        <Route path='/orders' component={OrdersPage} ></Route>
+        <Route path='/order-detail' component={OrderDetailPage} ></Route>
+        <Route path='/address' component={AddressManagerPage} ></Route>
+        <Route path='/orderManagement' component={OrderManagement} ></Route>
+        
         {/* <Route path="/" component={ShoppingCart}></Route> */}
         <Route path="/" component={MainPage}></Route>
       </Switch>

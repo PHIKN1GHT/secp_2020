@@ -19,9 +19,9 @@ app.config['JWT_SECRET_KEY'] = SECRETKEY
     
 @app.after_request
 def cors(environ):
-    environ.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
+    environ.headers['Access-Control-Allow-Origin'] = request.headers['Origin'] if 'Origin' in request.headers else '*'
     environ.headers['Access-Control-Allow-Method'] = '*'
-    environ.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type'
+    environ.headers['Access-Control-Allow-Headers'] = 'x-requested-with,content-type,authorization'
     environ.headers['Access-Control-Allow-Credentials'] = 'true'
     return environ
 
@@ -32,15 +32,17 @@ DBSession = sessionmaker(bind=db.engine)
 
 services = [
     "service.resource",
-    "service.account",
-    "service.address",
+    "service.account", # FINISHED
+    "service.address", # FINISHED
+    "service.mall",
+    "service.cart",
+    "service.product",
+    "service.supplierOrder",
+    "service.order"
 #    "service.admin",
 #    "service.indexing",
 #    "service.fake",
 #    "service.consumption"
-#    "service.manager_business"
-    "service.product",
-    "service.supplierOrder"
 ]
 
 from utils import jwt

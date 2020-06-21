@@ -16,7 +16,7 @@ const styles = theme => ({
     colBox: {
         height: '100vh',
         display: 'flex',
-        flexDirection: 'column', 
+        flexDirection: 'column',
         backgroundColor: 'lavender',
     },
     rowBox: {
@@ -42,8 +42,8 @@ const styles = theme => ({
 });
 
 
-class MainPage extends Component { 
-    constructor(props) { 
+class MainPage extends Component {
+    constructor(props) {
         super(props)
         this.state = {
             catalogs: [],
@@ -67,7 +67,7 @@ class MainPage extends Component {
 
         // })
     }
-    fetchAndInitial() { 
+    fetchAndInitial() {
         // totalPage: number,
         // catalogs: [id: number, name: str],
         // products: [number: [id: number, name: str, price: number, unit: str, cover: '']]
@@ -84,23 +84,23 @@ class MainPage extends Component {
             //redirect: 'follow', // manual, *follow, error
             //referrer: 'no-referrer', // *client, no-referrer
         })
-        .then(response => response.json()) // parses response to JSON 
-        .then(json => {
-            const catalogs = json['catalogs']
-            const products = json['products']
-            const totalPage = json['totalPage']
-            this.setState({
-                catalogs,
-                products,
-                totalPage,
+            .then(response => response.json()) // parses response to JSON 
+            .then(json => {
+                const catalogs = json['catalogs']
+                const products = json['products']
+                const totalPage = json['totalPage']
+                this.setState({
+                    catalogs,
+                    products,
+                    totalPage,
+                })
             })
-        })
     }
-    handleSearch(e) { 
+    handleSearch(e) {
         //const searchInput = document.getElementsByName('searchInput')[0]
         //const keyword = searchInput.value
         const backUrl = '/'
-        this.props.history.push({ pathname: '/product/search', state: {backUrl}})
+        this.props.history.push({ pathname: '/product/search', state: { backUrl } })
     }
     render() {
         const { classes } = this.props;
@@ -118,45 +118,45 @@ class MainPage extends Component {
                     <SearchIcon style={{cursor:'pointer'}} onClick={this.handleSearch.bind(this)} />
                 </div>
             </div> */}
-            <div style={{ flex:1, overflowY:'auto',scrollbarWidth: 'none',}}>
+            <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', }}>
                 {/* 目录展示 */}
-                <div className={classes.rowBox} style={{flexWrap:'wrap'}}>
-                    {this.state.catalogs.map((catalog) => { 
+                <div className={classes.rowBox} style={{ flexWrap: 'wrap' }}>
+                    {this.state.catalogs.map((catalog) => {
                         return (
-                            <div style={{ width: '20vw', height: '20vw', display: 'flex', flexDirection: 'column', alignItems:'center'}}>
-                                <img style={{borderRadius:'80%',width:'80%', height:'80%'}} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
+                            <div style={{ width: '20vw', height: '20vw', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <img style={{ borderRadius: '80%', width: '80%', height: '80%' }} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
                                 <span>
                                     {catalog.name}
-                                </span>    
+                                </span>
                             </div>
                         )
                     })}
                 </div>
                 {/* 推荐商品 */}
-                <div className={classes.rowBox} style={{justifyContent: 'space-evenly',flexWrap:'wrap'}}>
-                {this.state.products.map((product) => { 
-                    return (
-                        <div style={{borderRadius:'5px',  border:"1px solid", margin:'2vh 0 0 0', width: '48vw',  display: 'flex', flexDirection: 'column', alignItems:'center',borderColor: 'thistle',}}>
-                            <img style={{borderRadius:'5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
-                            <span>
-                                {product.name}
-                            </span>
-                            <div>
+                <div className={classes.rowBox} style={{ justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
+                    {this.state.products.map((product) => {
+                        return (
+                            <div style={{ borderRadius: '5px', border: "1px solid", margin: '2vh 0 0 0', width: '48vw', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'thistle', }}>
+                                <img style={{ borderRadius: '5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
                                 <span>
-                                    ￥{product.price}
+                                    {product.name}
                                 </span>
-                                <span>
-                                    /{product.unit}
-                                </span>
+                                <div>
+                                    <span>
+                                        ￥{product.price}
+                                    </span>
+                                    <span>
+                                        /{product.unit}
+                                    </span>
+                                </div>
+                                <div style={{ alignSelf: 'flex-end' }} >
+                                    <AddShoppingCartIcon className={classes.shoppingIcon} />
+                                </div>
                             </div>
-                            <div style={{alignSelf:'flex-end'}} >
-                                <AddShoppingCartIcon className={classes.shoppingIcon}/>
-                            </div>    
-                        </div>
-  
-                    )
-                })}
-            </div>
+
+                        )
+                    })}
+                </div>
             </div>
             <BottomNavBarForCustomer />
         </div>);

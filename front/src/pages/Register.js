@@ -15,40 +15,45 @@ export default function RegisterPage(props) {
     }
 
     const handleRegister = (event) => {
-        const username = document.getElementsByName('username')[0].value
         const password = document.getElementsByName('password')[0].value
-        const captcha = document.getElementsByName('captcha')[0].value
-        const bodyData = JSON.stringify({
-            username: username,
-            password: password,
-            captcha: captcha
-        })
-        const url = server + '/api/account/registery'
-        fetch(url, {
-            body: bodyData, // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'include', // include, same-origin, *omit
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
-        }).then(response => response.json()) // parses response to JSON 
-            .then(json => {
-                if (json['result']) {
-                    // 成功注册
-                    localStorage.setItem('token', json['token'])
-                    Toast('注册成功', 500)
-                    props.history.push({ pathname: '/mainpage' })
-                }
-                else {
-                    //失败
-                    Toast('注册失败', 500)
-                    handleChangeCaptcha()
-                }
+        const password_again = document.getElementsByName('password-again')[0].value
+        if (password !== password_again) {
+            Toast('两次密码输入不一致', 600)
+        } else {
+            const username = document.getElementsByName('username')[0].value
+            const captcha = document.getElementsByName('captcha')[0].value
+            const bodyData = JSON.stringify({
+                username: username,
+                password: password,
+                captcha: captcha
             })
+            const url = server + '/api/account/registery'
+            fetch(url, {
+                body: bodyData, // must match 'Content-Type' header
+                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'include', // include, same-origin, *omit
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+            }).then(response => response.json()) // parses response to JSON 
+                .then(json => {
+                    if (json['result']) {
+                        // 成功注册
+                        localStorage.clear()
+                        localStorage.setItem('access_token', json.access_token)
+                        localStorage.setItem('user_type', 'customer')
+                        Toast('注册成功', 500)
+                        props.history.push({ pathname: '/mainpage' })
+                    }
+                    else {
+                        //失败
+                        Toast('注册失败', 500)
+                        handleChangeCaptcha()
+                    }
+                })
+        }
     }
     return (
         <div className='login'>
@@ -60,7 +65,10 @@ export default function RegisterPage(props) {
                             <TextField fullWidth variant='outlined' name='username' label='USERNAME'></TextField>
                         </div>
                         <div className='password-input'>
-                            <TextField fullWidth variant='outlined' name='password' label='PASSWORD'></TextField>
+                            <TextField fullWidth variant='outlined' name='password' type='password' label='PASSWORD'></TextField>
+                        </div>
+                        <div className='password-input'>
+                            <TextField fullWidth variant='outlined' name='password-again' type='password' label='PASSWORD-AGAIN'></TextField>
                         </div>
                         <div className='captcha'>
                             <img className='captcha-img'

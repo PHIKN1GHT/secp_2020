@@ -2,14 +2,9 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { Button } from '@material-ui/core';
 import Toast from '../components/Toast';
-import { server } from './Const';
+import { server, IsLoggedIn } from './Const';
 
 export default function LoginPage(props) {
-    if (localStorage.getItem('access_token')) {
-        // TODO
-        // 检测token时效后，有效则跳转
-    }
-    const server = 'http://188.131.174.176:8082'
     const captchaURL = server + '/api/account/captcha?' + Date.now()
     const [captchacaptchaTimes, setCaptchaTimes] = useState(0)
     const handleChangeCaptcha = () => {
@@ -33,69 +28,94 @@ export default function LoginPage(props) {
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            // redirect: 'follow', // manual, *follow, error
-            // referrer: 'no-referrer', // *client, no-referrer
         }).then(response => response.json()
         ).then(json => {
-            if (json['result']) {
+            if (json.result) {
                 // 成功登录
                 Toast('登陆成功', 500)
-                localStorage.setItem('access_token', json['access_token'])
+                localStorage.clear()
+                localStorage.setItem('access_token', json.access_token)
+                localStorage.setItem('user_type', json.user_type)
                 // 检验账号类型
                 // TODO
-                switch (json['type']) {
-                    case '':
+                switch (json['user_type']) {
+                    // 仓库经理
+                    case 'manager':
                         break;
-                    default:
+                    // 仓库管理员
+                    case 'operator':
+                        break;
+                    // 普通用户
+                    case 'customer':
                         props.history.push({ pathname: '/mainpage' })
                         break;
+                    default: break;
                 }
             }
             else {
                 //失败
-                Toast('登陆失败，请检查用户名和密码是否正确', 500)
+                Toast('登陆失败', 500)
                 handleChangeCaptcha()
             }
         })
     }
-    return (
-        <div className='login'>
-            <div className='login-card'>
-                <div className='card-content'>
-                    <div className='header'>Login</div>
-                    <form className='login-wrapper'>
-                        <div className='username-input'>
-                            <TextField fullWidth variant='outlined'
-                                name='username' label='USERNAME' defaultValue='SYSTEM'>
-                            </TextField>
-                        </div>
-                        <div className='password-input'>
-                            <TextField fullWidth
-                                variant='outlined' name='password' label='PASSWORD' type='password' defaultValue='This is a simple SALT'>
-                            </TextField>
-                        </div>
-                        <div className='captcha'>
-                            <img className='captcha-img'
-                                onClick={handleChangeCaptcha}
-                                crossOrigin='use-credentials'
-                                src={captchaURL}
-                                name='captcha-img'
-                                key={`captcha-${captchacaptchaTimes}`} />
-                            <div className='captcha-input'>
-                                <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
+    let loggedIn = false
+    IsLoggedIn(() => {
+        const user_type = localStorage.getItem('user_type')
+        switch (user_type) {
+            case 'manager': break;
+            case 'operator': break;
+            case 'customer':
+                props.history.push({ pathname: '/mainpage' })
+                break;
+            default: break;
+        }
+        loggedIn = true
+    }, () => {
+        loggedIn = false
+    })
+    return (<>
+        {loggedIn ?
+            <div style={{ fontSize: '30px', }}>您已登录，跳转中</div> :
+            <div className='login'>
+                < div className='login-card' >
+                    <div className='card-content'>
+                        <div className='header'>Login</div>
+                        <form className='login-wrapper'>
+                            <div className='username-input'>
+                                <TextField fullWidth variant='outlined'
+                                    name='username' label='USERNAME' defaultValue='SYSTEM'>
+                                </TextField>
                             </div>
-                        </div>
-                        <div className='login-btn'>
-                            <Button fullWidth className='login-btn-' onClick={handleLogin}>
-                                Login
-                            </Button>
-                        </div>
-                    </form>
-                </div>
-                <div className='card-action'>
-                    Don't Have Account? <a href='/register' className='reg'>Register</a>
-                </div>
-                <a href='/userInfo'></a>
-            </div>
-        </div>)
+                            <div className='password-input'>
+                                <TextField fullWidth
+                                    variant='outlined' name='password' label='PASSWORD' type='password' defaultValue='This is a simple SALT'>
+                                </TextField>
+                            </div>
+                            <div className='captcha'>
+                                <img className='captcha-img'
+                                    onClick={handleChangeCaptcha}
+                                    crossOrigin='use-credentials'
+                                    src={captchaURL}
+                                    name='captcha-img'
+                                    key={`captcha-${captchacaptchaTimes}`} />
+                                <div className='captcha-input'>
+                                    <TextField fullWidth variant='outlined' name='captcha' label='CAPTCHA'></TextField>
+                                </div>
+                            </div>
+                            <div className='login-btn'>
+                                <Button fullWidth className='login-btn-' onClick={handleLogin}>
+                                    Login
+                    </Button>
+                            </div>
+                        </form>
+                    </div>
+                    <div className='card-action'>
+                        Don't Have Account? <a href='/register' className='reg'>Register</a>
+                    </div>
+                    <a href='/userInfo'></a>
+                </div >
+            </div >
+        }
+    </>)
 }
