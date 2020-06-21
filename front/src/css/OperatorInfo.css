@@ -1,0 +1,67 @@
+.operator-info{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: lavender;
+}
+.operator-info .content{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    justify-items: stretch;
+}
+.operator-info .content .header{
+    background-color: ghostwhite;
+    position: relative;
+    padding: 20px 15px;
+    box-shadow: 1px 1px 3px #AAAAAA;
+}
+.operator-info .content .header .user-information{
+    display: flex;
+}
+.operator-info .content .header .user-information .avater-con{
+    display: flex;
+    justify-content: space-evenly;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 30px;
+}
+.operator-info .content .header .user-information .avater-con .avater{
+    width: 60px;
+}
+.operator-info .content .header .user-information .username{
+    padding: 13px 20px;
+    font-size: 18px;
+    text-align: center;
+}
+.operator-info .content .cards{
+    background-color: lavender;
+    flex: 1;
+}
+.operator-info .content .cards .log-out{
+    display: flex;
+    justify-content: center;
+    margin: 10px 10px;
+    font-size: 14px;
+    padding: 15px 20px;
+    box-shadow: 1px 1px 1px #CCCCCC;
+    background-color: ghostwhite;
+}
+.operator-info .content .cards .log-out:hover{
+    cursor: pointer;
+    background-color: #AAAAAA;
+}
+.operator-info .content .cards .log-out .icon{
+    font-size: 20px;
+    align-self: center;
+    margin-right: 5px;
+    color: red;
+}
+.operator-info .content .cards .log-out .text{
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+.operator-info .bottom{
+}

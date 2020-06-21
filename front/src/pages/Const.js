@@ -112,7 +112,7 @@ const EQ = (a, b) => {
 // 第一个函数是登录状态要执行的内容，第二个就是相反的
 const IsLoggedIn = (logged_in_do, not_logged_in_do) => {
     const localtoken = localStorage.getItem('access_token')
-    if (localtoken !== undefined || localtoken !== null) {
+    if (localtoken !== undefined && localtoken !== null) {
         const url = server + '/api/account/state'
         fetch(url, {
             credentials: 'include', // include, same-origin, *omit
