@@ -71,7 +71,7 @@ export default function OrdersPage(props) {
                             indicatorColor='primary'
                         >
                             <Tab value='全部' label='全部' className='item'></Tab>
-                            <Tab value='待付款' label='待付款' className='item'></Tab>
+                            <Tab value='已创建' label='已创建' className='item'></Tab>
                             <Tab value='待发货' label='待发货' className='item'></Tab>
                             <Tab value='待收货' label='待收货' className='item'></Tab>
                             <Tab value='已收货' label='已收货' className='item'></Tab>
@@ -80,8 +80,8 @@ export default function OrdersPage(props) {
                     <TabPanel value={value} index='全部' className='card-wrapper'>
                         <OrderCards type='全部' history={props.history} />
                     </TabPanel>
-                    <TabPanel value={value} index='待付款' className='card-wrapper'>
-                        <OrderCards type='待付款' history={props.history} />
+                    <TabPanel value={value} index='已创建' className='card-wrapper'>
+                        <OrderCards type='已创建' history={props.history} />
                     </TabPanel>
                     <TabPanel value={value} index='待发货' className='card-wrapper'>
                         <OrderCards type='待发货' history={props.history} />
