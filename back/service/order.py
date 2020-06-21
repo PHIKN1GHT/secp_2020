@@ -9,6 +9,7 @@ import datetime
 bp = Blueprint('order',__name__)
 
 # 查看所有订单
+# Tested by Postman
 @bp.route("/all", methods=['POST'])
 @jwt_required
 def allOrder():
@@ -33,8 +34,8 @@ def allOrder():
                 return jsonify({"msg": "No Permission"}), 403
             
             virtual_orders = sess.query(Order).filter_by(storehouse_id=storehouse_id,virtual=True).all()
-            
-        virtual_orders = sess.query(Order).filter_by(creator_id=current_user,virtual=True).all()
+        else:    
+            virtual_orders = sess.query(Order).filter_by(creator_id=current_user,virtual=True).all()
         orders=[]
         for virorder in virtual_orders:
             if virorder.virtual:
@@ -57,8 +58,10 @@ def allOrder():
                     status="已支付"
                 else:
                     status="未支付"
-                addr=sess.query(Address).filter_by(id=virorder.address_id).first()
-                orders.append((virorder.id, suborders, addr.receiver, addr.phonenumber, addr.address, status))
+                # addr=sess.query(Address).filter_by(id=virorder.address_id).first()
+                # orders.append((virorder.id, virorder.createTime, suborders, addr.receiver, addr.phonenumber, addr.address, status))
+                orders.append((virorder.id, virorder.createTime, suborders, status))
+                orders.sort(key=lambda x:x[1],reverse=True)
         return jsonify(orders), 200
     
     else:

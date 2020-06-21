@@ -55,8 +55,8 @@ class Order(db.Model):
     cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     belonging_id = db.Column(db.BigInteger, db.ForeignKey("order.id"), nullable=True)
     belonging = db.relationship('Order', foreign_keys='Order.belonging_id')
-    #address_id = db.Column(db.BigInteger, db.ForeignKey("address.id"), nullable=True)
-    #address = db.relationship('Order', foreign_keys='Order.address_id')
+    # address_id = db.Column(db.BigInteger, db.ForeignKey("address.id"), nullable=True)
+    # address = db.relationship('Order', foreign_keys='Order.address_id')
 
     def __init__(self, creator_id, storehouse_id, virtual=True):
         self.creator_id = creator_id
