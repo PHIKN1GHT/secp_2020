@@ -4,29 +4,17 @@ import { server } from '../pages/Const';
 import Toast from '../components/Toast';
 
 export default function OrderCards(props) {
-    let orders = []
-    let products = []
-    for (let i = 0; i < 20; ++i) {
-        products.push({
-            name: '牛腩',
-            count: 4,
-            unit: '斤',
-            unitprice: 20.4,
-            price: 81.6
-        })
-    }
-    for (let i = 0; i < 20; ++i)orders.push({
-        orderID: String(i),
-        products: products,
-        receiver: '张三',
-        phone: '12345678910',
-        address: '上海市奉贤区xx路xx号',
-        status: props['type'] === '全部' ? '' : props['type'],
-        price: Math.ceil(Math.random() * 100) * 0.89,
-    })
-    const [ordersInfo, setOrderInfo] = useState(orders)
+    const [ordersInfo, setOrderInfo] = useState([])
     const [init, setInit] = useState(true)
     const _token = 'Bearer ' + localStorage.getItem('access_token')
+    const GetOrderIndex = (id) => {
+        let i = 0
+        for (i = 0; i < ordersInfo.length; ++i) {
+            if (ordersInfo[i].orderID === id)
+                return i
+        }
+        return -1
+    }
     const GetOrdersInfo = () => {
         const url = server + '/api/order/all'
         fetch(url, {
@@ -39,7 +27,39 @@ export default function OrderCards(props) {
             mode: 'cors', // no-cors, cors, *same-origin
         }).then(response => response.json())
             .then(json => {
-                console.log(json)
+                let tmp = []
+                json.map((val, ind) => {
+                    if (props.type === val.status || props.type === '全部') {
+                        tmp.push({
+                            orderID: val.orderid,
+                            receiver: val.receiver,
+                            phone: val.phonenumber,
+                            address: val.address,
+                            status: val.status,
+                            products: val.products,
+                            price: val.total_cost
+                        })
+                    }
+                })
+                setOrderInfo(prevState => {
+                    if (tmp.length !== prevState.length) {
+                        return tmp
+                    }
+                    for (let i in tmp) {
+                        if (tmp[i] instanceof Array) {
+                            for (let j in tmp[i]) {
+                                if (tmp[i][j] !== prevState[i][j]) {
+                                    return tmp
+                                }
+                            }
+                        } else {
+                            if (tmp[i] !== prevState[i]) {
+                                return tmp
+                            }
+                        }
+                    }
+                    return prevState
+                })
             })
     }
     useEffect(() => {
@@ -53,30 +73,118 @@ export default function OrderCards(props) {
     const handleChangeOrderStatus = (event) => {
         event.stopPropagation()
         const status = event.currentTarget.getAttribute('status')
-        if (status === '待付款') {
-            Toast('付款！', 500)
+        const actid = Number(event.currentTarget.getAttribute('actid'))
+        const actIndex = GetOrderIndex(actid)
+        const bodyData = JSON.stringify({ order_id: actid })
+        if (status === '已创建') {
+            //支付订单
+            if (event.currentTarget.getAttribute('act') === 'pay') {
+                const url = server + '/api/order/pay'
+                fetch(url, {
+                    body: bodyData,
+                    credentials: 'include', // include, same-origin, *omit
+                    headers: {
+                        'content-type': 'application/json',
+                        'Authorization': _token
+                    },
+                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                    mode: 'cors', // no-cors, cors, *same-origin
+                }).then(res => res.json())
+                    .then(json => {
+                        console.log(json)
+                        if (json.result) {
+                            setOrderInfo(prevState => {
+                                // 后端没有返回指定订单号的订单接口，自己编码吧
+                                prevState[actIndex].status = '待发货'
+                                let tmp = []
+                                for (let i in prevState) {
+                                    tmp.push(prevState[i])
+                                }
+                                return tmp
+                            })
+                            Toast('付款成功', 500)
+                        } else {
+                            Toast('付款失败', 500)
+                        }
+                    })
+
+            } else {
+                //取消订单
+                const url = server + '/api/order/cancel'
+                fetch(url, {
+                    body: bodyData,
+                    credentials: 'include', // include, same-origin, *omit
+                    headers: {
+                        'content-type': 'application/json',
+                        'Authorization': _token
+                    },
+                    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                    mode: 'cors', // no-cors, cors, *same-origin
+                }).then(res => res.json())
+                    .then(json => {
+                        console.log(json)
+                        if (json.result) {
+                            setOrderInfo(prevState => {
+                                // 后端没有返回指定订单号的订单接口，自己编码吧
+                                prevState[actIndex].status = '已撤销'
+                                let tmp = []
+                                for (let i in prevState) {
+                                    tmp.push(prevState[i])
+                                }
+                                return tmp
+                            })
+                            Toast('取消成功', 500)
+                        } else {
+                            Toast('取消失败', 500)
+                        }
+                    })
+            }
         } else if (status === '待发货') {
             Toast('催货成功！', 500)
         } else if (status === '待收货') {
-            Toast('收货成功！', 500)
+            //确认收货
+            const url = server + '/api/order/cancel'
+            fetch(url, {
+                body: bodyData,
+                credentials: 'include', // include, same-origin, *omit
+                headers: {
+                    'content-type': 'application/json',
+                    'Authorization': _token
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+            }).then(res => res.json())
+                .then(json => {
+                    console.log(json)
+                    if (json.result) {
+                        setOrderInfo(prevState => {
+                            // 后端没有返回指定订单号的订单接口，自己编码吧
+                            prevState[actIndex].status = '已收货'
+                            let tmp = []
+                            for (let i in prevState) {
+                                tmp.push(prevState[i])
+                            }
+                            return tmp
+                        })
+                        Toast('收货成功', 500)
+                    } else {
+                        Toast('收货失败', 500)
+                    }
+                })
         }
     }
     const handleJumptoOrderDetail = (event) => {
-        let i = 0
-        for (i = 0; i < orders.length; ++i) {
-            if (orders[i].orderID === event.currentTarget.getAttribute('name'))
-                break
-        }
+        const i = GetOrderIndex(Number(event.currentTarget.getAttribute('id')))
         props.history.push({
             pathname: '/order-detail',
-            state: { order: orders[i] }
+            state: { order: ordersInfo[i] }
         })
     }
     return (<>
         <div className='order-cards'>
             <List className='order-list'>
                 {ordersInfo.map((val, ind) =>
-                    <ListItem className='item' name={val.orderID}
+                    <ListItem className='item' id={val.orderID}
                         onClick={handleJumptoOrderDetail}>
                         <div className='order-card'>
                             <div className='head'>
@@ -84,19 +192,38 @@ export default function OrderCards(props) {
                                 <div className='head-text'>{val.status}</div>
                                 <div className='head-text'>￥{val.price}</div>
                                 {
-                                    ['待付款', '待发货', '待收货'].includes(val.status) ?
-                                        <div className='button-box'>
-                                            <IconButton className='button'
-                                                variant='text' size='small'
-                                                status={val.status}
-                                                onClick={handleChangeOrderStatus}>
-                                                {
-                                                    val.status === '待付款' ?
-                                                        '立即付款' : val.status === '待发货' ?
-                                                            '催催发货' : '确认收货'
-                                                }
-                                            </IconButton>
-                                        </div> :
+                                    ['已创建', '待发货', '待收货'].includes(val.status) ?
+                                        <>
+                                            <div className='button-box'>
+                                                <IconButton className='button'
+                                                    variant='text' size='small'
+                                                    status={val.status}
+                                                    onClick={handleChangeOrderStatus}
+                                                    act='pay'
+                                                    actid={val.orderID}
+                                                >
+                                                    {
+                                                        val.status === '已创建' ?
+                                                            '立即付款' : val.status === '待发货' ?
+                                                                '催催发货' : '确认收货'
+                                                    }
+                                                </IconButton>
+
+                                            </div>{val.status === '已创建' ?
+                                                <div className='button-box'>
+                                                    <IconButton
+                                                        className='button'
+                                                        variant='text' size='small'
+                                                        status={val.status}
+                                                        onClick={handleChangeOrderStatus}
+                                                        act='cancel'
+                                                        actid={val.orderID}
+                                                    >
+                                                        取消
+                                                </IconButton> </div> : null
+                                            }
+                                        </>
+                                        :
                                         <div className='button-box'></div>
                                 }
                             </div>

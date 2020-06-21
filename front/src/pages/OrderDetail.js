@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { server, IsLoggedIn } from './Const';
 
 export default function OrderDetailPage(props) {
+
     let loggedIn = true
     IsLoggedIn(() => {
     }, () => {
@@ -10,15 +11,60 @@ export default function OrderDetailPage(props) {
         props.history.push({ pathname: '/login' })
     })
     let directly = false
-    let orderData
+    let ordersFromPrev
+    const _token = 'Bearer ' + localStorage.getItem('access_token')
+    const [orderData, setOrderData] = useState({})
+    // 获取货品信息
+    const GetProducts = (orderDataFromPrev) => {
+        let funcs = []
+        orderDataFromPrev.products.map((val, ind) => {
+            const url = server + '/api/product/detail'
+            const bodyData = JSON.stringify({ id: Number(val.id) })
+            funcs.push(
+                new Promise((resolve, reject) => {
+                    fetch(url, {
+                        body: bodyData,
+                        credentials: 'include', // include, same-origin, *omit
+                        headers: {
+                            'content-type': 'application/json',
+                            'Authorization': _token
+                        },
+                        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                        mode: 'cors', // no-cors, cors, *same-origin
+                    }).then(response => response.json())
+                        .then(json => {
+                            return {
+                                name: json.name,
+                                count: val.count,
+                                unit: json.unit,
+                                unitprice: json.price,
+                                price: (val.count * json.price).toFixed(2)
+                            }
+                        }).then(data => { resolve(data) })
+                })
+            )
+        })
+        Promise.all(funcs).then((values) => {
+            orderDataFromPrev.products = values
+            setOrderData(prevState => {
+                return orderDataFromPrev
+            })
+        })
+    }
+    useEffect(() => {
+        if (props.location.state !== undefined)
+            GetProducts(ordersFromPrev)
+    }, [])
     // 从入口进入不是直接访问，合法
     if (props.location.state !== undefined) {
-        orderData = props.location.state['order']
+        ordersFromPrev = props.location.state['order']
+
     }
     //登陆后不能直接访问该页面，必须有入口
     else {
         directly = true
     }
+
     const handleGoBack = (event) => {
         props.history.goBack()
     }
@@ -54,20 +100,21 @@ export default function OrderDetailPage(props) {
                     </div>
                     <div className='products'>
                         {
-                            orderData.products.map((val, ind) =>
-                                <div className='product'>
-                                    <div className='text'>{val.name}</div>
-                                    <div className='text'>{val.count}</div>
-                                    <div className='text'>{val.unit}</div>
-                                    <div className='text'>{val.unitprice}</div>
-                                    <div className='text'>{val.price}</div>
-                                    {/* <div className='name'>{val.name}</div>
+                            orderData.products !== undefined ?
+                                orderData.products.map((val, ind) =>
+                                    <div className='product'>
+                                        <div className='text'>{val.name}</div>
+                                        <div className='text'>{val.count}</div>
+                                        <div className='text'>{val.unit}</div>
+                                        <div className='text'>{val.unitprice}</div>
+                                        <div className='text'>{val.price}</div>
+                                        {/* <div className='name'>{val.name}</div>
                             <div className='count'>{val.count}</div>
                             <div className='unit'>{val.unit}</div>
                             <div className='unitprice'>{val.unitprice}</div>
                             <div className='price'>{val.price}</div> */}
-                                </div>
-                            )
+                                    </div>
+                                ) : null
                         }
                     </div>
                 </div> : null

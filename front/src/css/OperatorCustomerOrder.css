@@ -1,0 +1,8 @@
+.operator-customer-order{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.operator-customer-order .content{
+    flex:1;
+}
