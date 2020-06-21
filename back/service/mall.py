@@ -10,7 +10,7 @@ import math
 bp = Blueprint('mall',__name__)
 
 from flask_sqlalchemy import BaseQuery
-@bp.route("/homepage")
+@bp.route("/homepage", methods=['POST', 'GET'])
 def homepage():
     sess = DBSession()
     current_page = request.json['page'] if request.is_json and ('page' in request.json.keys()) else 1
@@ -33,7 +33,7 @@ def homepage():
     prods = [p.brief() for p in result] if result else []
     return jsonify(total=total,totalPages=pages,categories=cates,products=prods), 200
 
-@bp.route("/category")
+@bp.route("/category", methods=['POST', 'GET'])
 def category():
     sess = DBSession()
     category_id = request.json['id'] if request.is_json and ('id' in request.json.keys()) else None
@@ -74,7 +74,7 @@ def catalogs():
         cates += [{"id":sc.id, "name":sc.name} for sc in subcates]
     return jsonify(catalogs=cates), 200
 
-@bp.route("/search")
+@bp.route("/search", methods=['POST', 'GET'])
 def search():
     sess = DBSession()
     filterstr = "%{}%".format(request.json['filter']) if request.is_json and ('filter' in request.json.keys()) else "%"
