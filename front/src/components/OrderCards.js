@@ -78,7 +78,7 @@ export default function OrderCards(props) {
         const status = event.currentTarget.getAttribute('status')
         const actid = Number(event.currentTarget.getAttribute('actid'))
         const actIndex = GetOrderIndex(actid)
-        const bodyData = JSON.stringify({ order_id: actid })
+        const bodyData = JSON.stringify({ orderid: actid })
         if (status === '已创建') {
             //支付订单
             if (event.currentTarget.getAttribute('act') === 'pay') {
@@ -185,6 +185,7 @@ export default function OrderCards(props) {
             <List className='order-list'>
                 {ordersInfo.map((val, ind) =>
                     <ListItem className='item' id={val.orderID}
+                        key={val.orderID}
                         onClick={handleJumptoOrderDetail}>
                         <div className='order-card'>
                             <div className='head'>
