@@ -42,8 +42,6 @@ export default function OrderDetailPage(props) {
         })
         Promise.all(funcs).then((values) => {
             orderDataFromPrev.products = values
-            const ar = orderDataFromPrev.create_time.split(',')[1].split(' ')
-            orderDataFromPrev.create_time = ar[3] + '-' + ar[2] + '-' + ar[1] + ' ' + ar[4]
             setOrderData(prevState => {
                 return orderDataFromPrev
             })

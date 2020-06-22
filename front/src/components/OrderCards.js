@@ -29,9 +29,9 @@ export default function OrderCards(props) {
             .then(json => {
                 let tmp = []
                 json.map((val, ind) => {
-                    const ar = val.create_time.split(',')[1].split(' ')
-                    val.create_time = ar[3] + '-' + ar[2] + '-' + ar[1] + ' ' + ar[4]
                     if (props.type === val.status || props.type === '全部') {
+                        const ar = val.create_time.split(',')[1].split(' ')
+                        val.create_time = ar[3] + '-' + ar[2] + '-' + ar[1] + ' ' + ar[4]
                         tmp.push({
                             orderID: val.orderid,
                             receiver: val.receiver,
@@ -185,6 +185,7 @@ export default function OrderCards(props) {
             <List className='order-list'>
                 {ordersInfo.map((val, ind) =>
                     <ListItem className='item' id={val.orderID}
+                        key={val.orderID}
                         onClick={handleJumptoOrderDetail}>
                         <div className='order-card'>
                             <div className='head'>
