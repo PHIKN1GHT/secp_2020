@@ -13,7 +13,7 @@ def invalidateSession(session, key):
 
 def ensureCaptcha(request, session):
     captcha = request.json.get('captcha', None)
-    if not captcha or session['captcha'] != captcha:
+    if not captcha or session['captcha'].upper() != captcha.upper():
         session['captcha'] = None
         return False, [jsonify(result=False,reason="Wrong captcha"), 400]
     return True, []

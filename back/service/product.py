@@ -8,36 +8,22 @@ import datetime
 
 bp = Blueprint('product',__name__)
 
-# 目前只包含了经理端查看商品列表
-@bp.route("/all", methods=['POST'])
-@jwt_optional
+# 仓库管理员可用看到自己所管理仓库的所有商品，其它角色不可用
+@bp.route("/all", methods=['GET'])
+@jwt_required
 def allProduct():
-    sess = DBSession()
     current_user = get_jwt_identity()
+    sess = DBSession()
+    user = sess.query(User).filter_by(id=current_user).first()
+    if user.isOperator:
+        storehouse = sess.query(Storehouse).filter_by(operator_id=current_user).first()
+        if storehouse:
+            products = sess.query(Product).filter_by(storehouse_id=storehouse.id).all()
+            all_products = [product.brief() for product in products]
+            return jsonify(products=all_products), 200
+    return jsonify({"msg": "No Permission"}), 401
 
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
-
-    storehouse_id = request.json.get('storehouse_id')
-    if not storehouse_id:
-        return jsonify({"msg": "Missing storehouse_id parameter"}), 400
-    
-    storehouse = sess.query(Storehouse).filter_by(id=storehouse_id).first()
-    if not storehouse:
-        return jsonify({"msg": "Bad storehouseId"}), 401
-
-    if current_user:
-        user = sess.query(User).filter_by(id=current_user).first()
-        if user.isManager:
-            products = sess.query(Product).filter_by(storehouse_id=storehouse_id).all()
-        
-    if not products:
-        products = sess.query(Product).filter_by(storehouse_id=storehouse_id,shelved=True,archived=False).all()
-        
-    all_products = [product.brief() for product in products]
-    return jsonify(products=all_products), 200
-
-# 经理端查看商品详情
+# 仓库管理员可用看到归档商品的信息，其它角色只能看到未归档商品的信息
 @bp.route("/detail", methods=['POST'])
 @jwt_optional
 def productDetail():
@@ -70,9 +56,10 @@ def productDetail():
 def createProduct():
     sess = DBSession()
     current_user = get_jwt_identity()
-    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
-    if not manager:
-        return jsonify({"msg": "Bad manager_id"}), 401
+    user = sess.query(User).filter_by(id=current_user).first()
+    #manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
+    if not user.isManager:
+        return jsonify({"msg": "No Permission"}), 401
 
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -81,9 +68,9 @@ def createProduct():
     if not title:
         return jsonify({"msg": "Missing title parameter"}), 400
     
-    category_id = request.json.get('category_id')
-    if not category_id:
-        return jsonify({"msg": "Missing category_id parameter"}), 400
+    category = request.json.get('category')
+    if not category:
+        return jsonify({"msg": "Missing category parameter"}), 400
 
     storehouse_id = request.json.get('storehouse_id')
     if not storehouse_id:
@@ -97,18 +84,21 @@ def createProduct():
     product.update(dictdata)
     sess.add(product)
     sess.commit()
+<<<<<<< HEAD
+    return jsonify(result=True, productId=product.id)
+=======
     return jsonify(isCreated=True, productID=product.id)
+>>>>>>> 99b695114c04f39e22ab3712b3ef44823d11b0f3
 
 # 经理端更改商品信息
-# Tested by Pytest
 @bp.route("/update", methods=['POST'])
 @jwt_required
 def updateProduct():
     sess = DBSession()
     current_user = get_jwt_identity()
-    manager = sess.query(User).filter_by(id=current_user,isManager=True).first()
-    if not manager:
-        return jsonify({"msg": "Bad manager_id"}), 401
+    user = sess.query(User).filter_by(id=current_user).first()
+    if not user.isManager:
+        return jsonify({"msg": "No Permission"}), 401
 
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
@@ -117,6 +107,38 @@ def updateProduct():
     if not product_id:
         return jsonify({"msg": "Missing product_id parameter"}), 400
 
+<<<<<<< HEAD
+    #name = request.json.get('name')
+    #if not name:
+    #    return jsonify({"msg": "Missing name parameter"}), 400
+    
+    #category = request.json.get('category')
+    #if not category:
+    #    return jsonify({"msg": "Missing category parameter"}), 400
+
+    #status = request.json.get('status')
+    #if not status:
+    #    return jsonify({"msg": "Missing status parameter"}), 400
+
+    #all_description = request.json.get('description')
+    #if not all_description:
+    #    return jsonify({"msg": "Missing description parameter"}), 400
+
+    #product = sess.query(Product).filter_by(id=product_id,removed=False).first()
+    #if not product:
+    #    return jsonify({"msg": "Bad productId"}), 401
+    
+    #description = sess.query(Description).filter_by(product_id=product_id,removed=False).first()
+    #if not description:
+    #    return jsonify({"msg": "Bad description"}), 401
+
+    #product.name=name
+    status = request.json.get('status')
+    if not status:
+        return jsonify({"msg": "Missing status parameter"}), 400
+    product = sess.query(Product).filter_by(id=product_id).first()
+    product.modify(status)
+=======
     dictdata = request.json.get('dictdata')
     if not dictdata:
         return jsonify({"msg": "Missing dictdata parameter"}), 400
@@ -126,9 +148,14 @@ def updateProduct():
         return jsonify({"msg": "Bad productId"}), 401
 
     product.update(dictdata)
+>>>>>>> 99b695114c04f39e22ab3712b3ef44823d11b0f3
     sess.commit()
-    return jsonify(isUpdated=True), 200
+    #if product.removed:
+    #    description.removed=True
+    #description.modify(all_description)
 
+    return jsonify(result=True), 200
+'''
 # 经理端查看销售统计，不知道放哪儿先放这儿了
 # Tested by Pytest
 @bp.route("/statistics", methods=['POST'])
@@ -169,5 +196,11 @@ def statistics():
     title_count=[]
     for _id_count in productId_count:
         product = sess.query(Product).filter_by(id=_id_count[0]).first()
+<<<<<<< HEAD
+        name_count.append([product.name,_id_count[1]])
+    return jsonify(name_count=name_count), 200
+'''
+=======
         title_count.append([product.title,_id_count[1]])
     return jsonify(title_count=title_count), 200
+>>>>>>> 99b695114c04f39e22ab3712b3ef44823d11b0f3
