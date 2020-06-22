@@ -5,13 +5,11 @@ import DehazeIcon from '@material-ui/icons/Dehaze';
 import HomeIcon from '@material-ui/icons/Home';
 import BottomNavBar from './BottomNavBar';
 
-export default function BottomNavBarForManager(props) {
+export default function BottomNavBarForCustomer(props) {
     return (
         <BottomNavBar props={[
-            { icon: <HomeIcon />, text: '销售统计 ', url: '/salesStatistics' },
-            { icon: <DehazeIcon />, text: '本地库存 ', url: '/localInventory' },
-            { icon: <DehazeIcon />, text: '进货 ', url: '/purchase' },
-            { icon: <DehazeIcon />, text: '我的 ', url: '/manager-info' }
+            { icon: <HomeIcon />, text: '订单 ', url: '/OrderManagement' },
+            { icon: <DehazeIcon />, text: '我的 ', url: '/' }
         ]} />
     )
 }

@@ -22,7 +22,7 @@ export default function UserInfoCard(props) {
             tmpTarget = tmpTarget.parentNode
             type = tmpTarget.getAttribute('type')
         }
-        props.history.push({ pathname: '/orderManagement', state: { type: type } })
+        props.history.push({ pathname: '/orders', state: { type: type } })
         //event.cancelBubble = true
         event.stopPropagation()
     }
