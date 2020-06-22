@@ -133,7 +133,7 @@ export default function OrderCards(props) {
                                 <div className='head'>
                                     <div className='head-text'>订单号:{val.orderID}</div>
                                     <div className='head-text'>{val.status}</div>
-                                    {val.status === '待收货' ?
+                                    {val.status === '已发货' ?
                                         <>
                                             <div className='button-box'>
                                                 <IconButton className='button'
