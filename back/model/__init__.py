@@ -73,12 +73,12 @@ class SupplierOrder(db.Model):
     count = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     createTime = db.Column(db.DateTime)
     #paid = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    #accepted = db.Column(db.Boolean, unique=False, nullable=False, #default=False)
-    #delivered = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    accepted = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    delivered = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     confirmed = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     rejected = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     #cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
-    rejectReason = db.Column(db.String(64), unique=True, index=True, nullable=True)
+    rejectReason = db.Column(db.String(64), unique=False, nullable=True)
 
     def __init__(self, creator_id):
         self.creator_id = creator_id
@@ -94,11 +94,19 @@ class SupplierOrder(db.Model):
             return '已拒绝'
         elif self.confirmed:
             return '已收货'
+        elif self.delivered:
+            return '已发货'
+        elif self.accepted:
+            return '已接受'
         else:
-            return '待收货'
+            return '已创建'
 
 '''
-
+这样的话 原来讨论的只有三个状态 现在要5个了
+已创建 已接受 已发货 已拒绝 已收货
+第一个是仓库经理操作后的可达状态
+中间三个是供货商操作后的可达状态
+后面一个是仓库管理员操作后的可达状态
 '''
 '''
 

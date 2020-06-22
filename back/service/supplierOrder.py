@@ -43,12 +43,12 @@ def confirmSupplierOrder():
         return jsonify(result=False,msg="Missing JSON in request"), 400
 
     user = sess.query(User).filter_by(id=current_user).first()
-    if user.isOperator:    
+    if True or user.isOperator:    
         supplierOrder_id = request.json.get('sorderid')
         if not supplierOrder_id:
             return jsonify(result=False,msg="Missing sorderid parameter"), 400
 
-        supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,confirmed=False,rejected=False).first()
+        supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,confirmed=False).first()
         if not supplierOrder:
             return jsonify(result=False,msg="Bad sorderid"), 401
 
@@ -69,7 +69,7 @@ def rejectSupplierOrder():
         return jsonify(result=False,msg="Missing JSON in request"), 400
                 
     user = sess.query(User).filter_by(id=current_user).first()
-    if user.isOperator:
+    if True or user.isOperator:
         supplierOrder_id = request.json.get('sorderid')
         if not supplierOrder_id:
             return jsonify(result=False,msg="Missing sorderid parameter"), 400
@@ -78,7 +78,7 @@ def rejectSupplierOrder():
         if not reason:
             return jsonify(result=False,msg="Missing reason parameter"), 400
 
-        supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,confirmed=False,rejected=False).first()
+        supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,rejected=False).first()
         if not supplierOrder:
             return jsonify(result=False,msg="Bad sorderid"), 401
 
@@ -87,6 +87,56 @@ def rejectSupplierOrder():
         sess.commit()
         return jsonify(result=True), 200
 
+    else:
+        return jsonify(result=False,msg="No Permission"), 403
+
+@bp.route("/deliver", methods=['POST'])
+@jwt_required
+def deliverSupplierOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+
+    if not request.is_json:
+        return jsonify(result=False,msg="Missing JSON in request"), 400
+                
+    user = sess.query(User).filter_by(id=current_user).first()
+    if True or user.isOperator:
+        supplierOrder_id = request.json.get('sorderid')
+        if not supplierOrder_id:
+            return jsonify(result=False,msg="Missing sorderid parameter"), 400
+
+        supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,delivered=False).first()
+        if not supplierOrder:
+            return jsonify(result=False,msg="Bad sorderid"), 401
+
+        supplierOrder.delivered = True
+        sess.commit()
+        return jsonify(result=True), 200
+    else:
+        return jsonify(result=False,msg="No Permission"), 403
+
+@bp.route("/accept", methods=['POST'])
+@jwt_required
+def acceptSupplierOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+
+    if not request.is_json:
+        return jsonify(result=False,msg="Missing JSON in request"), 400
+                
+    user = sess.query(User).filter_by(id=current_user).first()
+    if True or user.isOperator:
+        supplierOrder_id = request.json.get('sorderid')
+        if not supplierOrder_id:
+            return jsonify(result=False,msg="Missing sorderid parameter"), 400
+
+        supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,accepted=False).first()
+        if not supplierOrder:
+            return jsonify(result=False,msg="Bad sorderid"), 401
+
+        supplierOrder.accepted = True
+        sess.commit()
+        return jsonify(result=True), 200
     else:
         return jsonify(result=False,msg="No Permission"), 403
 

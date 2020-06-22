@@ -200,8 +200,25 @@ def add_supplierOrder():
         storehouse_id=random.randint(1,2)
         sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
         sup.rejected = True
+        sup.rejectReason = "something so bad"
         db.session.add(sup)
         db.session.commit()
+
+    for num in range(0,10):
+        sup=SupplierOrder(3)
+        storehouse_id=random.randint(1,2)
+        sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
+        sup.accepted=True
+        db.session.add(sup)
+        db.session.commit()
+
+    for num in range(0,10):
+        sup=SupplierOrder(3)
+        storehouse_id=random.randint(1,2)
+        sup.fill(random.randint(1,800),storehouse_id,random.randint(100,1000))
+        sup.delivered=True
+        db.session.add(sup)
+        db.session.commit()    
 '''
     for num in range(0,10):
         sup=SupplierOrder(3)
@@ -236,7 +253,8 @@ def add_supplierOrder():
 if __name__ == '__main__':
     #add_supplierOrder()
     #add_storehouse()
-    add_catagories()
+    #add_catagories()
+    add_supplierOrder()
     #add_products()
     #init_database()
     # add_order()
