@@ -49,10 +49,10 @@ export default function LoginPage(props) {
                     // 普通用户
                     case 'customer':
                         let backUrl = '/'
-                        if (props.location.state != undefined) { 
+                        if (props.location.state != undefined) {
                             backUrl = props.location.state['backUrl']
                         }
-                        props.history.push({ pathname: backUrl})
+                        props.history.push({ pathname: backUrl })
                         break;
                     default: break;
                 }
@@ -94,12 +94,12 @@ export default function LoginPage(props) {
                         <form className='login-wrapper'>
                             <div className='username-input'>
                                 <TextField fullWidth variant='outlined'
-                                    name='username' label='USERNAME' defaultValue='SYSTEM'>
+                                    name='username' label='USERNAME' defaultValue='User0'>
                                 </TextField>
                             </div>
                             <div className='password-input'>
                                 <TextField fullWidth
-                                    variant='outlined' name='password' label='PASSWORD' type='password' defaultValue='This is a simple SALT'>
+                                    variant='outlined' name='password' label='PASSWORD' type='password' defaultValue='12345678'>
                                 </TextField>
                             </div>
                             <div className='captcha'>

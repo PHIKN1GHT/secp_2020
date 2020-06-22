@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { ReactDOM } from 'react-dom';
 
-import { server } from './Const' 
+import { server } from './Const'
 import BottomNavBarForProductDetailPage from '../components/BottomNavBarForProductDetailPage'
 import TopBar from '../components/TopBar'
 import Slider from '../components/Slider'
-import {handleToCart} from '../components/JumpToCart'
+import { handleToCart } from '../components/JumpToCart'
 import JumpToCart from '../components/JumpToCart'
 
 import { withStyles } from "@material-ui/core/styles";
@@ -16,15 +16,15 @@ const styles = theme => ({
         height: '100vh',
         width: '100vw',
         display: 'flex',
-        flexDirection: 'column', 
+        flexDirection: 'column',
         backgroundColor: 'lavender',
         scrollbarWidth: 'none',
     },
 });
 
 
-class ProductDetailPage extends Component { 
-    constructor(props) { 
+class ProductDetailPage extends Component {
+    constructor(props) {
         super(props)
         this.state = {
             index: 0,
@@ -35,7 +35,7 @@ class ProductDetailPage extends Component {
         this.tmp = undefined
         this.addLock = false
     }
-    componentWillMount() { 
+    componentWillMount() {
         this.backUrl = this.props.location.state['backUrl']
         this.record = this.props.location.state['record']
 
@@ -59,11 +59,11 @@ class ProductDetailPage extends Component {
         //         unit: '件',
         // }
         // this.setState({ index, images, detailImages, product })
-        
+
 
     }
-    fetchAndInitial() { 
-        const url = server+'/api/product/detail'
+    fetchAndInitial() {
+        const url = server + '/api/product/detail'
         //const id = this.props.location.state['productId']
         const id = this.props.match.params.productId
         const bodyData = JSON.stringify({
@@ -78,82 +78,82 @@ class ProductDetailPage extends Component {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
         })
-        .then(response => response.json()) // parses response to JSON 
+            .then(response => response.json()) // parses response to JSON 
             .then(json => {
-            
-            const images = json['images']
-            const detailImages = json['detailImages']
-            const product = json['product']
-            
-            this.setState({
-                images,
-                detailImages,
-                product,
+                console.log(json)
+                const images = json['images']
+                const detailImages = json['detailImages']
+                const product = json['product']
+
+                this.setState({
+                    images,
+                    detailImages,
+                    product,
+                })
             })
-        })
     }
-    calAbsPosition(element) { 
+    calAbsPosition(element) {
         let actualLeft = element.offsetLeft;
         let current = element.offsetParent;
 
-　　　　while (current != undefined){
-　　　　　　actualLeft += current.offsetLeft;
-　　　　　　current = current.offsetParent;
+        while (current != undefined) {
+            actualLeft += current.offsetLeft;
+            current = current.offsetParent;
         }
         let actualTop = element.offsetTop;
         current = element.offsetParent;
 
-　　　　while (current != undefined){
-　　　　　　actualTop += current.offsetTop;
-　　　　　　current = current.offsetParent;
+        while (current != undefined) {
+            actualTop += current.offsetTop;
+            current = current.offsetParent;
         }
-        return {left: actualLeft, top: actualTop}
-        
+        return { left: actualLeft, top: actualTop }
+
     }
-    elementJump(element) { 
+    elementJump(element) {
         console.log(this.props.location.state)
         let cloneElement = document.getElementsByName('circle')[0].cloneNode(true)
         console.log(cloneElement)
         cloneElement.style.position = 'absolute'
         cloneElement.style.zIndex = '99'
         cloneElement.style.display = 'initial'
-        
+
         let nowPosition = this.calAbsPosition(element)
         console.log(nowPosition)
-        nowPosition.left+=element.offsetWidth/2
-        cloneElement.style.left = nowPosition.left+'px'
+        nowPosition.left += element.offsetWidth / 2
+        cloneElement.style.left = nowPosition.left + 'px'
         cloneElement.style.top = nowPosition.top + 'px'
-        cloneElement.style.WebkitTransition ='top 1s, left 0.8s, width 1s, height 1s'
+        cloneElement.style.WebkitTransition = 'top 1s, left 0.8s, width 1s, height 1s'
         cloneElement.style.transition = 'top 1s, left 0.8s, width 1s, height 1s'
         cloneElement.style.width = '2vh'
         cloneElement.style.height = '2vh'
-       
+
         document.body.appendChild(cloneElement)
-        
+
         this.addLock = true
         this.tmp = this.props.location.state
         setTimeout(
-            (() => { 
-                
-                
+            (() => {
+
+
                 const cart = document.getElementsByName('topBarCart')[0]
                 // const cartPosition = this.calAbsPosition(cart)
-                const cartPosition = {left: cart.offsetLeft, top:cart.offsetTop}
-                
-                cloneElement.style.left = cartPosition.left+cart.offsetWidth/3+'px'
-                cloneElement.style.top = cartPosition.top+'px'
+                const cartPosition = { left: cart.offsetLeft, top: cart.offsetTop }
+
+                cloneElement.style.left = cartPosition.left + cart.offsetWidth / 3 + 'px'
+                cloneElement.style.top = cartPosition.top + 'px'
                 // cloneElement.style.width = 0+'px'
                 // cloneElement.style.height = 0+'px'
-                
+
                 setTimeout(() => {
                     document.body.removeChild(cloneElement)
                     this.props.location.state = this.tmp
                     this.addLock = false
                 }, 1000)
             }),
-        0)
-        
-        
+            0)
+
+
     }
     handleGoBack() {
         const backUrl = this.backUrl
@@ -164,16 +164,16 @@ class ProductDetailPage extends Component {
         //     this.props.history.push({ pathname: backUrl+keyword, state: { record: this.props.location.state['record'] } }) 
         // }
     }
-    handleSearch(e) { 
+    handleSearch(e) {
         const backUrl = '/product/catalogs'
         const record = this.record
         console.log(record)
-        this.props.history.push({ pathname: '/product/search', state: {backUrl, record}})
+        this.props.history.push({ pathname: '/product/search', state: { backUrl, record } })
 
         // const searchInput = document.getElementsByName('searchInput')[0]
         // const keyword = searchInput.value
         // this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword } })
-    
+
     }
     // handleAddToCart(e, productId) { 
     //     if(this.addLock) return 
@@ -185,13 +185,13 @@ class ProductDetailPage extends Component {
     //         element = element.parentNode
     //     }
     //     this.elementJump(element)
-        
+
     // }
-    handleAddToCart(e, productId) { 
+    handleAddToCart(e, productId) {
         e.stopPropagation()
-        if(this.addLock) return 
+        if (this.addLock) return
         this.addLock = true
-        const unlock = () => { 
+        const unlock = () => {
             this.addLock = false
         }
         handleToCart(e, productId, unlock)
@@ -212,13 +212,13 @@ class ProductDetailPage extends Component {
                 fakeSearch={true}
                 onGoBack={this.handleGoBack.bind(this)}
                 onSearch={this.handleSearch.bind(this)} />
-            <div style={{overflowY:'auto', overflowX:'hidden', flex:1, scrollbarWidth:'none', }}>
+            <div style={{ overflowY: 'auto', overflowX: 'hidden', flex: 1, scrollbarWidth: 'none', }}>
                 {/* 轮播图 */}
                 <div style={{ height: '100vw', width: '100vw' }}>
                     <Slider images={this.state.images} />
                 </div>
                 {/* 商品信息 */}
-                <div style={{display:'flex', flexDirection:'column'}}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <span>{this.state.product.name}</span>
                     <div>
                         <span>￥{this.state.product.price}</span>
@@ -227,7 +227,7 @@ class ProductDetailPage extends Component {
                 </div>
                 {/* 商品详情图片 */}
                 {
-                    this.state.detailImages.map((detailImage) => { 
+                    this.state.detailImages.map((detailImage) => {
                         return (
                             <div style={{ width: '100%' }}>
                                 <img style={{ width: '100%' }} src={detailImage} />
@@ -237,7 +237,7 @@ class ProductDetailPage extends Component {
                 }
             </div>
             {/* 底部功能条 */}
-            <BottomNavBarForProductDetailPage onClick={(e) => { this.handleAddToCart(e, this.state.product.id)}} />
+            <BottomNavBarForProductDetailPage onClick={(e) => { this.handleAddToCart(e, this.state.product.id) }} />
         </div>);
     }
 }
