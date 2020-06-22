@@ -6,6 +6,7 @@ import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
 import TopBar from '../components/TopBar';
 import {handleToCart} from '../components/JumpToCart'
 import JumpToCart from '../components/JumpToCart'
+import Toast from '../components/Toast'
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
@@ -85,6 +86,7 @@ class MainPage extends Component {
                     categories,
                     products,
                     totalPage,
+                    nowPage:1,
                 }, () => {
                     if (this.props.location.state != undefined) {
                         const record = this.props.location.state['record']
@@ -129,6 +131,59 @@ class MainPage extends Component {
             state: { record },
         })
     
+    }
+    handleMore() { 
+        if (this.state.nowPage == this.state.totalPage) { 
+            Toast("没有更多商品")
+            return
+        }
+        this.setState((preState) => { 
+            let nowPage = preState.nowPage+1
+            return {nowPage}
+        }, () => {
+                const url = server + '/api/mall/homepage'
+                const page = this.state.nowPage
+                const bodyData = JSON.stringify({
+                    page
+                })
+            fetch(url, {
+                body: bodyData, // must match 'Content-Type' header
+                //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'include', // include, same-origin, *omit
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+                //redirect: 'follow', // manual, *follow, error
+                //referrer: 'no-referrer', // *client, no-referrer
+            })
+                .then(response => { console.log(response); return response.json() }) // parses response to JSON 
+                .then(json => {
+                    console.log(json)
+                    const categories = json['categories']
+                    let products = JSON.parse(JSON.stringify(this.state.products)) 
+                    products = products.concat(json['products'])
+                    const totalPage = json['totalPage']
+                    this.setState({
+                        categories,
+                        products,
+                        totalPage,
+                        nowPage:1,
+                    }, () => {
+                        if (this.props.location.state != undefined) {
+                            const record = this.props.location.state['record']
+                            if (record != undefined) {
+                                const productArea = document.getElementsByName('productArea')[0]
+                                productArea.scrollTop = record.scrollTop
+                            }
+                        }
+                    }
+                    )
+                })    
+                
+        })
+
     }
     render() {
         const { classes } = this.props;
@@ -186,9 +241,22 @@ class MainPage extends Component {
                         )
                     })}
                 </div>
+                <div onClick={this.handleMore.bind(this)}
+                    style={{
+                        width: '100vw',
+                        textAlign: 'center',
+                        backgroundColor: 'thistle',
+                        cursor: 'pointer',
+                    }}
+                >
+                    <font style={{color:'white'}}>加载更多</font>
+                </div>
+
             </div>
             <BottomNavBarForCustomer />
-        </div>);
+            
+            </div>
+        );
     }
 }
 export default withStyles(styles, { withTheme: true })(MainPage);

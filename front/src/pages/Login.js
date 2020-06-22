@@ -46,6 +46,10 @@ export default function LoginPage(props) {
                     case 'operator':
                         props.history.push({ pathname: '/operator-customer-order' })
                         break;
+                    case 'supplier':
+                        const type = "全部"
+                        props.history.push({ pathname: '/orderManagement', state: {type} })
+                        break;
                     // 普通用户
                     case 'customer':
                         let backUrl = '/'
