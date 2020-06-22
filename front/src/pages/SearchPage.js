@@ -69,12 +69,12 @@ class SearchPage extends Component {
         console.log(keyword)
         const backUrl = this.props.location.state['backUrl']
         //const record = {keyword}
-        // let record = this.props.location.state['record']
+        const record = this.props.location.state['record']
         // if (record != undefined) { 
         //     record['keyword'] = keyword
 
         // }
-        this.props.history.push({ pathname: '/product/search/'+keyword, state: { backUrl } })
+        this.props.history.push({ pathname: '/product/search/'+keyword, state: { backUrl, record } })
     }
     handleGoBack() {
         const record = this.props.location.state['record']

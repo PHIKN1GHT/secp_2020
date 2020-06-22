@@ -195,7 +195,13 @@ class CatalogsPage extends Component {
                 .then(response => response.json()) // parses response to JSON 
                 .then((json) => {
                     const catalogs = json['catalogs']
-                    const record = this.props.location.state['record']
+                    let record = undefined
+                    if (this.props.location.state != undefined) {
+                        record = this.props.location.state['record']
+                    }
+                    console.log(111)
+                    console.log(record)
+
                     const selectedCatalogId = record == undefined ? catalogs[0].id : record.selectedCatalogId
                     tmpSelectedCatalogId = selectedCatalogId
                     return { catalogs, selectedCatalogId }
@@ -245,12 +251,21 @@ class CatalogsPage extends Component {
             const catalogs = values[0].catalogs
             const products = values[1].products
             const totalPage = values[1].totalPage
-            console.log(products)
+            //console.log(products)
             this.setState({
                 selectedCatalogId,
                 catalogs,
                 products,
                 totalPage
+            }, () => { 
+                    let record = undefined
+                    if (this.props.location.state != undefined) { 
+                        record = this.props.location.state['record']
+                    }
+                if (record != undefined) { 
+                    const productArea = document.getElementsByName('productArea')[0]
+                    productArea.scrollTop = record.scrollTop
+                }
             })
         })
             
@@ -311,9 +326,9 @@ class CatalogsPage extends Component {
     }
 
 
-    handleSearch(e) { 
-        this.props.history.push({ pathname: '/product/search',})
-    }
+    // handleSearch(e) { 
+    //     this.props.history.push({ pathname: '/product/search',})
+    // }
     handleSelectCatalog(e) { 
         this.setState({
             selectedCatalogId: e.target.id,
