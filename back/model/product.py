@@ -31,10 +31,12 @@ class Storehouse(db.Model):
 class Category(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False, default="")
+    thumbnail = db.Column(db.UnicodeText, unique=False, nullable=True, default="")
 
-    def __init__(self, name = "", parent_id=None):
+    def __init__(self, name = "", parent_id=None, thumbnail=""):
         self.name = name
         self.parent_id = parent_id
+        self.thumbnail = thumbnail
 
     def __repr__(self):
         return '<Category [%r] >' % (self.name)
@@ -60,8 +62,8 @@ Category.parent = db.relationship('Category', foreign_keys = 'Category.parent_id
 class Product(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
     title = db.Column(db.String(64), unique=False, nullable=False, default="")
-    thumbnail = db.Column(db.String(256), unique=False, nullable=True, default="")
-    htmlDescription = db.Column(db.UnicodeText, unique=False, nullable=False, default="")
+    thumbnail = db.Column(db.UnicodeText, unique=False, nullable=True, default="")
+    htmlDescription = db.Column(db.UnicodeText, unique=False, nullable=True, default="")
     remain = db.Column(db.BigInteger, unique=False, nullable=False, default=0)
     price = db.Column(db.Numeric(10,2), unique=False, nullable=False, default=0)
     unit = db.Column(db.String(16), unique=False, nullable=False, default="")

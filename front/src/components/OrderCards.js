@@ -29,6 +29,8 @@ export default function OrderCards(props) {
             .then(json => {
                 let tmp = []
                 json.map((val, ind) => {
+                    const ar = val.create_time.split(',')[1].split(' ')
+                    val.create_time = ar[3] + '-' + ar[2] + '-' + ar[1] + ' ' + ar[4]
                     if (props.type === val.status || props.type === '全部') {
                         tmp.push({
                             orderID: val.orderid,
@@ -37,7 +39,8 @@ export default function OrderCards(props) {
                             address: val.address,
                             status: val.status,
                             products: val.products,
-                            price: val.total_cost
+                            price: val.total_cost,
+                            create_time: val.create_time
                         })
                     }
                 })
@@ -91,7 +94,6 @@ export default function OrderCards(props) {
                     mode: 'cors', // no-cors, cors, *same-origin
                 }).then(res => res.json())
                     .then(json => {
-                        console.log(json)
                         if (json.result) {
                             setOrderInfo(prevState => {
                                 // 后端没有返回指定订单号的订单接口，自己编码吧
@@ -122,7 +124,6 @@ export default function OrderCards(props) {
                     mode: 'cors', // no-cors, cors, *same-origin
                 }).then(res => res.json())
                     .then(json => {
-                        console.log(json)
                         if (json.result) {
                             setOrderInfo(prevState => {
                                 // 后端没有返回指定订单号的订单接口，自己编码吧
@@ -155,7 +156,6 @@ export default function OrderCards(props) {
                 mode: 'cors', // no-cors, cors, *same-origin
             }).then(res => res.json())
                 .then(json => {
-                    console.log(json)
                     if (json.result) {
                         setOrderInfo(prevState => {
                             // 后端没有返回指定订单号的订单接口，自己编码吧
@@ -226,6 +226,12 @@ export default function OrderCards(props) {
                                         :
                                         <div className='button-box'></div>
                                 }
+                            </div>
+                            <div className='baseline'></div>
+                            <div className='content'>
+                                <div className='text-add'>
+                                    创建时间: {val.create_time}
+                                </div>
                             </div>
                             <div className='baseline'></div>
                             <div className='content'>

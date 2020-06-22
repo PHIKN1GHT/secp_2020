@@ -27,13 +27,14 @@ export default function OrderDetailPage(props) {
                         mode: 'cors', // no-cors, cors, *same-origin
                     }).then(response => response.json())
                         .then(json => {
-
                             return {
                                 name: json.product.name,
                                 count: val.count,
                                 unit: json.product.unit,
                                 unitprice: json.product.price,
-                                price: (val.count * json.product.price).toFixed(2)
+                                price: (val.count * json.product.price).toFixed(2),
+                                img: json.images,
+                                dimg: json.detailImages
                             }
                         }).then(data => { resolve(data) })
                 })
@@ -41,9 +42,13 @@ export default function OrderDetailPage(props) {
         })
         Promise.all(funcs).then((values) => {
             orderDataFromPrev.products = values
+            const ar = orderDataFromPrev.create_time.split(',')[1].split(' ')
+            orderDataFromPrev.create_time = ar[3] + '-' + ar[2] + '-' + ar[1] + ' ' + ar[4]
             setOrderData(prevState => {
                 return orderDataFromPrev
             })
+        }).then(() => {
+            setTimeout(() => { }, 200)
         })
     }
     useEffect(() => {
@@ -63,16 +68,16 @@ export default function OrderDetailPage(props) {
     const handleGoBack = (event) => {
         props.history.goBack()
     }
-
     const [loggedIn, setL] = useState(false)
     useEffect(() => {
+
         IsLoggedIn(['customer', 'operator'], () => {
             setL(true)
         }, () => {
             setL(false)
             props.history.push({ pathname: '/login' })
         })
-    })
+    }, [])
     return (<>
         {loggedIn ?
             directly ? props.history.goBack() :
@@ -89,6 +94,16 @@ export default function OrderDetailPage(props) {
                         </div>
                         <div className='baseline'></div>
                         <div className='content'>
+                            <div className='text-add'>
+                                创建时间:{orderData.create_time}
+                                {/* {orderData.create_time.split(',')[1].split(' ')[3]}-
+                                {orderData.create_time.split(',')[1].split(' ')[2]}-
+                                {orderData.create_time.split(',')[1].split(' ')[1]}&nbsp;
+                                {orderData.create_time.split(',')[1].split(' ')[4]} */}
+                            </div>
+                        </div>
+                        <div className='baseline'></div>
+                        <div className='content'>
                             <div className='text-add'>收货地:{orderData.address}</div>
                             <div className='line2'>
                                 <div className='text-rec'>收货人:{orderData.receiver}</div>
@@ -97,23 +112,29 @@ export default function OrderDetailPage(props) {
                         </div>
                     </div>
                     <div className='header'>
-                        <div className='text'>商品</div>
+                        <div className='text'>缩略图</div>
+                        <div className='text'>商品名</div>
                         <div className='text'>数量</div>
                         <div className='text'>单位</div>
                         <div className='text'>单价</div>
                         <div className='text'>总价</div>
                     </div>
+
                     <div className='products'>
                         {
                             orderData.products !== undefined ?
                                 orderData.products.map((val, ind) =>
-                                    <div className='product'>
-                                        <div className='text'>{val.name}</div>
-                                        <div className='text'>{val.count}</div>
-                                        <div className='text'>{val.unit}</div>
-                                        <div className='text'>{val.unitprice}</div>
-                                        <div className='text'>{val.price}</div>
-                                    </div>
+                                    <>
+                                        <div className='product'>
+                                            <img className='prod-img' src={val.dimg}></img>
+                                            <div className='text'>{val.name}</div>
+                                            <div className='text'>{val.count}</div>
+                                            <div className='text'>{val.unit}</div>
+                                            <div className='text'>{val.unitprice}</div>
+                                            <div className='text'>{val.price}</div>
+                                        </div>
+
+                                    </>
                                 ) : null
                         }
                     </div>
