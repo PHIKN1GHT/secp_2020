@@ -4,7 +4,8 @@ import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
 import TopBar from '../components/TopBar';
-
+import {handleToCart} from '../components/JumpToCart'
+import JumpToCart from '../components/JumpToCart'
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
@@ -46,30 +47,30 @@ class MainPage extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            catalogs: [],
+            categories: [],
             products: [],
             totalPage: 0,
         }
     }
     componentWillMount() {
         this.fetchAndInitial()
-        // let catalogs = []
+        // let categories = []
         // for (let i = 1; i <= 10; ++i){
-        //     catalogs.push({id:i, name:'catalog-'+i})
+        //     categories.push({id:i, name:'catalog-'+i})
         // }
         // let products = []
         // for (let i = 1; i <= 20; ++i){
         //     products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
         // }
         // this.setState({
-        //     catalogs,
+        //     categories,
         //     products,
 
         // })
     }
     fetchAndInitial() {
         // totalPage: number,
-        // catalogs: [id: number, name: str],
+        // categories: [id: number, name: str],
         // products: [number: [id: number, name: str, price: number, unit: str, cover: '']]
         const url = server + '/api/mall/homepage'
         fetch(url, {
@@ -77,23 +78,33 @@ class MainPage extends Component {
             //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'include', // include, same-origin, *omit
             headers: {
-                'content-type': 'application/json'
+                //'content-type': 'application/json'
             },
-            method: 'GET', // *GET, POST, PUT, DELETE, etc.
-            mode: 'no-cors', // no-cors, cors, *same-origin
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
             //redirect: 'follow', // manual, *follow, error
             //referrer: 'no-referrer', // *client, no-referrer
         })
-            .then(response => response.json()) // parses response to JSON 
+            .then(response => { console.log(response); return response.json() }) // parses response to JSON 
             .then(json => {
-                const catalogs = json['catalogs']
+                console.log(json)
+                const categories = json['categories']
                 const products = json['products']
                 const totalPage = json['totalPage']
                 this.setState({
-                    catalogs,
+                    categories,
                     products,
                     totalPage,
-                })
+                }, () => {
+                    if (this.props.location.state != undefined) {
+                        const record = this.props.location.state['record']
+                        if (record != undefined) {
+                            const productArea = document.getElementsByName('productArea')[0]
+                            productArea.scrollTop = record.scrollTop
+                        }
+                    }
+                }
+                )
             })
     }
     handleSearch(e) {
@@ -102,9 +113,37 @@ class MainPage extends Component {
         const backUrl = '/'
         this.props.history.push({ pathname: '/product/search', state: { backUrl } })
     }
+    handleAddToCart(e, productId) { 
+        e.stopPropagation()
+        handleToCart(e, productId)
+    }
+    handleClickProduct(productId) { 
+
+        const productArea = document.getElementsByName('productArea')[0]
+        const scrollTop = productArea.scrollTop
+        
+        
+        const backUrl = '/'
+        
+        const record = { scrollTop }
+        this.props.history.push({ 
+            pathname: '/product/detail/'+productId, 
+            state: {productId, record, backUrl}})
+  
+    }
+    handleClickCatalog(selectedCatalogId) {
+        const scrollTop = 0
+        const record = { selectedCatalogId, scrollTop }
+        this.props.history.push({
+            pathname: '/product/catalogs',
+            state: { record },
+        })
+    
+    }
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
+            <JumpToCart />
             {/* 搜索框 */}
             <TopBar
                 backIconHidden={true}
@@ -118,13 +157,13 @@ class MainPage extends Component {
                     <SearchIcon style={{cursor:'pointer'}} onClick={this.handleSearch.bind(this)} />
                 </div>
             </div> */}
-            <div style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', }}>
+            <div name={'productArea'} style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', }}>
                 {/* 目录展示 */}
                 <div className={classes.rowBox} style={{ flexWrap: 'wrap' }}>
-                    {this.state.catalogs.map((catalog) => {
+                    {this.state.categories.map((catalog) => {
                         return (
-                            <div style={{ width: '20vw', height: '20vw', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <img style={{ borderRadius: '80%', width: '80%', height: '80%' }} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
+                            <div onClick={() => { this.handleClickCatalog.bind(this)(catalog.id) }} style={{ cursor:'pointer', width: '20vw', height: '20vw', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <img style={{ borderRadius: '80%', width: '80%', height: '80%' }} src={catalog.url} />
                                 <span>
                                     {catalog.name}
                                 </span>
@@ -133,11 +172,11 @@ class MainPage extends Component {
                     })}
                 </div>
                 {/* 推荐商品 */}
-                <div className={classes.rowBox} style={{ justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
+                <div  className={classes.rowBox} style={{ justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
                     {this.state.products.map((product) => {
                         return (
-                            <div style={{ borderRadius: '5px', border: "1px solid", margin: '2vh 0 0 0', width: '48vw', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'thistle', }}>
-                                <img style={{ borderRadius: '5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
+                            <div onClick={(e) => { this.handleClickProduct.bind(this)(product.id)}} style={{ cursor:'pointer', borderRadius: '5px', border: "1px solid", margin: '2vh 0 0 0', width: '48vw', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'thistle', }}>
+                                <img style={{ borderRadius: '5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src={product.images[0]} />
                                 <span>
                                     {product.name}
                                 </span>
@@ -150,7 +189,7 @@ class MainPage extends Component {
                                     </span>
                                 </div>
                                 <div style={{ alignSelf: 'flex-end' }} >
-                                    <AddShoppingCartIcon className={classes.shoppingIcon} />
+                                    <AddShoppingCartIcon onClick={(e) => { this.handleAddToCart.bind(this)(e, product.id) }} className={classes.shoppingIcon} />
                                 </div>
                             </div>
 

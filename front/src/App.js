@@ -9,7 +9,7 @@ import './css/Orders.css';
 import './css/OrderCards.css';
 import './css/OrderDetail.css';
 import './css/AddressManager.css';
-import './css/OperatorInfo.css';
+//import './css/OperatorInfo.css';
 import './css/OperatorCustomerOrder.css';
 import './css/OperatorSupplierOrder.css';
 
@@ -54,6 +54,7 @@ function App() {
         <Route path='/operator-info' component={OperatorInfoPage}></Route>
         <Route path='/operator-customer-order' component={OperatorCustomerOrderPage}></Route>
         <Route path='/operator-supplier-order' component={OperatorSupplierOrderPage}></Route>
+
 
         {/* <Route path="/" component={ShoppingCart}></Route> */}
         <Route path="/" component={MainPage}></Route>

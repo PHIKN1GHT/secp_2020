@@ -68,7 +68,7 @@ def registery():
 # POST: 登入，若成功返回Auth Token
 @bp.route("/login", methods=['POST'])
 def login():
-    if (not 'captcha' in session.keys()) or (session['captcha'] == None):
+    if ('captcha' not in session.keys()) or (session['captcha'] is None):
         return jsonify(result=False,reason="Please reload captcha first"), 400
 
     pipeline = Pipeline(request)

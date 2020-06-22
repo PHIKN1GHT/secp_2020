@@ -198,12 +198,13 @@ export default function AddressManagerPage(props) {
                 }
             })
     }
-    let loggedIn = true
-    IsLoggedIn(() => {
+    const [loggedIn, setL] = useState(false)
+    IsLoggedIn(['customer'], () => {
+        setL(true)
     }, () => {
-        loggedIn = false
+        setL(false)
         props.history.push({ pathname: '/login' })
-    })
+    }, [])
     return (<>
         {loggedIn ?
             <>

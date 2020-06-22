@@ -4,12 +4,6 @@ import { server, IsLoggedIn } from './Const';
 
 export default function OrderDetailPage(props) {
 
-    let loggedIn = true
-    IsLoggedIn(() => {
-    }, () => {
-        loggedIn = false
-        props.history.push({ pathname: '/login' })
-    })
     let directly = false
     let ordersFromPrev
     const _token = 'Bearer ' + localStorage.getItem('access_token')
@@ -33,12 +27,13 @@ export default function OrderDetailPage(props) {
                         mode: 'cors', // no-cors, cors, *same-origin
                     }).then(response => response.json())
                         .then(json => {
+
                             return {
-                                name: json.name,
+                                name: json.product.name,
                                 count: val.count,
-                                unit: json.unit,
-                                unitprice: json.price,
-                                price: (val.count * json.price).toFixed(2)
+                                unit: json.product.unit,
+                                unitprice: json.product.price,
+                                price: (val.count * json.product.price).toFixed(2)
                             }
                         }).then(data => { resolve(data) })
                 })
@@ -68,6 +63,16 @@ export default function OrderDetailPage(props) {
     const handleGoBack = (event) => {
         props.history.goBack()
     }
+
+    const [loggedIn, setL] = useState(false)
+    useEffect(() => {
+        IsLoggedIn(['customer', 'operator'], () => {
+            setL(true)
+        }, () => {
+            setL(false)
+            props.history.push({ pathname: '/login' })
+        })
+    })
     return (<>
         {loggedIn ?
             directly ? props.history.goBack() :
@@ -108,11 +113,6 @@ export default function OrderDetailPage(props) {
                                         <div className='text'>{val.unit}</div>
                                         <div className='text'>{val.unitprice}</div>
                                         <div className='text'>{val.price}</div>
-                                        {/* <div className='name'>{val.name}</div>
-                            <div className='count'>{val.count}</div>
-                            <div className='unit'>{val.unit}</div>
-                            <div className='unitprice'>{val.unitprice}</div>
-                            <div className='price'>{val.price}</div> */}
                                     </div>
                                 ) : null
                         }

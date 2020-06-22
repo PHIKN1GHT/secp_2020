@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
@@ -12,7 +12,7 @@ export default function UserInfoCard(props) {
     // const [username, setUsername] = useState('default')
     // const [avaterURL, setAvaterURL] = useState(
     //     'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1592676695916&di=96aac1fac45091c1c61b2c8d3367af56&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201511%2F01%2F20151101135231_wj4Zu.jpeg')
-    const username = localStorage.getItem('logged_in_as')
+    let username = localStorage.getItem('logged_in_as')
     const avaterURL = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1592676695916&di=96aac1fac45091c1c61b2c8d3367af56&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201511%2F01%2F20151101135231_wj4Zu.jpeg'
     const _token = 'Bearer ' + localStorage.getItem('access_token')
     const handleJumptoOrdersPage = (event) => {
@@ -51,13 +51,19 @@ export default function UserInfoCard(props) {
                 }
             })
     }
+    useEffect(() => {
+        username = localStorage.getItem('logged_in_as')
+    }, [])
+    const [loggedIn, setL] = useState(false)
+    useEffect(() => {
+        IsLoggedIn(['customer'], () => {
+            setL(true)
+        }, () => {
+            setL(false)
+            props.history.push({ pathname: '/login' })
+        })
+    }, [])
 
-    let loggedIn = true
-    IsLoggedIn(() => {
-    }, () => {
-        loggedIn = false
-        props.history.push({ pathname: '/login' })
-    })
     return (<>
         {loggedIn ?
             <div className='user-info'>
