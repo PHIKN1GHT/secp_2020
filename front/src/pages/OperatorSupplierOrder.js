@@ -34,7 +34,6 @@ export default function OrderCards(props) {
                     // 这里过滤
                     // || val.status === '已创建'
                     //if (val.status === '待收货')
-
                     {
                         tmp.push({
                             orderID: val.sorderid,
@@ -97,7 +96,6 @@ export default function OrderCards(props) {
                 mode: 'cors', // no-cors, cors, *same-origin
             }).then(res => res.json())
                 .then(json => {
-                    console.log(json)
                     if (json.result) {
                         setOrderInfo(prevState => {
                             // 后端没有返回指定订单号的订单接口，自己编码吧
