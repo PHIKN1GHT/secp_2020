@@ -3,7 +3,7 @@ from flask import Blueprint, request, session, send_file, make_response, jsonify
 from utils import captcha, cmparePswd, invalid, invalidate
 from flask_jwt_extended import jwt_required, jwt_optional, create_access_token, get_jwt_identity, get_raw_jwt
 import io
-from model import Storehouse, User, Order, Address
+from model import *
 import datetime
 
 bp = Blueprint('order',__name__)
@@ -17,8 +17,8 @@ def allOrder():
         user = sess.query(User).filter_by(id=current_user).first()
         if user.isOperator:
             storehouse = sess.query(Storehouse).filter_by(operator_id=current_user).first()
-            virtual_orders = sess.query(Order).filter_by(storehouse_id=storehouse.id,virtual=True).all()
-        else:    
+            virtual_orders = sess.query(Order).filter_by(virtual=True).all()
+        else:
             virtual_orders = sess.query(Order).filter_by(creator_id=current_user,virtual=True).all()
         orders=[]
         for virorder in virtual_orders:
@@ -131,7 +131,6 @@ def acceptOrder():
     return jsonify(result=True), 200
 
 
-
 @bp.route("/deliver", methods=['POST'])
 @jwt_required
 def deliverOrder():
@@ -142,20 +141,17 @@ def deliverOrder():
         return jsonify({"msg": "Missing JSON in request"}), 400
 
     user = sess.query(User).filter_by(id=current_user).first()
-    if user.isOperator:
-        order_id = request.json.get('orderid')
-        if not order_id:
-            return jsonify({"msg": "Missing orderid parameter"}), 400
+    order_id = request.json.get('orderid')
+    if not order_id:
+        return jsonify({"msg": "Missing orderid parameter"}), 400
 
-        order = sess.query(Order).filter_by(id=order_id,paid=True,delivered=False,cancelled=False,virtual=True).first()
-        if not order:
-            return jsonify({"msg": "Bad orderid"}), 401
+    order = sess.query(Order).filter_by(id=order_id,delivered=False,virtual=True).first()
+    if not order:
+        return jsonify({"msg": "Bad orderid"}), 401
             
-        order.delivered = True
-        sess.commit()
-        return jsonify(result=True), 200
-    else:
-        return jsonify(result=False,msg='No Permission'), 403
+    order.delivered = True
+    sess.commit()
+    return jsonify(result=True), 200
 
 '''
 # 管理员为订单配货
@@ -195,28 +191,42 @@ def deliverOrder():
 def createOrder():
     sess = DBSession()
     current_user = get_jwt_identity()
+    
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    user = sess.query(User).filter_by(id=current_user).first()
+    ids = request.json.get('ids')
+    if not ids:
+        return jsonify({"msg": "Missing ids parameter"}), 400
+
     carts = sess.query(Cart).filter_by(creator_id=current_user,removed=False).all()
 
     vir = Order(current_user)
     sess.add(vir)
     sess.commit()
 
-    orders = []
+    #rders = []
+    created = []
     for cart in carts:
-        product = sess.query(Product).filter_by(id=cart.product_id,shelved=True,archived=False).first()
+        if cart.product_id in ids:
+            product = sess.query(Product).filter_by(id=cart.product_id,shelved=True).first()
         # 限购暂未实现
         #print(product.remain, cart.count)
-        if (not product) or (product.remain < cart.count):
-            orders.append([False,cart.id])
-            continue
-        product.remain = product.remain - cart.count
-        order = Order(current_user)
-        order.fill(cart.product_id,cart.count,product.price,vir.id)
-        sess.add(order)
-        cart.removed = True
-        sess.commit()
-        orders.append([True,cart.id,cart.product_id,cart.count,product.price])
-    return jsonify(orders=orders,price=vir.cost()), 200
+        #if (not product) or (product.remain < cart.count):
+        #    orders.append([False,cart.id])
+        #    continue
+        #product.remain = product.remain - cart.count
+            order = Order(current_user,False)
+            order.fill(cart.product_id,cart.count,product.price,vir.id)
+            sess.add(order)
+            cart.removed = True
+            sess.commit()
+            created.append(cart.product_id)
+        #orders.append([True,cart.id,cart.product_id,cart.count,product.price])
+    #return jsonify(orders=orders,price=vir.cost()), 200
+    return jsonify(result=True,created=created), 200
+
 '''
 @bp.route("/pay", methods=['POST'])
 @jwt_required

@@ -28,7 +28,7 @@ def homepage():
         cate = sess.query(Category).filter_by(name=k).first()
         for sk in v:
             subcates = sess.query(Category).filter_by(parent_id=cate.id).all()
-        cates += [{"id":sc.id, "name":sc.name} for sc in subcates]
+        cates += [{"id":sc.id, "name":sc.name, 'image':sc.thumbnail} for sc in subcates]
         #cates.append({"id":cate.id, "name":cate.name, "subcate":[{"id":sc.id, "name":sc.name} for sc in subcates]})
     prods = [p.brief() for p in result] if result else []
     return jsonify(total=total,totalPages=pages,categories=cates,products=prods), 200
@@ -71,7 +71,7 @@ def catalogs():
         cate = sess.query(Category).filter_by(name=k).first()
         for sk in v:
             subcates = sess.query(Category).filter_by(parent_id=cate.id).all()
-        cates += [{"id":sc.id, "name":sc.name} for sc in subcates]
+        cates += [{"id":sc.id, "name":sc.name, 'image':sc.thumbnail} for sc in subcates]
     return jsonify(catalogs=cates), 200
 
 @bp.route("/search", methods=['POST', 'GET'])

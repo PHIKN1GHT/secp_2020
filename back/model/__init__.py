@@ -29,9 +29,8 @@ class Order(db.Model):
     # address_id = db.Column(db.BigInteger, db.ForeignKey("address.id"), nullable=True)
     # address = db.relationship('Order', foreign_keys='Order.address_id')
 
-    def __init__(self, creator_id, storehouse_id, virtual=True):
+    def __init__(self, creator_id, virtual=True):
         self.creator_id = creator_id
-        self.storehouse_id = storehouse_id
         self.virtual = virtual
         self.createTime = datetime.datetime.now()
     
@@ -97,7 +96,7 @@ class SupplierOrder(db.Model):
             return '已收货'
         else:
             return '待收货'
-            
+
 '''
 
 '''
