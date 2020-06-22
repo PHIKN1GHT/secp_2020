@@ -28,6 +28,7 @@ export default function OrderDetailPage(props) {
                     }).then(response => response.json())
                         .then(json => {
                             return {
+                                id: val.id,
                                 name: json.product.name,
                                 count: val.count,
                                 unit: json.product.unit,
@@ -42,29 +43,57 @@ export default function OrderDetailPage(props) {
         })
         Promise.all(funcs).then((values) => {
             orderDataFromPrev.products = values
-            setOrderData(prevState => {
-                return orderDataFromPrev
-            })
+            setOrderData(orderDataFromPrev)
         }).then(() => {
             setTimeout(() => { }, 200)
         })
     }
+    const [backFlag, setB] = useState(false)
     useEffect(() => {
-        if (props.location.state !== undefined)
-            GetProducts(ordersFromPrev)
+        if (props.location.state !== undefined) {
+            if (props.location.state.record !== undefined) {
+                const data = props.location.state.record.orderData
+                if (data !== undefined) {
+                    setOrderData(data)
+                    setB(true)
+                }
+            } else {
+                GetProducts(props.location.state['order'])
+            }
+        }
+        else {
+            directly = true
+        }
+
     }, [])
-    // 从入口进入不是直接访问，合法
-    if (props.location.state !== undefined) {
-        ordersFromPrev = props.location.state['order']
-
-    }
-    //登陆后不能直接访问该页面，必须有入口
-    else {
-        directly = true
-    }
-
     const handleGoBack = (event) => {
-        props.history.goBack()
+        if (backFlag) {
+            props.history.go(-3)
+            // console.log('as')
+            // switch (usertype) {
+            //     case 'operator':
+            //         props.history.push({ pathname: '/operator-customer-order' })
+            //         break;
+            //     case 'customer':
+            //         props.history.go(-3)
+            //         //props.history.push({ pathname: '/orders', state: { type: '全部' } })
+            //         break;
+            // }
+        } else {
+            props.history.goBack()
+        }
+    }
+    const handleJumpToProductDetail = (event) => {
+        const id = Number(event.currentTarget.getAttribute('id'))
+        props.history.push({
+            pathname: '/product/detail/' + String(id),
+            state: {
+                backUrl: '/order-detail',
+                record: {
+                    orderData: orderData,
+                },
+            }
+        })
     }
     const [loggedIn, setL] = useState(false)
     useEffect(() => {
@@ -123,7 +152,7 @@ export default function OrderDetailPage(props) {
                             orderData.products !== undefined ?
                                 orderData.products.map((val, ind) =>
                                     <>
-                                        <div className='product'>
+                                        <div className='product' id={val.id} onClick={handleJumpToProductDetail}>
                                             <img className='prod-img' src={val.dimg}></img>
                                             <div className='text'>{val.name}</div>
                                             <div className='text'>{val.count}</div>
