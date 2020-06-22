@@ -8,8 +8,6 @@ import datetime
 
 bp = Blueprint('order',__name__)
 
-# 查看所有订单
-# Tested by Postman
 @bp.route("/all", methods=['GET'])
 @jwt_required
 def allOrder():
@@ -19,21 +17,6 @@ def allOrder():
         user = sess.query(User).filter_by(id=current_user).first()
         if user.isOperator:
             storehouse = sess.query(Storehouse).filter_by(operator_id=current_user).first()
-            #if not request.is_json:
-            #    return jsonify({"msg": "Missing JSON in request"}), 400
-
-            #storehouse_id = request.json.get('storehouse_id')
-            #if not storehouse_id:
-            #    return jsonify({"msg": "Missing storehouse_id parameter"}), 400
-
-            #storehouse = sess.query(Storehouse).filter_by(id=storehouse_id).first()
-            #if not storehouse:
-            #    return jsonify({"msg": "Bad storehouse_id"}), 401
-
-            #if storehouse.operator_id != current_user:
-            #    return jsonify({"msg": "No Permission"}), 403
-            
-            #virtual_orders = sess.query(Order).filter_by(storehouse_id=storehouse_id,virtual=True).all()
             virtual_orders = sess.query(Order).filter_by(storehouse_id=storehouse.id,virtual=True).all()
         else:    
             virtual_orders = sess.query(Order).filter_by(creator_id=current_user,virtual=True).all()
@@ -41,30 +24,16 @@ def allOrder():
         for virorder in virtual_orders:
             if virorder.virtual:
                 if user.isOperator:
-                    #_orders = sess.query(Order).filter_by(storehouse_id=storehouse_id,belonging_id=virorder.id,virtual=False).all()
                     _orders = sess.query(Order).filter_by(belonging_id=virorder.id,virtual=False).all()
                 else:
                     _orders = sess.query(Order).filter_by(belonging_id=virorder.id,virtual=False).all()
                 suborders = []
                 for order in _orders:
-                    #suborders.append([order.product_id, order.count])
                     suborders.append({
                         'id': order.product_id,
                         'count': order.count,
                         'cost': str(order.product_id * order.count),
                     })
-                if virorder.cancelled:
-                    status="已撤销"
-                #elif virorder.archived:
-                #    status=
-                elif virorder.delivered:
-                    status="已收货"
-                elif virorder.accepted:
-                    status="待收货"
-                elif virorder.paid:
-                    status="待发货"
-                else:
-                    status="已创建"
                 # addr=sess.query(Address).filter_by(id=virorder.address_id).first()
                 # orders.append((virorder.id, virorder.createTime, suborders, addr.receiver, addr.phonenumber, addr.address, status))
 
@@ -74,7 +43,7 @@ def allOrder():
                         'orderid': virorder.id,
                         'create_time': virorder.createTime,
                         'products': suborders,
-                        'status': status,
+                        'status': virorder.status(),
                         'receiver': addr.receiver,
                         'phonenumber': addr.phonenumber,
                         'address':addr.address,
@@ -85,7 +54,7 @@ def allOrder():
                         'orderid': virorder.id,
                         'create_time': virorder.createTime,
                         'products': suborders,
-                        'status': status,
+                        'status': virorder.status(),
                         'receiver': 'UKNOWN',
                         'phonenumber': 'UKNOWN',
                         'address': 'UKNOWN',
@@ -97,8 +66,49 @@ def allOrder():
     else:
         return jsonify({"msg": "Please login"}), 401
 
-# 管理员接受订单
-# Tested by Postman
+
+@bp.route("/cancel", methods=['POST'])
+@jwt_required
+def cancelOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+
+    if not request.is_json:
+        return jsonify(result=False,msg="Missing JSON in request"), 400
+
+    order_id = request.json.get('orderid')
+    if not order_id:
+        return jsonify(result=False,msg="Missing orderid parameter"), 400
+
+    user = sess.query(User).filter_by(id=current_user).first()
+    order = sess.query(Order).filter_by(id=order_id,cancelled=False,virtual=True).first()
+    if not order:
+        return jsonify(result=False,msg="Bad orderid"), 401
+    order.cancelled = True
+    sess.commit()
+    return jsonify(result=True), 200
+
+@bp.route("/pay", methods=['POST'])
+@jwt_required
+def payOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    order_id = request.json.get('orderid')
+    if not order_id:
+        return jsonify({"msg": "Missing orderid parameter"}), 400
+
+    user = sess.query(User).filter_by(id=current_user).first()
+    order = sess.query(Order).filter_by(id=order_id,paid=False,virtual=True).first()
+    if not order:
+        return jsonify(result=False,msg="Bad order_id"), 401
+    order.paid = True
+    sess.commit()
+    return jsonify(result=True), 200
+
 @bp.route("/accept", methods=['POST'])
 @jwt_required
 def acceptOrder():
@@ -108,29 +118,45 @@ def acceptOrder():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
 
-    if current_user:
-        user = sess.query(User).filter_by(id=current_user).first()
-        if user.isOperator:
-            order_id = request.json.get('order_id')
-            if not order_id:
-                return jsonify({"msg": "Missing order_id parameter"}), 400
+    order_id = request.json.get('orderid')
+    if not order_id:
+        return jsonify({"msg": "Missing orderid parameter"}), 400
 
-            order = sess.query(Order).filter_by(id=order_id,paid=True,accepted=False,virtual=True).first()
-            if not order:
-                return jsonify({"msg": "Bad order_id"}), 401
+    user = sess.query(User).filter_by(id=current_user).first()
+    order = sess.query(Order).filter_by(id=order_id,accepted=False,virtual=True).first()
+    if not order:
+        return jsonify(result=False,msg="Bad orderid"), 401
+    order.accepted = True
+    sess.commit()
+    return jsonify(result=True), 200
+
+
+
+@bp.route("/deliver", methods=['POST'])
+@jwt_required
+def deliverOrder():
+    sess = DBSession()
+    current_user = get_jwt_identity()
+
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    user = sess.query(User).filter_by(id=current_user).first()
+    if user.isOperator:
+        order_id = request.json.get('orderid')
+        if not order_id:
+            return jsonify({"msg": "Missing orderid parameter"}), 400
+
+        order = sess.query(Order).filter_by(id=order_id,paid=True,delivered=False,cancelled=False,virtual=True).first()
+        if not order:
+            return jsonify({"msg": "Bad orderid"}), 401
             
-            order.accepted = True
-            sess.commit()
-            return jsonify(result=True), 200
-
-        else:
-            if order.creator_id == current_user:
-                order.delivered = True
-                sess.commit()
-                return jsonify(result=True), 200
-            return jsonify({"msg": "No Permission"}), 403
+        order.delivered = True
+        sess.commit()
+        return jsonify(result=True), 200
     else:
-        return jsonify({"msg": "Please login"}), 401
+        return jsonify(result=False,msg='No Permission'), 403
+
 '''
 # 管理员为订单配货
 @bp.route("/deliver", methods=['POST'])
@@ -191,7 +217,7 @@ def createOrder():
         sess.commit()
         orders.append([True,cart.id,cart.product_id,cart.count,product.price])
     return jsonify(orders=orders,price=vir.cost()), 200
-
+'''
 @bp.route("/pay", methods=['POST'])
 @jwt_required
 def payOrder():
@@ -226,6 +252,7 @@ def payOrder():
     else:
         return jsonify({"msg": "Please login"}), 401
 
+
 @bp.route("/cancel", methods=['POST']) #
 @jwt_required
 def cancelOrder():
@@ -249,7 +276,7 @@ def cancelOrder():
         if user.isOperator:
             order.cancelled = True
             sess.commit()
-            return jsonify(isDelivered=True), 200
+            return jsonify(result=True), 200
         else:
             if order.creator_id == current_user:
                 order.cancelled = True
@@ -258,3 +285,4 @@ def cancelOrder():
             return jsonify({"msg": "No Permission"}), 403
     else:
         return jsonify({"msg": "Please login"}), 401
+'''
