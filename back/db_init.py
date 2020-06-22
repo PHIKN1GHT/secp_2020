@@ -10,8 +10,23 @@ images = ['https://img.alicdn.com/imgextra/i2/47774461/O1CN01j5B6CQ1ipBSOlC9xL_!
 def add_initial_accounts():
     db.session.add(User('SYSTEM').setPassword(SECRETKEY).setVisible(False))
     db.session.add(User(OPERATORNAME).setPassword(OPERATORPSWD).setVisible(False))
-    db.session.add(User('10109062').setPassword('12345678').setIsManager(True))
-    db.session.add(User('10130497').setPassword('12345678').setIsOperator(True))
+
+    user = User('manager').setPassword('12345678')
+    user.isManager = True
+    db.session.add(user)
+
+    user = User('operator').setPassword('12345678')
+    user.isOperator = True
+    db.session.add(user)
+
+    user = User('supplier').setPassword('12345678')
+    user.isSupplier = True
+    db.session.add(user)
+
+    user = User('marketing').setPassword('12345678')
+    user.isMarketing = True
+    db.session.add(user)
+
     db.session.commit()
     words = '0123456789'
     for word in words:
@@ -254,7 +269,7 @@ if __name__ == '__main__':
     #add_supplierOrder()
     #add_storehouse()
     #add_catagories()
-    add_supplierOrder()
+    add_initial_accounts()
     #add_products()
     #init_database()
     # add_order()

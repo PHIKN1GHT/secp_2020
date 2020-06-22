@@ -2,7 +2,7 @@ from model.account import *
 from model.product import *
 from model.cart import *
 
-from server import db
+from server import db, DBSession
 from utils import encodePswd, tryLookUp
 import datetime
 
@@ -44,7 +44,8 @@ class Order(db.Model):
     def cost(self):
         if not self.virtual:
             return self.count * self.monoprice
-        suborders = Order.query.filter_by(belonging_id=self.id).all()
+        sess = DBSession()
+        suborders = sess.query(Order).filter_by(belonging_id=self.id).all()
         return sum([order.cost() for order in suborders])
 
     def status(self):

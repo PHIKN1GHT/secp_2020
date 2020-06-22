@@ -9,6 +9,8 @@ class User(db.Model):
     createTime = db.Column(db.DateTime, nullable=False)
     isManager = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     isOperator = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    isSupplier = db.Column(db.Boolean, unique=False, nullable=False, default=False)
+    isMarketing = db.Column(db.Boolean, unique=False, nullable=False, default=False)
 
     def __init__(self, username):
         self.username = username
@@ -24,19 +26,15 @@ class User(db.Model):
         self.visible = visible
         return self
 
-    def setIsManager(self, isManager):
-        self.isManager = isManager
-        return self
-
-    def setIsOperator(self, isOperator):
-        self.isOperator = isOperator
-        return self
-
     def getUserType(self):
         if self.isManager:
             return 'manager'
         if self.isOperator:
             return 'operator'
+        if self.isSupplier:
+            return 'supplier'
+        if self.isMarketing:
+            return 'marketing'
         return 'customer'
 
     def __repr__(self):
