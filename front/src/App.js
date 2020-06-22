@@ -39,11 +39,16 @@ import InventoryPage from './pages/Inventory';
 import PurchasePage from './pages/Purchase';
 import PurchaseOrderPage from './pages/PurchaseOrder';
 
-
+import MarketManagerQueryPage from './pages/MarketManagerQueryPage'
+import MMChangeProductPage from './pages/MMChangeProductPage'
 function App() {
   return (
     <Router>
       <Switch>
+        
+        <Route path='/mm/query' component={MarketManagerQueryPage} ></Route>
+        <Route path='/mm/changeProduct/:productId' component={MMChangeProductPage} ></Route>
+           
         <Route path='/order/create' component={CreateOrderPage} ></Route>
         <Route path='/product/detail/:productId' component={ProductDetailPage} ></Route>
         <Route path='/product/search/:keyword' component={SearchResultPage} ></Route>
