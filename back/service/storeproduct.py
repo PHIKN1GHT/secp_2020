@@ -37,9 +37,10 @@ def storeproduct():
     if not products:
         products = None
 
-    all_products = [product.brief() for product in products]
-    if all_products.remain != 0: 
-        return jsonify(products=all_products), 200
+
+    if products.remain != 0:
+        all_products = [product.brief() for product in products]
+    return jsonify(products=all_products), 200
 
 
 
