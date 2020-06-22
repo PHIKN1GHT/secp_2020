@@ -4,10 +4,15 @@ import { withStyles } from "@material-ui/core/styles";
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 //项目组件引入
 import ChangeQuantity from './ChangeQuantity';
+import { server } from '../pages/Const'
+import Toast from '../components/Toast'
 //
+
+
+
+
 //material-ui 引入
 import { Checkbox } from '@material-ui/core';
-
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -126,7 +131,7 @@ const styles = theme => ({
 props:
 product:{id:int, name:string, price:float, unit:str}
 */
-class ShoppingCartCard extends Component { 
+class ShoppingCard extends Component { 
     //类型检查
     // static propTypes = {
     //     receivedProps: PropTypes.object.isRequired,
@@ -164,6 +169,40 @@ class ShoppingCartCard extends Component {
 
     }
     //
+    _addToCart(productId, quantity) { 
+        const url = server+'/api/cart/add'
+        const id = productId
+        const count = quantity
+        const bodyData = JSON.stringify({
+            id,
+            count,
+
+        })
+        const _token = 'Bearer ' + localStorage.getItem('access_token')
+        fetch(url, {
+            body: bodyData, // must match 'Content-Type' header
+            credentials: 'include', // include, same-origin, *omit
+            headers: {
+                'content-type': 'application/json',
+                'Authorization': _token
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+        })
+        .then(response => response.json()) // parses response to JSON 
+        .then(json => {
+            const result = json['result']
+            if (!result) {
+                Toast('修改数量失败', 403)
+                
+            } else { 
+                let product_new = Object.assign({}, this.state.product)
+                product_new.quantity += quantity
+                this.setState({ product: product_new })
+            }
+        }).catch(Toast('网络故障', 403))
+
+    }
 
     //事件监听
     handleClick(product_id) {
@@ -175,9 +214,8 @@ class ShoppingCartCard extends Component {
     handleChangeQuantity(e, quantity) {
         e.stopPropagation();
         e.nativeEvent.stopImmediatePropagation();
-        let product_new = Object.assign({}, this.state.product)
-        product_new.quantity = quantity
-        this.setState({ product: product_new })
+        this._addToCart(this.state.product.id, quantity)
+        
     }
     handleRenderDelete() { 
         
@@ -208,7 +246,7 @@ class ShoppingCartCard extends Component {
                         name='checkbox'
                         id={this.props.product.id} />
             
-                <img className={classes.image} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
+                    <img className={classes.image} src={this.props.product.image} />
                 <div className={classes.colBox+" "+classes.marginAround}>
                     <span>{this.props.product.name}</span>
                     <div>
@@ -227,4 +265,4 @@ class ShoppingCartCard extends Component {
 
 
 }
-export default withStyles(styles, { withTheme: true })(ShoppingCartCard);
+export default withStyles(styles, { withTheme: true })(ShoppingCard);
