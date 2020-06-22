@@ -81,11 +81,11 @@ export default function OrderCards(props) {
         const status = event.currentTarget.getAttribute('status')
         const actid = Number(event.currentTarget.getAttribute('actid'))
         const actIndex = GetOrderIndex(actid)
-        const bodyData = JSON.stringify({ order_id: actid })
+        const bodyData = JSON.stringify({ sorderid: actid })
         const act = event.currentTarget.getAttribute('act')
         if (act === 'acc') {
             //接受订单
-            const url = server + '/api/supplierOrder/accept'
+            const url = server + '/api/supplierOrder/confirm'
             fetch(url, {
                 body: bodyData,
                 credentials: 'include', // include, same-origin, *omit
@@ -97,6 +97,7 @@ export default function OrderCards(props) {
                 mode: 'cors', // no-cors, cors, *same-origin
             }).then(res => res.json())
                 .then(json => {
+                    console.log(json)
                     if (json.result) {
                         setOrderInfo(prevState => {
                             // 后端没有返回指定订单号的订单接口，自己编码吧
@@ -113,35 +114,6 @@ export default function OrderCards(props) {
                     }
                 })
 
-        } else if (act === 'rej') {
-            //拒绝订单
-            const url = server + '/api/supplierOrder/reject'
-            fetch(url, {
-                body: bodyData,
-                credentials: 'include', // include, same-origin, *omit
-                headers: {
-                    'content-type': 'application/json',
-                    'Authorization': _token
-                },
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, cors, *same-origin
-            }).then(res => res.json())
-                .then(json => {
-                    if (json.result) {
-                        setOrderInfo(prevState => {
-                            // 后端没有返回指定订单号的订单接口，自己编码吧
-                            prevState[actIndex].status = '已拒绝'
-                            let tmp = []
-                            for (let i in prevState) {
-                                tmp.push(prevState[i])
-                            }
-                            return tmp
-                        })
-                        Toast('拒绝成功', 500)
-                    } else {
-                        Toast('拒绝失败', 500)
-                    }
-                })
         }
     }
     const [isLoggedIn, setL] = useState(false)
@@ -174,7 +146,7 @@ export default function OrderCards(props) {
                                                     actid={val.orderID}
                                                 >接受</IconButton>
                                             </div>
-                                            <div className='button-box'>
+                                            {/* <div className='button-box'>
                                                 <IconButton className='button'
                                                     variant='text' size='small'
                                                     status={val.status}
@@ -182,7 +154,7 @@ export default function OrderCards(props) {
                                                     acc='rej'
                                                     actid={val.orderID}
                                                 >拒绝</IconButton>
-                                            </div>
+                                            </div> */}
                                         </> : <><div className='button-box'></div>
                                             <div className='button-box'></div></>}
                                 </div>
