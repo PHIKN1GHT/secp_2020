@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import { server, IsLoggedIn } from './Const';
 
 export default function OrderDetailPage(props) {
 
@@ -76,13 +75,24 @@ export default function OrderDetailPage(props) {
             props.history.push({ pathname: '/login' })
         })
     }, [])
-    return (<>
-        {loggedIn ?
-            directly ? props.history.goBack() :
-                <div className='order-detail' name={`item-${orderData.orderID}`}>
-                    <div className='backicon-con'>
-                        <ArrowBackIosIcon className='backicon' onClick={handleGoBack} />
-                        <div className='head'>订单详情</div>
+    return (
+        <div className='order-detail' name={`item-${orderData.orderID}`}>
+            <div className='backicon-con'>
+                <ArrowBackIosIcon className='backicon' onClick={handleGoBack} />
+                <div className='head'>订单详情</div>
+            </div>
+            <div className='order-card'>
+                <div className='head'>
+                    <div className='head-text'>订单号:{orderData.orderID}</div>
+                    <div className='head-text'>{orderData.status}</div>
+                    <div className='head-text'>￥{orderData.price}</div>
+                </div>
+                <div className='baseline'></div>
+                <div className='content'>
+                    <div className='text-add'>收货地:{orderData.address}</div>
+                    <div className='line2'>
+                        <div className='text-rec'>收货人:{orderData.receiver}</div>
+                        <div className='text-phone'>手机:{orderData.phone}</div>
                     </div>
                     <div className='order-card'>
                         <div className='head'>
@@ -108,29 +118,9 @@ export default function OrderDetailPage(props) {
                                 <div className='text-phone'>手机:{orderData.phone}</div>
                             </div>
                         </div>
-                    </div>
-                    <div className='header'>
-                        <div className='text'>商品</div>
-                        <div className='text'>数量</div>
-                        <div className='text'>单位</div>
-                        <div className='text'>单价</div>
-                        <div className='text'>总价</div>
-                    </div>
-                    <div className='products'>
-                        {
-                            orderData.products !== undefined ?
-                                orderData.products.map((val, ind) =>
-                                    <div className='product'>
-                                        <div className='text'>{val.name}</div>
-                                        <div className='text'>{val.count}</div>
-                                        <div className='text'>{val.unit}</div>
-                                        <div className='text'>{val.unitprice}</div>
-                                        <div className='text'>{val.price}</div>
-                                    </div>
-                                ) : null
-                        }
-                    </div>
-                </div> : null
-        }
-    </>)
+                    )
+                }
+            </div>
+        </div>
+    );
 }

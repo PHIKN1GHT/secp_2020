@@ -77,28 +77,25 @@ def createProduct():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
 
-    name = request.json.get('name')
-    if not name:
-        return jsonify({"msg": "Missing name parameter"}), 400
+    title = request.json.get('title')
+    if not title:
+        return jsonify({"msg": "Missing title parameter"}), 400
     
-    category = request.json.get('category')
-    if not category:
-        return jsonify({"msg": "Missing category parameter"}), 400
-
-    all_description = request.json.get('despycription')
-    if not all_description:
-        return jsonify({"msg": "Missing description parameter"}), 400
+    category_id = request.json.get('category_id')
+    if not category_id:
+        return jsonify({"msg": "Missing category_id parameter"}), 400
 
     storehouse_id = request.json.get('storehouse_id')
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
-
-    product = Product(name,category,storehouse_id)
-    sess.add(product)
-    sess.commit()
     
-    description = Description(all_description,product.id)
-    sess.add(description)
+    dictdata = request.json.get('dictdata')
+    if not dictdata:
+        return jsonify({"msg": "Missing dictdata parameter"}), 400
+
+    product = Product(title,category_id,storehouse_id)
+    product.update(dictdata)
+    sess.add(product)
     sess.commit()
     return jsonify(isCreated=True, productID=product.id)
 
@@ -120,36 +117,15 @@ def updateProduct():
     if not product_id:
         return jsonify({"msg": "Missing product_id parameter"}), 400
 
-    name = request.json.get('name')
-    if not name:
-        return jsonify({"msg": "Missing name parameter"}), 400
-    
-    category = request.json.get('category')
-    if not category:
-        return jsonify({"msg": "Missing category parameter"}), 400
+    dictdata = request.json.get('dictdata')
+    if not dictdata:
+        return jsonify({"msg": "Missing dictdata parameter"}), 400
 
-    status = request.json.get('status')
-    if not status:
-        return jsonify({"msg": "Missing status parameter"}), 400
-
-    all_description = request.json.get('description')
-    if not all_description:
-        return jsonify({"msg": "Missing description parameter"}), 400
-
-    product = sess.query(Product).filter_by(id=product_id,removed=False).first()
+    product = sess.query(Product).filter_by(id=product_id).first()
     if not product:
         return jsonify({"msg": "Bad productId"}), 401
-    
-    description = sess.query(Description).filter_by(product_id=product_id,removed=False).first()
-    if not description:
-        return jsonify({"msg": "Bad description"}), 401
 
-    product.name=name
-    product.modify(status)
-    if product.removed:
-        description.removed=True
-
-    description.modify(all_description)
+    product.update(dictdata)
     sess.commit()
     return jsonify(isUpdated=True), 200
 
@@ -190,8 +166,8 @@ def statistics():
                     product_count[order.product_id] = order.count
     # 按字典集合中，每一个元组的第二个元素排列。
     productId_count=sorted(product_count.items(),key=lambda x:x[1],reverse=True)
-    name_count=[]
+    title_count=[]
     for _id_count in productId_count:
         product = sess.query(Product).filter_by(id=_id_count[0]).first()
-        name_count.append([product.name,_id_count[1]])
-    return jsonify(name_count=name_count), 200
+        title_count.append([product.title,_id_count[1]])
+    return jsonify(title_count=title_count), 200

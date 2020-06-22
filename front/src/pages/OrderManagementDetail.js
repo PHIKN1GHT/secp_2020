@@ -1,6 +1,6 @@
 import React from 'react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import BottomNavBarForManager from '../components/BottomNavBarForManager';
+import BottomNavBarForOrderManager from '../components/BottomNavBarForOrderManage';
 import BottomNavBarForSend from '../components/BottomNavBarForSend'
 
 /*******
@@ -62,7 +62,7 @@ export default function OrderManagementDetailPage(props) {
                 </div>
             </div>
             <BottomNavBarForSend />
-            <BottomNavBarForManager />
+            <BottomNavBarForOrderManager />
         </div>
     </>);
 }
