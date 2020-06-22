@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import { ReactDOM } from 'react-dom';
 import { useState, useEffect } from 'react';
-//--项目组件--
-//--
-//--material-ui--
+
+import { server} from '../pages/Const'
+
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
@@ -92,13 +92,42 @@ class ChangeQuantity extends Component {
     _privateFunc() { 
 
     }
-    _updateQuantity(e) {
+    _updateQuantity(e, deltaQuantity) {
         if (this.props.onChange) { 
             this.props.onChange(e, this.state.quantity);
         }
     }
     //
     
+    // _changeQuantity(productId, deltaQuantity) {
+    //     const url = server+'/api/cart/add'
+    //     const id = productId
+    //     const count = deltaQuantity
+    //     const bodyData = JSON.stringify({
+    //         id,
+    //         count,
+
+    //     })
+    //     const _token = 'Bearer ' + localStorage.getItem('access_token')
+    //     fetch(url, {
+    //         body: bodyData, // must match 'Content-Type' header
+    //         credentials: 'include', // include, same-origin, *omit
+    //         headers: {
+    //             'content-type': 'application/json',
+    //             'Authorization': _token
+    //         },
+    //         method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    //         mode: 'cors', // no-cors, cors, *same-origin
+    //     })
+    //     .then(response => response.json()) // parses response to JSON 
+    //     .then(json => {
+    //         const result = json['result']
+    //         if (!result) { 
+    //             Toast('修改数量失败', 403)
+                
+    //         }
+    //     }).catch(Toast('网络故障', 403))
+    // }
     //事件监听
     handleAdd(e) {
         //e.nativeEvent.stopImmediatePropagation();
@@ -106,14 +135,15 @@ class ChangeQuantity extends Component {
         if (this.state.quantity < 99) {
             this.setState((prevState) => { return { quantity: prevState.quantity + 1 } })
         }
-        this._updateQuantity(e);
+        this._updateQuantity(e, 1);
+        //this._changeQuantity(this.state.product.id)
 
     }
     handleSub(e) {
         if (this.state.quantity > 1) {
             this.setState((prevState) => {return  { quantity: prevState.quantity - 1 }})
         }
-        this._updateQuantity(e);
+        this._updateQuantity(e, -1);
     }
     handleChange(e) { 
         let quantity = Number(e.target.value)

@@ -4,6 +4,7 @@ import { ReactDOM } from 'react-dom';
 import ShoppingCartBox from '../components/ShoppingCartBox'
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer';
 import FunctionBarForShoppingCart from '../components/FunctionBarForShoppingCart';
+import { server,IsLoggedIn } from './Const'
 //--
 //--material-ui--
 import { withStyles } from "@material-ui/core/styles";
@@ -48,10 +49,10 @@ class ShoppingCart extends Component {
         this.state = {
             renderDelete:false,
             products: [
-                { id: 0, name: '山东莱阳秋月梨', price: 25.9, unit: '箱', cover:'', quantity:12},
-                { id: 1, name: '云南红心木瓜', price: 29.9, unit: '箱', cover:'',qauntity:1 },
-                { id: 2, name: '西班牙伊比利亚黑猪猪颈肉', price: 105, unit: '件', cover:'',quantity:7 },
-                { id: 3, name: '御牛满地澳洲肥牛卷火锅食材牛肉片', price: 178, unit: '件', cover:'',quantity:15},
+                // { id: 0, name: '山东莱阳秋月梨', price: 25.9, unit: '箱', cover:'', quantity:12},
+                // { id: 1, name: '云南红心木瓜', price: 29.9, unit: '箱', cover:'',qauntity:1 },
+                // { id: 2, name: '西班牙伊比利亚黑猪猪颈肉', price: 105, unit: '件', cover:'',quantity:7 },
+                // { id: 3, name: '御牛满地澳洲肥牛卷火锅食材牛肉片', price: 178, unit: '件', cover:'',quantity:15},
                 // { id: 4, name: '山东莱阳秋月梨', price: 25.9, unit: '箱', cover:'', quantity:12},
                 // { id: 5, name: '云南红心木瓜', price: 29.9, unit: '箱', cover:'',qauntity:1 },
                 // { id: 6, name: '西班牙伊比利亚黑猪猪颈肉', price: 105, unit: '件', cover:'',quantity:7 },
@@ -68,28 +69,43 @@ class ShoppingCart extends Component {
     //组件生命周期
     componentWillMount() { 
         //fetch数据
+        this.initial()
+
     }
     componentDidMount() { 
-        
 
     }
     componentWillUnmount() { 
 
     }
-    //
-
-    //私有方法,使用较少,使用_开头，ES6没有实现私有方法，所以这里的函数和别的成员函数没有性质上的区别
-    _privateFunc() { 
-
-    }
-    //
-    
-    //事件监听
-    handleFoo() { 
-
-    }
-    handleBar() { 
-
+    initial() {
+        IsLoggedIn(['customer'], () => {
+        }, () => {
+                const backUrl = '/shoppingCart'
+                this.props.history.push({ pathname: '/login', state: {backUrl} })
+        })
+        const _token = 'Bearer ' + localStorage.getItem('access_token')
+        const url = server+'/api/cart/all'
+        fetch(url, {
+            //body: bodyData,
+            credentials: 'include', // include, same-origin, *omit
+            headers: {
+                //'content-type': 'application/json',
+                'Authorization': _token
+            },
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+        }).then(response => response.json())
+            .then(json => {
+                //console.log(json)
+                const products = json
+                //console.log(products)
+            this.setState({
+                products,
+            })   
+                
+        })
+        
     }
     handleSetRenderDelete() { 
         const checks = Array.from(document.getElementsByName('checkbox'))
@@ -122,8 +138,20 @@ class ShoppingCart extends Component {
 
         return (<>
             <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+                {/* 页面 */}
                 <div style={{ flex:1, backgroundColor: 'lavender', borderStyle:'none'}}>
-                    <ShoppingCartBox update={this.handleSetRenderDelete.bind(this)} products={this.state.products} />
+                    {/* <ShoppingCartBox update={this.handleSetRenderDelete.bind(this)} products={this.state.products} /> */}
+                    <div className={classes.page}>
+                        {
+                            this.props.products.map((product) => {
+                                return (
+                                    <div className={classes.rowBox}>
+                                        
+                                        <ShoppingCard update={this.props.update} onClick={this.handleClick.bind(this)} key={product.id} product={product} />
+                                </div>)
+                            })
+                        }
+                </div>
                 </div>
                 <div style={{backgroundColor: 'lavender', borderStyle: 'none'}}>
                     <FunctionBarForShoppingCart renderDelete={this.state.renderDelete} />
