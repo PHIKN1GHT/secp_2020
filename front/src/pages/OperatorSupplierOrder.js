@@ -153,8 +153,7 @@ export default function OrderCards(props) {
                                                     actid={val.orderID}
                                                 >拒绝</IconButton>
                                             </div> */}
-                                        </> : <><div className='button-box'></div>
-                                            <div className='button-box'></div></>}
+                                        </> : <div className='button-box'></div>}
                                 </div>
                                 <div className='baseline'></div>
                                 <div className='content'>

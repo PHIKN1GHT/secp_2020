@@ -96,4 +96,8 @@
 }
 .order-detail .products .product .text{
     font-size: small;
+    align-self: center;
+}
+.order-detail .products .product .prod-img{
+    width: 50px;
 }
