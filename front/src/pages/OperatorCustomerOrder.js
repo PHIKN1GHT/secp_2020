@@ -42,7 +42,8 @@ export default function OrderCards(props) {
                             address: val.address,
                             status: val.status,
                             products: val.products,
-                            price: val.total_cost
+                            price: val.total_cost,
+                            create_time: val.create_time
                         })
                     }
                 })
@@ -96,7 +97,6 @@ export default function OrderCards(props) {
                 mode: 'cors', // no-cors, cors, *same-origin
             }).then(res => res.json())
                 .then(json => {
-                    console.log(json)
                     if (json.result) {
                         setOrderInfo(prevState => {
                             // 后端没有返回指定订单号的订单接口，自己编码吧
@@ -183,6 +183,15 @@ export default function OrderCards(props) {
                                                 '接受' : '配送'
                                             }
                                         </IconButton>
+                                    </div>
+                                </div>
+                                <div className='baseline'></div>
+                                <div className='content'>
+                                    <div className='text-add'>
+                                        创建时间: {val.create_time.split(',')[1].split(' ')[3]}-
+                                        {val.create_time.split(',')[1].split(' ')[2]}-
+                                        {val.create_time.split(',')[1].split(' ')[1]}&nbsp;
+                                        {val.create_time.split(',')[1].split(' ')[4]}
                                     </div>
                                 </div>
                                 <div className='baseline'></div>

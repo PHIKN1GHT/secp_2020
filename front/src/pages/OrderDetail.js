@@ -27,7 +27,6 @@ export default function OrderDetailPage(props) {
                         mode: 'cors', // no-cors, cors, *same-origin
                     }).then(response => response.json())
                         .then(json => {
-
                             return {
                                 name: json.product.name,
                                 count: val.count,
@@ -41,9 +40,13 @@ export default function OrderDetailPage(props) {
         })
         Promise.all(funcs).then((values) => {
             orderDataFromPrev.products = values
+            const ar = orderDataFromPrev.create_time.split(',')[1].split(' ')
+            orderDataFromPrev.create_time = ar[3] + '-' + ar[2] + '-' + ar[1] + ' ' + ar[4]
             setOrderData(prevState => {
                 return orderDataFromPrev
             })
+        }).then(() => {
+            setTimeout(() => { }, 200)
         })
     }
     useEffect(() => {
@@ -63,16 +66,16 @@ export default function OrderDetailPage(props) {
     const handleGoBack = (event) => {
         props.history.goBack()
     }
-
     const [loggedIn, setL] = useState(false)
     useEffect(() => {
+
         IsLoggedIn(['customer', 'operator'], () => {
             setL(true)
         }, () => {
             setL(false)
             props.history.push({ pathname: '/login' })
         })
-    })
+    }, [])
     return (<>
         {loggedIn ?
             directly ? props.history.goBack() :
@@ -86,6 +89,16 @@ export default function OrderDetailPage(props) {
                             <div className='head-text'>订单号:{orderData.orderID}</div>
                             <div className='head-text'>{orderData.status}</div>
                             <div className='head-text'>￥{orderData.price}</div>
+                        </div>
+                        <div className='baseline'></div>
+                        <div className='content'>
+                            <div className='text-add'>
+                                创建时间:{orderData.create_time}
+                                {/* {orderData.create_time.split(',')[1].split(' ')[3]}-
+                                {orderData.create_time.split(',')[1].split(' ')[2]}-
+                                {orderData.create_time.split(',')[1].split(' ')[1]}&nbsp;
+                                {orderData.create_time.split(',')[1].split(' ')[4]} */}
+                            </div>
                         </div>
                         <div className='baseline'></div>
                         <div className='content'>
