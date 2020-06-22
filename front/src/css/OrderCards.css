@@ -1,0 +1,67 @@
+.order-cards{
+
+}
+.order-cards .order-list{
+    max-height: 85.2vh;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+.order-cards .order-list .item{
+    align-self: center;
+    width: 95%;
+    padding: 10px;
+    box-shadow: 1px 1px 3px rgb(214, 191, 191);
+    margin: 5px;
+    background-color: white;
+}
+.order-cards .order-list .item:hover{
+    background-color: #CCCCCC;
+    cursor: pointer;
+}
+.order-cards .order-list .item .order-card{
+    width: 100%;
+    letter-spacing: 0.2px;
+}
+
+.order-cards .order-list .item .order-card .head{
+    display: flex;
+    justify-content: space-between;
+}
+.order-cards .order-list .item .order-card .head .head-text{
+    font-size: small;
+    align-self: center;
+}
+
+.order-cards .order-list .item .order-card .head .button-box{
+    height: 23px;
+    border-radius: 2px;
+    background-color: #CCFFFF;
+}
+.order-cards .order-list .item .order-card .head .button-box .button{
+    font-size: small;
+}
+.order-cards .order-list .item .order-card .baseline{
+    margin:4px 0;
+    height: 0.1px;
+    background-color: rgb(33, 220, 226);
+}
+.order-cards .order-list .item .order-card .content{
+    width: 100%;
+}
+.order-cards .order-list .item .order-card .content{
+    font-size: small;
+    line-height: 22px;
+}
+.order-cards .order-list .item .order-card .content .text-add{
+}
+.order-cards .order-list .item .order-card .content .line2{
+    display: flex;
+    justify-content: space-between;
+}
+.order-cards .order-list .item .order-card .content .line2 .text-rec{
+
+}
+
+.order-cards .order-list .item .order-card .content .line2 .text-phone{
+}

@@ -1,0 +1,99 @@
+.order-detail{
+    background-color: #CCDFFF;
+    height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.order-detail .backicon-con{
+    padding: 15px 15px;
+    background-color: white;
+    box-shadow: 1px 1px 1px #CCCCCC;
+    display: flex;
+}
+.order-detail .backicon-con .head{
+    flex: 1;
+    text-align: center;
+    font-size: smaller;
+    letter-spacing: 3px;
+}
+.order-detail .backicon-con .backicon{
+    
+    font-size: medium;
+}
+.order-detail .order-card{
+    padding: 10px;
+    background-color: white;
+    margin: 5px 10px;
+    box-shadow: 1px 1px 1px rgb(214, 191, 191);
+    letter-spacing: 0.2px;
+}
+.order-detail .order-card .head{
+    display: flex;
+    justify-content: space-between;
+}
+.order-detail .order-card .head .head-text{
+    font-size: small;
+    align-self: center;
+}
+
+.order-detail .order-card .head .button-box{
+    height: 23px;
+    border-radius: 2px;
+    background-color: #CCFFFF;
+}
+.order-detail .order-card .head .button-box .button{
+    font-size: small;
+}
+.order-detail .order-card .baseline{
+    margin:4px 0;
+    height: 0.1px;
+    background-color: rgb(33, 220, 226);
+}
+.order-detail .order-card .content{
+    width: 100%;
+}
+.order-detail .order-card .content{
+    font-size: small;
+    line-height: 22px;
+}
+.order-detail .order-card .content .text-add{
+}
+.order-detail .order-card .content .line2{
+    display: flex;
+    justify-content: space-between;
+}
+.order-detail .order-card .content .line2 .text-rec{
+
+}
+
+.order-detail .order-card .content .line2 .text-phone{
+}
+.order-detail .header{
+    display: flex;
+    justify-content: space-around;
+    background-color: white;
+    margin: 0px 10px;
+    padding: 10px 0px;
+}
+.order-detail  .header .text{
+    font-size: small;
+}
+.order-detail .products{
+    flex:1;
+    margin: 0 10px 5px 10px;
+    max-height: 100%;
+    overflow: auto;
+}
+.order-detail .products .product{
+    background-color: white;
+    
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    margin: 5px 0;
+}
+.order-detail .products .product .text{
+    font-size: small;
+}
