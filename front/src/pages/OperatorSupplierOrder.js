@@ -30,19 +30,18 @@ export default function OrderCards(props) {
         }).then(response => response.json())
             .then(json => {
                 let tmp = []
-                console.log(json)
                 json.map((val, ind) => {
                     // 这里过滤
                     // || val.status === '已创建'
-                    if (val.status === '待发货') {
+                    //if (val.status === '待收货')
+                    {
                         tmp.push({
-                            orderID: val.orderid,
-                            receiver: val.receiver,
-                            phone: val.phonenumber,
-                            address: val.address,
+                            orderID: val.sorderid,
                             status: val.status,
-                            products: val.products,
-                            price: val.total_cost
+                            create_time: val.create_time,
+                            product_id: val.product_id,
+                            storehouse_id: val.storehouse_id,
+                            count: val.count
                         })
                     }
                 })
@@ -81,10 +80,11 @@ export default function OrderCards(props) {
         const status = event.currentTarget.getAttribute('status')
         const actid = Number(event.currentTarget.getAttribute('actid'))
         const actIndex = GetOrderIndex(actid)
-        const bodyData = JSON.stringify({ order_id: actid })
-        if (status === '已创建') {
+        const bodyData = JSON.stringify({ sorderid: actid })
+        const act = event.currentTarget.getAttribute('act')
+        if (act === 'acc') {
             //接受订单
-            const url = server + '/api/order/accept'
+            const url = server + '/api/supplierOrder/confirm'
             fetch(url, {
                 body: bodyData,
                 credentials: 'include', // include, same-origin, *omit
@@ -96,11 +96,10 @@ export default function OrderCards(props) {
                 mode: 'cors', // no-cors, cors, *same-origin
             }).then(res => res.json())
                 .then(json => {
-                    console.log(json)
                     if (json.result) {
                         setOrderInfo(prevState => {
                             // 后端没有返回指定订单号的订单接口，自己编码吧
-                            prevState[actIndex].status = '待接受'
+                            prevState[actIndex].status = '已收货'
                             let tmp = []
                             for (let i in prevState) {
                                 tmp.push(prevState[i])
@@ -113,43 +112,7 @@ export default function OrderCards(props) {
                     }
                 })
 
-        } else if (status === '待发货') {
-            //派送订单
-            const url = server + '/api/order/deliver'
-            fetch(url, {
-                body: bodyData,
-                credentials: 'include', // include, same-origin, *omit
-                headers: {
-                    'content-type': 'application/json',
-                    'Authorization': _token
-                },
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, cors, *same-origin
-            }).then(res => res.json())
-                .then(json => {
-                    if (json.result) {
-                        setOrderInfo(prevState => {
-                            // 后端没有返回指定订单号的订单接口，自己编码吧
-                            prevState[actIndex].status = '待收货'
-                            let tmp = []
-                            for (let i in prevState) {
-                                tmp.push(prevState[i])
-                            }
-                            return tmp
-                        })
-                        Toast('配货状态改变成功', 500)
-                    } else {
-                        Toast('配货状态改变失败', 500)
-                    }
-                })
         }
-    }
-    const handleJumptoOrderDetail = (event) => {
-        const i = GetOrderIndex(Number(event.currentTarget.getAttribute('id')))
-        props.history.push({
-            pathname: '/order-detail',
-            state: { order: ordersInfo[i] }
-        })
     }
     const [isLoggedIn, setL] = useState(false)
     useEffect(() => {
@@ -165,33 +128,48 @@ export default function OrderCards(props) {
             <div className='operator-customer-order'>
                 <List className='order-list'>
                     {ordersInfo.map((val, ind) =>
-                        <ListItem className='item' id={val.orderID}
-                            onClick={handleJumptoOrderDetail}>
+                        <ListItem className='item' id={val.orderID}>
                             <div className='order-card'>
                                 <div className='head'>
                                     <div className='head-text'>订单号:{val.orderID}</div>
                                     <div className='head-text'>{val.status}</div>
-                                    <div className='head-text'>￥{val.price}</div>
-                                    <div className='button-box'>
-                                        <IconButton className='button'
-                                            variant='text' size='small'
-                                            status={val.status}
-                                            onClick={handleChangeOrderStatus}
-                                            actid={val.orderID}
-                                        >
-                                            {val.status === '待发货' ?
-                                                '接受' : '配送'
-                                            }
-                                        </IconButton>
+                                    {val.status === '待收货' ?
+                                        <>
+                                            <div className='button-box'>
+                                                <IconButton className='button'
+                                                    variant='text' size='small'
+                                                    status={val.status}
+                                                    onClick={handleChangeOrderStatus}
+                                                    act='acc'
+                                                    actid={val.orderID}
+                                                >接受</IconButton>
+                                            </div>
+                                            {/* <div className='button-box'>
+                                                <IconButton className='button'
+                                                    variant='text' size='small'
+                                                    status={val.status}
+                                                    onClick={handleChangeOrderStatus}
+                                                    acc='rej'
+                                                    actid={val.orderID}
+                                                >拒绝</IconButton>
+                                            </div> */}
+                                        </> : <><div className='button-box'></div>
+                                            <div className='button-box'></div></>}
+                                </div>
+                                <div className='baseline'></div>
+                                <div className='content'>
+                                    <div className='text-add'>
+                                        创建时间: {val.create_time.split(',')[1].split(' ')[3]}-
+                                        {val.create_time.split(',')[1].split(' ')[2]}-
+                                        {val.create_time.split(',')[1].split(' ')[1]}&nbsp;
+                                        {val.create_time.split(',')[1].split(' ')[4]}
                                     </div>
                                 </div>
                                 <div className='baseline'></div>
                                 <div className='content'>
-                                    <div className='text-add'>收货地:{val.address}</div>
-                                    <div className='line2'>
-                                        <div className='text-rec'>收货人:{val.receiver}</div>
-                                        <div className='text-phone'>手机:{val.phone}</div>
-                                    </div>
+                                    <div className='text-add'>货品id:{val.product_id}</div>
+                                    <div className='text-add'>数量:{val.count}</div>
+                                    <div className='text-add'>仓库号:{val.storehouse_id}</div>
                                 </div>
                             </div>
                         </ListItem>

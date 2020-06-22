@@ -2,12 +2,12 @@ import React from 'react';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import { Tab, Tabs, IconButton } from '@material-ui/core';
 import OrderCards from '../components/OrderCards';
-import BottomNavBarForManager from '../components/BottomNavBarForManager';
+import BottomNavBarForOrderManager from '../components/BottomNavBarForOrderManage';
 import SearchIcon from '@material-ui/icons/Search';
 
 /*******
  * 待完成
- * 向OrderManagementDetail跳转
+ *
  *******/
 
 function TabPanel(props) {
@@ -35,6 +35,17 @@ export default function OrderManagement(props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+    const handleJumptoOrdersPage = (event) => {
+        let tmpTarget = Object.assign(event.target)
+        let type = tmpTarget.getAttribute('type')
+        while (type === null || type === undefined) {
+            tmpTarget = tmpTarget.parentNode
+            type = tmpTarget.getAttribute('type')
+        }
+        props.history.push({ pathname: '/orderManagementDetail', state: { type: type } })
+        //event.cancelBubble = true
+        event.stopPropagation()
+    }   
     const handleGoBack = (event) => {
         props.history.go(-1)
     }
@@ -75,7 +86,7 @@ export default function OrderManagement(props) {
                     <OrderCards type='已收货' history={props.history} />
                 </TabPanel>
             </div>
-            <BottomNavBarForManager />
+            <BottomNavBarForOrderManager />
         </div>
     </>)
 }

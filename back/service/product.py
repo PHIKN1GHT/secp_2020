@@ -64,9 +64,9 @@ def createProduct():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
 
-    name = request.json.get('name')
-    if not name:
-        return jsonify({"msg": "Missing name parameter"}), 400
+    title = request.json.get('title')
+    if not title:
+        return jsonify({"msg": "Missing title parameter"}), 400
     
     category = request.json.get('category')
     if not category:
@@ -75,11 +75,20 @@ def createProduct():
     storehouse_id = request.json.get('storehouse_id')
     if not storehouse_id:
         return jsonify({"msg": "Missing storehouse_id parameter"}), 400
+    
+    dictdata = request.json.get('dictdata')
+    if not dictdata:
+        return jsonify({"msg": "Missing dictdata parameter"}), 400
 
-    product = Product(name,category,storehouse_id)
+    product = Product(title,category_id,storehouse_id)
+    product.update(dictdata)
     sess.add(product)
     sess.commit()
+<<<<<<< HEAD
     return jsonify(result=True, productId=product.id)
+=======
+    return jsonify(isCreated=True, productID=product.id)
+>>>>>>> 99b695114c04f39e22ab3712b3ef44823d11b0f3
 
 # 经理端更改商品信息
 @bp.route("/update", methods=['POST'])
@@ -98,6 +107,7 @@ def updateProduct():
     if not product_id:
         return jsonify({"msg": "Missing product_id parameter"}), 400
 
+<<<<<<< HEAD
     #name = request.json.get('name')
     #if not name:
     #    return jsonify({"msg": "Missing name parameter"}), 400
@@ -128,6 +138,17 @@ def updateProduct():
         return jsonify({"msg": "Missing status parameter"}), 400
     product = sess.query(Product).filter_by(id=product_id).first()
     product.modify(status)
+=======
+    dictdata = request.json.get('dictdata')
+    if not dictdata:
+        return jsonify({"msg": "Missing dictdata parameter"}), 400
+
+    product = sess.query(Product).filter_by(id=product_id).first()
+    if not product:
+        return jsonify({"msg": "Bad productId"}), 401
+
+    product.update(dictdata)
+>>>>>>> 99b695114c04f39e22ab3712b3ef44823d11b0f3
     sess.commit()
     #if product.removed:
     #    description.removed=True
@@ -172,9 +193,14 @@ def statistics():
                     product_count[order.product_id] = order.count
     # 按字典集合中，每一个元组的第二个元素排列。
     productId_count=sorted(product_count.items(),key=lambda x:x[1],reverse=True)
-    name_count=[]
+    title_count=[]
     for _id_count in productId_count:
         product = sess.query(Product).filter_by(id=_id_count[0]).first()
+<<<<<<< HEAD
         name_count.append([product.name,_id_count[1]])
     return jsonify(name_count=name_count), 200
 '''
+=======
+        title_count.append([product.title,_id_count[1]])
+    return jsonify(title_count=title_count), 200
+>>>>>>> 99b695114c04f39e22ab3712b3ef44823d11b0f3
