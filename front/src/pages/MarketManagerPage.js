@@ -46,7 +46,7 @@ const styles = theme => ({
 });
 
 
-class MainPage extends Component {
+class MarketManagerPage extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -191,4 +191,4 @@ class MainPage extends Component {
         </div>);
     }
 }
-export default withStyles(styles, { withTheme: true })(MainPage);
+export default withStyles(styles, { withTheme: true })(MarketManagerPage);

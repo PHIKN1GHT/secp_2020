@@ -35,6 +35,7 @@ const styles = theme => ({
         backgroundColor: 'lavender',
         flex: '1',
         overflowY: 'auto',
+        width:'100vw',
     },
     productCard: {
         cursor: 'pointer',
@@ -66,7 +67,7 @@ const styles = theme => ({
         height: '100%',
         display: 'flex',
         flexDirection: 'column', 
-        backgroundColor: 'lavender',
+        //backgroundColor: 'lavender',
     },
     rowBox: {
         overflowY:'auto',
@@ -95,7 +96,6 @@ const styles = theme => ({
         display: 'flex',
         boxShadow: '1px 1px 1px #CCCCCC',
         backgroundColor: 'ghostwhite',
-        flexGrow:'1',
         //borderRadius:'5px',
         height: '15vh',
         margin: '1px 1px 1px 1px',
@@ -138,10 +138,12 @@ class ShoppingCartPage extends Component {
         super(props)
         this.state = {
             products: [],
-            renderDelte:false,
+            renderDelte: false,
+            reRenderCheckBox:0
             
         }
         this.selected = 0
+    
         //this.record=undefined
     }
     componentWillMount() { 
@@ -155,7 +157,8 @@ class ShoppingCartPage extends Component {
                 this.props.history.push({ pathname: '/login', state: {backUrl} })
         })
         const _token = 'Bearer ' + localStorage.getItem('access_token')
-        const url = server+'/api/cart/all'
+        const url = server + '/api/cart/all'
+        
         fetch(url, {
             //body: bodyData,
             credentials: 'include', // include, same-origin, *omit
@@ -170,15 +173,27 @@ class ShoppingCartPage extends Component {
                 //console.log(json)
                 const products = json
                 //console.log(products)
+                for (let i = 0; i < products.length; ++i) { 
+                    products[i].checked = false
+                    products[i].index = i
+                }
+                
             this.setState({
                 products,
             }, () => { 
+                    this.setState((preState) => {
+                        return {
+                            reRenderCheckBox: preState.reRenderCheckBox+1
+
+                        }
+                    })
                 if (this.props.location.state != undefined) { 
                     const record = this.props.location.state['record']
                     const productArea = document.getElementsByName('productArea')[0]
                     const scrollTop = record['scrollTop']
                     productArea.scrollTop = scrollTop
-                }
+                    }
+                
                 
             })   
                 
@@ -232,7 +247,17 @@ class ShoppingCartPage extends Component {
             })
 
     }
-    
+    _checkSelected() { 
+        if (this.selected <= 0) {
+            this.setState({
+                renderDelete: false,
+            })
+        } else { 
+            this.setState({
+                renderDelete: true,
+            })
+        }
+    }    
     
     handleClickProduct(productId) {
         const productArea = document.getElementsByName('productArea')[0]
@@ -251,19 +276,38 @@ class ShoppingCartPage extends Component {
         this._changeQuantity(productId, -1)
 
     }
-    handleCheck(e) { 
-        const delta = e.target.checked ? 1 : -1
-        this.selected += delta
-        if (this.selected <= 0) {
-            this.setState({
-                renderDelete: false,
-            })
-        } else { 
-            this.setState({
-                renderDelete: true,
-            })
-        }
+    handleCheck(productIndex) { 
+        //e.target.checked = !e.target.checked
+        this.setState((preState) => { 
+            let products = JSON.parse(JSON.stringify(preState.products))
+            products[productIndex].checked = !products[productIndex].checked
+            const c = products[productIndex].check
+            return {products}
+        }, () => { 
+            const delta = this.state.products[productIndex].checked ? 1 : -1
+            this.selected += delta
+            if (this.selected <= 0) {
+                this.setState({
+                    renderDelete: false,
+                })
+            } else { 
+                if (this.selected == this.state.products.length) {
+                    const selectAll = document.getElementsByName('selectAll')[0]
+                    console.log(selectAll)
+                    selectAll.checked = true
+                } else { 
+                    const selectAll = document.getElementsByName('selectAll')[0]
+                    selectAll.checked = false
+                }
+                this.setState({
+                    renderDelete: true,
+                })
+            }
+                
+        })
+        
     }
+
     handleDelete() { 
         const _token = 'Bearer ' + localStorage.getItem('access_token')
 
@@ -278,9 +322,9 @@ class ShoppingCartPage extends Component {
            
         })
         const url = server + '/api/cart/del'
-        const bodyData = {
+        const bodyData =JSON.stringify({
             ids: res,
-        }
+        })
         console.log(bodyData)
         fetch(url, {
             body: bodyData, // must match 'Content-Type' header
@@ -297,52 +341,74 @@ class ShoppingCartPage extends Component {
             const result = json['result']
             if (result) { 
                 this._initial()
+                this.selected = 0
+                const selectAll = document.getElementsByName('selectAll')[0]
+                selectAll.checked = false
+                this.setState({
+                    renderDelete:false
+                })
             }
             
         })
         //res提交给后端
         //console.log(res)
     }
-    handlePay() { 
-        const _token = 'Bearer ' + localStorage.getItem('access_token')
-
+    handleCreateOrder() { 
         const checks = document.getElementsByName('checkbox')
         let res = []
         checks.forEach(check => {
             if (check.checked) { 
                 //如果选中，添加商品id到res, 后台根据商品id比对用户购物车得到数量
-                res.push({
-                    id: check.id,
-                })
+                res.push(Number(check.id))
+            }  
+        })
+        let products = []
+        for (let i = 0; i < this.state.products.length; ++i) { 
+            for (let j = 0; j < res.length; ++j) { 
+                if (this.state.products[i].id == res[j]) { 
+                    products.push(this.state.products[i])
+                }
+            }
+        }
+        const backUrl = '/shoppingCart'
+        this.props.history.push({
+            pathname: '/order/create',
+            state: {
+                products,
+                backUrl,
             }
         })
         
-        const url = server + '/api/order/create'
-        const bodyData = {
-            ids: res,
-        }
-        fetch(url, {
-            body: bodyData, // must match 'Content-Type' header
-            //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'include', // include, same-origin, *omit
-            headers: {
-                'content-type': 'application/json',
-                'Authorization': _token
+    }
+    handleSelectAll() { 
+        if (this.selected == this.state.products.length) {
+            this.setState((preState) => { 
+                let products = JSON.parse(JSON.stringify(preState.products))
+                for (let i = 0; i < products.length; ++i) { 
+                    products[i].checked = false
+                }
+                return {products}
+            }, () => { 
+                    this.selected = 0
+                    this._checkSelected()
+            })
 
-            },
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, cors, *same-origin
-            //redirect: 'follow', // manual, *follow, error
-            //referrer: 'no-referrer', // *client, no-referrer
-        })
-        .then(response => response.json()) // parses response to JSON 
-        .then(json => {
-            const result = json['result']
-            
-        })
+        } else { 
+            this.setState((preState) => { 
+                let products = JSON.parse(JSON.stringify(preState.products))
+                for (let i = 0; i < products.length; ++i) { 
+                    products[i].checked = true
+                }
+                return {products}
+            }, () => { 
+                    this.selected = this.state.products.length
+                    this._checkSelected()
+            })
+
+
+        }
         
-        //res提交给后端
-        //console.log(res)
+        
     }
 
     render() {
@@ -355,13 +421,26 @@ class ShoppingCartPage extends Component {
                         this.state.products.map((product) => {
                             return (
                                 <div className={classes.card}>
-                                    <div className={classes.rowBox} >
-                                        <Checkbox
+                                    {/* <div style={{
+                                        //flex:'1',
+                                        width: '100vw',
+                                        display: 'flex',
+                                        backgroundColor: 'lavender',
+                                        height:'15vh',
+                                    }} > */}
+                                    <Checkbox
+                                        style={{
+                                            width:'8vw',
+                                        }}
+                                            // defaultChecked={(() => { return false })()}
+                                            //value={this.state.reRenderCheckBox}
                                             disableRipple={true}
-                                            onClick={this.handleCheck.bind(this)}
+                                            onClick={() => { this.handleCheck.bind(this)(product.index)}}
+                                            checked={product.checked}
                                             name='checkbox'
                                             id={product.id} />
-                                        <div onClick={() => { this.handleClickProduct.bind(this)(product.id)}} style={{display:'flex', flex:1,cursor:'pointer'}}>
+                                        <div onClick={() => { this.handleClickProduct.bind(this)(product.id)}} style={{display:'flex',cursor:'pointer', width:'80vw'}}>
+                                            
                                             <img className={classes.image} src={product.image} />
                                             <div style={{flex:1}} className={classes.colBox + " " + classes.marginAround}>
                                                 <span>{product.name}</span>
@@ -409,7 +488,7 @@ class ShoppingCartPage extends Component {
                                                     </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    {/* </div> */}
                                 </div>
                             )
                         })
@@ -417,9 +496,9 @@ class ShoppingCartPage extends Component {
                 </div>
             {/* 功能条 */}
             <div style={{ backgroundColor: 'lavender', borderStyle: 'none' }}>
-                    <FunctionBarForShoppingCart handleDelete={this.handleDelete.bind(this)} handlePay={this.handlePay.bind(this)} renderDelete={this.state.renderDelete} />
+                    <FunctionBarForShoppingCart handleSelectAll={this.handleSelectAll.bind(this)} handleDelete={this.handleDelete.bind(this)} handlePay={this.handleCreateOrder.bind(this)} renderDelete={this.state.renderDelete} />
             </div>
-            {/* 底部栏     */}
+            {/* 底部栏 */}
             <BottomNavBarForCustomer/>
         </div>
         )

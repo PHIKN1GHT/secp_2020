@@ -30,14 +30,21 @@ import CatalogsPage from './pages/CatalogsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import OrderManagement from './pages/OrderManagement';
 import ShoppingCartPage from './pages/ShoppingCartPage'
+import CreateOrderPage from './pages/CreateOrderPage'
+
+import OrderManagementDetailPage from './pages/OrderManagementDetail';
+import ManagerInfoPage from './pages/ManagerInfo';
+import SalesStatisticsPage from './pages/SalesStatistics';
+import InventoryPage from './pages/Inventory';
+import PurchasePage from './pages/Purchase';
+import PurchaseOrderPage from './pages/PurchaseOrder';
 
 
 function App() {
   return (
     <Router>
       <Switch>
-
-        
+        <Route path='/order/create' component={CreateOrderPage} ></Route>
         <Route path='/product/detail/:productId' component={ProductDetailPage} ></Route>
         <Route path='/product/search/:keyword' component={SearchResultPage} ></Route>
         <Route path='/product/search' component={SearchPage} ></Route>
@@ -54,6 +61,14 @@ function App() {
         <Route path='/operator-info' component={OperatorInfoPage}></Route>
         <Route path='/operator-customer-order' component={OperatorCustomerOrderPage}></Route>
         <Route path='/operator-supplier-order' component={OperatorSupplierOrderPage}></Route>
+        <Route path='/orderManagement' component={OrderManagement} ></Route>
+        <Route path='/orderManagement-detail' component={OrderManagementDetailPage} ></Route>
+
+        <Route path='/manager-info' component={ManagerInfoPage} ></Route>
+        <Route path='/salesStatistics' component={SalesStatisticsPage} ></Route>
+        <Route path='/localInventory' component={InventoryPage} ></Route>
+        <Route path='/purchase' component={PurchasePage} ></Route>
+        <Route path='/purchase-order' component={PurchaseOrderPage} ></Route>
 
 
         {/* <Route path="/" component={ShoppingCart}></Route> */}

@@ -1,17 +1,13 @@
-import { server } from './Const'
-import React, { Component } from 'react';
-import { ReactDOM } from 'react-dom';
-
-import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
-import TopBar from '../components/TopBar';
-import {handleToCart} from '../components/JumpToCart'
-import JumpToCart from '../components/JumpToCart'
-
+import React, { useEffect, useState, Component } from 'react';
 import { withStyles } from "@material-ui/core/styles";
-import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
+import BottomNavBarForManager from '../components/BottomNavBarForManager';
+import TopBar from '../components/TopBar';
+import { server } from './Const'
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import {handleToPurchaseOrder} from '../components/JumpToPurchaseOrder';
+
+//待完成
+//排序工具条
 
 const styles = theme => ({
     colBox: {
@@ -39,14 +35,11 @@ const styles = theme => ({
         border: 'mediumaquamarine 1px solid',
         overflow: 'hidden',
 
-    },
-    shoppingIcon: {
-        color:'deepskyblue',
     }
 });
 
 
-class MainPage extends Component {
+class Purchase extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -57,6 +50,19 @@ class MainPage extends Component {
     }
     componentWillMount() {
         this.fetchAndInitial()
+        // let categories = []
+        // for (let i = 1; i <= 10; ++i){
+        //     categories.push({id:i, name:'catalog-'+i})
+        // }
+        // let products = []
+        // for (let i = 1; i <= 20; ++i){
+        //     products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
+        // }
+        // this.setState({
+        //     categories,
+        //     products,
+
+        // })
     }
     fetchAndInitial() {
         // totalPage: number,
@@ -70,7 +76,7 @@ class MainPage extends Component {
             headers: {
                 //'content-type': 'application/json'
             },
-            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
             //redirect: 'follow', // manual, *follow, error
             //referrer: 'no-referrer', // *client, no-referrer
@@ -98,74 +104,45 @@ class MainPage extends Component {
             })
     }
     handleSearch(e) {
-        //const searchInput = document.getElementsByName('searchInput')[0]
-        //const keyword = searchInput.value
-        const backUrl = '/'
+        const searchInput = document.getElementsByName('searchInput')[0]
+        const keyword = searchInput.value
+        const backUrl = '/purchase'
         this.props.history.push({ pathname: '/product/search', state: { backUrl } })
     }
-    handleAddToCart(e, productId) { 
+    handleAddPurchaseOrder(e, productId) { 
         e.stopPropagation()
-        handleToCart(e, productId)
+        handleToPurchaseOrder(e, productId)
     }
-    handleClickProduct(productId) { 
+    handleClickProduct(productName, productPrice, productUnit) { 
 
         const productArea = document.getElementsByName('productArea')[0]
         const scrollTop = productArea.scrollTop
         
         
-        const backUrl = '/'
+        const backUrl = '/purchase'
         
         const record = { scrollTop }
         this.props.history.push({ 
-            pathname: '/product/detail/'+productId, 
-            state: {productId, record, backUrl}})
-  
+            pathname: '/purchase-order', 
+            state: {productName, productPrice, productUnit, record, backUrl}})
     }
-    handleClickCatalog(selectedCatalogId) {
-        const scrollTop = 0
-        const record = { selectedCatalogId, scrollTop }
-        this.props.history.push({
-            pathname: '/product/catalogs',
-            state: { record },
-        })
-    
-    }
+
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox} style={{}}>
-            <JumpToCart />
             {/* 搜索框 */}
-            <TopBar
+             <TopBar
                 backIconHidden={true}
                 fakeSearch={true}
                 cartHidden={true}
-                onSearch={this.handleSearch.bind(this)} />
-            {/* <div className={classes.searchBar}>
-                <ArrowBackIosIcon style={{visibility:'hidden', margin: '0 2vw',justifySelf:"flex-start", cursor:'pointer'}} />
-                <input className={classes.input} onClick={this.handleSearch.bind(this)} readonly="readOnly" style={{}} />
-                <div style={{ margin: '0 2vw', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                    <SearchIcon style={{cursor:'pointer'}} onClick={this.handleSearch.bind(this)} />
-                </div>
-            </div> */}
+                onSearch={this.handleSearch.bind(this)} 
+            />
             <div name={'productArea'} style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', }}>
-                {/* 目录展示 */}
-                <div className={classes.rowBox} style={{ flexWrap: 'wrap',justifyContent: 'center' }}>
-                    {this.state.categories.map((catalog) => {
-                        return (
-                            <div onClick={() => { this.handleClickCatalog.bind(this)(catalog.id) }} style={{ cursor:'pointer', width: '18vw', height: '18vw', display: 'flex', flexDirection: 'column', alignItems: 'center', margin:'0 10px 10px 10px' }}>
-                                <img style={{ borderRadius: '80%', width: '80%', height: '80%' }} src={catalog.image} />
-                                <span>
-                                    {catalog.name}
-                                </span>
-                            </div>
-                        )
-                    })}
-                </div>
-                {/* 推荐商品 */}
+                {/* 进货商品展示 */}
                 <div  className={classes.rowBox} style={{ justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
                     {this.state.products.map((product) => {
                         return (
-                            <div onClick={(e) => { this.handleClickProduct.bind(this)(product.id)}} style={{ cursor:'pointer', borderRadius: '5px', border: "1px solid", margin: '2vh 0 0 0', width: '48vw', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'thistle', }}>
+                            <div onClick={(e) => { this.handleClickProduct.bind(this)(product.name, product.price, product.unit)}} style={{ cursor:'pointer', borderRadius: '5px', border: "1px solid", margin: '2vh 0 0 0', width: '48vw', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'thistle', }}>
                                 <img style={{ borderRadius: '5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src={product.images[0]} />
                                 <span>
                                     {product.name}
@@ -178,17 +155,14 @@ class MainPage extends Component {
                                         /{product.unit}
                                     </span>
                                 </div>
-                                <div style={{ alignSelf: 'flex-end' }} >
-                                    <AddShoppingCartIcon onClick={(e) => { this.handleAddToCart.bind(this)(e, product.id) }} className={classes.shoppingIcon} />
-                                </div>
                             </div>
 
                         )
                     })}
                 </div>
             </div>
-            <BottomNavBarForCustomer />
+            <BottomNavBarForManager />
         </div>);
     }
 }
-export default withStyles(styles, { withTheme: true })(MainPage);
+export default withStyles(styles, { withTheme: true })(Purchase);

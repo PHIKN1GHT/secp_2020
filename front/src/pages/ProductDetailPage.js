@@ -36,6 +36,9 @@ class ProductDetailPage extends Component {
         this.addLock = false
     }
     componentWillMount() { 
+        this.backUrl = this.props.location.state['backUrl']
+        this.record = this.props.location.state['record']
+
         this.fetchAndInitial()
         // const index = 0
         // const images = [
@@ -153,8 +156,8 @@ class ProductDetailPage extends Component {
         
     }
     handleGoBack() {
-        const backUrl = this.props.location.state['backUrl']
-        const record = this.props.location.state['record']
+        const backUrl = this.backUrl
+        const record = this.record
         this.props.history.push({ pathname: backUrl, state: { record, backUrl: record.backUrl } })
         // if (backUrl == '/product/search/') { 
         //     const keyword = this.props.location.state['keyword']
@@ -163,7 +166,7 @@ class ProductDetailPage extends Component {
     }
     handleSearch(e) { 
         const backUrl = '/product/catalogs'
-        const record = this.props.location.state['record']
+        const record = this.record
         console.log(record)
         this.props.history.push({ pathname: '/product/search', state: {backUrl, record}})
 
@@ -187,7 +190,11 @@ class ProductDetailPage extends Component {
     handleAddToCart(e, productId) { 
         e.stopPropagation()
         if(this.addLock) return 
-        handleToCart(e, productId)
+        this.addLock = true
+        const unlock = () => { 
+            this.addLock = false
+        }
+        handleToCart(e, productId, unlock)
     }
 
     render() {
