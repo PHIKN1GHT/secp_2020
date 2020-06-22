@@ -17,14 +17,6 @@ import BottomNavBarForManager from '../components/BottomNavBarForManager';
  * 商品删除功能
 *****/
 
-const useStyles = makeStyles((theme) => ({
-    functionBar: {
-        display: 'flex',
-        flexDirection: 'row-reverse',
-        alignItems: 'center',
-
-    }
-}));
 
 const styles = theme => ({
         
@@ -34,6 +26,12 @@ const styles = theme => ({
         backgroundColor: 'lavender',
         flex: '1 1',
         
+    },
+    functionBar: {
+        display: 'flex',
+        flexDirection: 'row-reverse',
+        alignItems: 'center',
+
     },
     root: {
       //backgroundColor: "red"
@@ -56,9 +54,9 @@ class PurchaseOrder extends Component {
         super(props)
         this.state = {
             renderDelete:false,
-            productName: this.props.location.state['productName'],
-            productPrice: this.props.location.state['productPrice'],
-            productUnit: this.props.location.state['productUnit']
+            product:[
+                { id: 0, name: '山东莱阳秋月梨', price: 25.9, unit: '箱', cover:'', quantity:12},
+            ]
         }
     }
     //
@@ -112,8 +110,13 @@ class PurchaseOrder extends Component {
                     
                 </div>
                 <div style={{backgroundColor: 'lavender', borderStyle: 'none'}}>
-                    {this.state.products}
                     <div className={classes.functionBar}>
+                        {this.state.product.map((product)=>{
+                            return(
+                                <PurchaseOrder productName={product.name} productPrice={product.price} productUnit={product.unit}></PurchaseOrder>
+                            )
+                        })}
+                        
                         <button>进货</button>
                     </div>
                 </div>

@@ -92,7 +92,11 @@ class SalesStatistics extends Component {
                             <Tab value='日统计' label='日统计' className='item'></Tab>
                         </Tabs>
                         {this.state.sales.map((sales)=>{return(
-                            <div>{sales.id}</div>
+                            <div >
+                                <div style={{}}>{sales.id}</div>
+                                <div>{sales.date}</div>
+                                <span>{sales.sales+sales.unit}</span>
+                            </div>
                         )})}
                     </div>
                     

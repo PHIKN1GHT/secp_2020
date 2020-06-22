@@ -177,7 +177,7 @@ class SearchResultPage extends Component {
                 <div className={classes.rowBox} style={{justifyContent: 'space-evenly',flexWrap:'wrap'}}>
                 {this.state.products.map((product) => { 
                     return (
-                        <div onClick={(e) => { this.handleClick.bind(this)(product.id)}} style={{ cursor:'pointer', borderRadius:'5px',  border:"1px solid", margin:'2vh 0 0 0', width: '48vw', height: '60vw', display: 'flex', flexDirection: 'column', alignItems:'center',borderColor: 'thistle',}}>
+                        <div onClick={(e) => { this.handleClick.bind(this)(product.id)}} style={{ cursor:'pointer', borderRadius:'5px',  border:"1px solid", margin:'2vh 0 0 0', width: '48vw', height: '64vw', display: 'flex', flexDirection: 'column', alignItems:'center',borderColor: 'thistle',}}>
                             <img style={{ borderRadius: '5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src={product.images[0]} />
                             <span>
                                 {product.name}
@@ -190,7 +190,14 @@ class SearchResultPage extends Component {
                                     /{product.unit}
                                 </span>
                             </div>
-                            <div style={{alignSelf:'flex-end'}} >
+                            <div
+                                style={{
+                                    alignSelf: 'flex-end',
+                                    marginTop: 'auto',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                            }}>
                                 <AddShoppingCartIcon onClick={(e) => { this.handleAddToCart.bind(this)(e, product.id) }} className={classes.shoppingIcon}/>
                             </div>    
                         </div>

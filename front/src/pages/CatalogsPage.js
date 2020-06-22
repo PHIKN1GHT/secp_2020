@@ -91,9 +91,7 @@ const styles = theme => ({
         marginTop: 'auto',
     },
     shoppingIcon: {
-       
-       
-
+        color:'deepskyblue',
     },
     
 });

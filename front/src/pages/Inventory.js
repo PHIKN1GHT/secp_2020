@@ -41,10 +41,10 @@ class Inventory extends Component {
         super(props)
         this.state = {
             inventory: [
-                { id: 0, name: '山东莱阳秋月梨', unit: '箱', cover:'', quantity:12},
-                { id: 1, name: '云南红心木瓜', unit: '箱', cover:'',qauntity:1 },
-                { id: 2, name: '西班牙伊比利亚黑猪猪颈肉', unit: '件', cover:'',quantity:7 },
-                { id: 3, name: '御牛满地澳洲肥牛卷火锅食材牛肉片', unit: '件', cover:'',quantity:15},
+                { id: 0, name: '山东莱阳秋月梨', unit: '箱', cover:'', sales: 12, store: 50},
+                { id: 1, name: '云南红心木瓜', unit: '箱', cover:'',sales: 1, store: 72},
+                { id: 2, name: '西班牙伊比利亚黑猪猪颈肉', unit: '件', cover:'', sales: 7, store: 80 },
+                { id: 3, name: '御牛满地澳洲肥牛卷火锅食材牛肉片', unit: '件', cover:'', sales: 15, store: 32},
             ]
         }
     }
@@ -68,7 +68,15 @@ class Inventory extends Component {
             <div name={'ProductArea'} style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', }}>
                 {/* 库存展示 */}
                 {this.state.inventory.map((inventory)=>{return(
-                    <div>{inventory.id}</div>
+                    <div>
+                        <div>{inventory.name}</div>
+                        <div>
+                            <span>售出{inventory.sales+inventory.unit}</span>
+                        </div>
+                        <div>
+                            <span>仓库{inventory.store+inventory.unit}</span>
+                        </div>
+                    </div>
                 )})}
             </div>
             <BottomNavBarForManager />

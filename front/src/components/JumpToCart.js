@@ -32,7 +32,7 @@ function calAbsPosition(element) {
     return {left: actualLeft, top: actualTop}
     
 }
-function elementJump(element) { 
+function elementJump(element, unlock) { 
     let cloneElement = document.getElementsByName('circle')[0].cloneNode(true)
     console.log(cloneElement)
     cloneElement.style.position = 'absolute'
@@ -61,11 +61,15 @@ function elementJump(element) {
             cloneElement.style.top = cartPosition.top+cart.offsetHeight/6 + 'px'
             // cloneElement.style.width = 0+'px'
             // cloneElement.style.height = 0+'px'
-            setTimeout(() => { document.body.removeChild(cloneElement) }, 1000)
+            setTimeout(() => {
+                    document.body.removeChild(cloneElement)
+                    unlock()
+                
+            }, 1000)
         },
         0);
 }
-export function handleToCart(e, productId) { 
+export function handleToCart(e, productId, unlock) { 
     console.log(e.target)
     console.log(productId)
     e.stopPropagation()
@@ -95,13 +99,16 @@ export function handleToCart(e, productId) {
             Toast('添加购物车失败', 403)
             
         }
-    }).catch(Toast('网络故障', 403))
+    })
     let element = e.target
     console.log(element.tagName)
     if (element.tagName == 'path' || element.tagName == 'FONT') { 
         element = element.parentNode
     }
-    elementJump(element)
+    if (unlock == undefined) { 
+        unlock = () => { }
+    }
+    elementJump(element, unlock)
 }
 
 class JumpToCart extends Component { 
@@ -140,7 +147,7 @@ class JumpToCart extends Component {
 
         return (<>
             <div name='circle' style={{display:'none'}}>
-                <LensIcon style={{height:'100%', width:'100%'}}  />
+                <LensIcon style={{height:'100%', width:'100%', color:'deepskyblue'}}  />
             </div>
                 
         </>);

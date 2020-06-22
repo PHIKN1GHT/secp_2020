@@ -15,20 +15,6 @@ export default function ManagerInfoCard(props) {
     let username = localStorage.getItem('logged_in_as')
     const avaterURL = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1592676695916&di=96aac1fac45091c1c61b2c8d3367af56&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201511%2F01%2F20151101135231_wj4Zu.jpeg'
     const _token = 'Bearer ' + localStorage.getItem('access_token')
-    const handleJumptoOrdersPage = (event) => {
-        let tmpTarget = Object.assign(event.target)
-        let type = tmpTarget.getAttribute('type')
-        while (type === null || type === undefined) {
-            tmpTarget = tmpTarget.parentNode
-            type = tmpTarget.getAttribute('type')
-        }
-        props.history.push({ pathname: '/orders', state: { type: type } })
-        //event.cancelBubble = true
-        event.stopPropagation()
-    }
-    const handleJumptoAddressPage = (event) => {
-        props.history.push({ pathname: '/address', state: { mes: 'a' } })
-    }
     const handleLogout = () => {
         const url = server + '/api/account/logout'
         fetch(url, {

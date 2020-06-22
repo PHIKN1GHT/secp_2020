@@ -137,8 +137,8 @@ class PurchaseOrderCard extends Component {
     //
 
     //构造函数
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             //key:value,
         }
@@ -186,14 +186,13 @@ class PurchaseOrderCard extends Component {
         const { classes } = this.props;
         return(
             <div className={classes.card}>
-
             <div className={classes.rowBox}>
                 <img className={classes.image} src="https://material-ui.com/static/images/cards/live-from-space.jpg" />
                 <div className={classes.colBox+" "+classes.marginAround}>
-                    <span>{this.props.product.name}</span>
+                    <span>{this.props.location.state['productName']}</span>
                     <div>
-                        <span>￥{this.props.product.price}</span>
-                        <span>/{this.props.product.unit}</span>
+                        <span>￥{this.props.location.state['productPrice']}</span>
+                        <span>/{this.props.location.state['productUnit']}</span>
                         </div>
                     <div className={classes.rbCorner}>
                     </div>
