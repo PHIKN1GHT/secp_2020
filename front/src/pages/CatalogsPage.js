@@ -5,6 +5,8 @@ import { server } from './Const'
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
 import TopBar from '../components/TopBar'
 import Toast from '../components/Toast'
+import {handleToCart} from '../components/JumpToCart'
+import JumpToCart from '../components/JumpToCart'
 
 import LensIcon from '@material-ui/icons/Lens';
 import { withStyles } from "@material-ui/core/styles";
@@ -150,10 +152,10 @@ class CatalogsPage extends Component {
     }
     fetchProducts(catalogId) { 
         const url = server + '/api/mall/category'
-            const catalog = catalogId
+            const id = catalogId
             const page = 1
             const bodyData = JSON.stringify({
-                catalog,
+                id,
                 page,
             })
             fetch(url, {
@@ -195,7 +197,13 @@ class CatalogsPage extends Component {
                 .then(response => response.json()) // parses response to JSON 
                 .then((json) => {
                     const catalogs = json['catalogs']
-                    const record = this.props.location.state['record']
+                    let record = undefined
+                    if (this.props.location.state != undefined) {
+                        record = this.props.location.state['record']
+                    }
+                    console.log(111)
+                    console.log(record)
+
                     const selectedCatalogId = record == undefined ? catalogs[0].id : record.selectedCatalogId
                     tmpSelectedCatalogId = selectedCatalogId
                     return { catalogs, selectedCatalogId }
@@ -245,12 +253,21 @@ class CatalogsPage extends Component {
             const catalogs = values[0].catalogs
             const products = values[1].products
             const totalPage = values[1].totalPage
-            console.log(products)
+            //console.log(products)
             this.setState({
                 selectedCatalogId,
                 catalogs,
                 products,
                 totalPage
+            }, () => { 
+                    let record = undefined
+                    if (this.props.location.state != undefined) { 
+                        record = this.props.location.state['record']
+                    }
+                if (record != undefined) { 
+                    const productArea = document.getElementsByName('productArea')[0]
+                    productArea.scrollTop = record.scrollTop
+                }
             })
         })
             
@@ -311,9 +328,9 @@ class CatalogsPage extends Component {
     }
 
 
-    handleSearch(e) { 
-        this.props.history.push({ pathname: '/product/search',})
-    }
+    // handleSearch(e) { 
+    //     this.props.history.push({ pathname: '/product/search',})
+    // }
     handleSelectCatalog(e) { 
         this.setState({
             selectedCatalogId: e.target.id,
@@ -390,15 +407,21 @@ class CatalogsPage extends Component {
         }
         this.elementJump(element)
     }
+    handleAddToCart(e, productId) { 
+        e.stopPropagation()
+        handleToCart(e, productId)
+    }
 
     render() {
         const { classes } = this.props;
         return (
         <div className={classes.colBox} style={{}}>
             {/* document.getElementsByNames不识别svg元素？Yes */}
-            <div name='circle' style={{display:'none'}}>
+            {/* <div name='circle' style={{display:'none'}}>
                 <LensIcon name='circleSVG' style={{height:'100%', width:'100%'}}  />
-            </div>
+                </div> */}
+            <JumpToCart />
+                
             <TopBar
                 backIconHidden={true}
                 fakeSearch={true}
@@ -465,7 +488,7 @@ class CatalogsPage extends Component {
                                     <span>/{product.unit}</span>
                                     </div>
                                 <div className={classes.rbCorner}>
-                                        <AddShoppingCartIcon  onClick={(e) => { this.handleAddShoppingCart(e, product.id) }} className={classes.shoppingIcon}/>
+                                        <AddShoppingCartIcon  onClick={(e) => { this.handleAddToCart(e, product.id) }} className={classes.shoppingIcon}/>
 
                                 </div>
                                     </div>
