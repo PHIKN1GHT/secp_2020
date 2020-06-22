@@ -111,7 +111,7 @@ def confirmSupplierOrder():
 
             supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,delivered=True,confirmed=False,rejected=False,cancelled=False).first()
             #下一行测试用，正常使用请注释掉
-            supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,confirmed=False).first()
+            # supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,confirmed=False).first()
             if not supplierOrder:
                 return jsonify({"msg": "Bad supplierOrder_id"}), 401
 
@@ -148,7 +148,7 @@ def rejectSupplierOrder():
 
             supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,delivered=True,confirmed=False,rejected=False,cancelled=False).first()
             #下一行测试用，正常使用请注释掉
-            supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,rejected=False).first()
+            # supplierOrder = sess.query(SupplierOrder).filter_by(id=supplierOrder_id,rejected=False).first()
             if not supplierOrder:
                 return jsonify({"msg": "Bad supplierOrder_id"}), 401
 
