@@ -54,19 +54,6 @@ class MainPage extends Component {
     }
     componentWillMount() {
         this.fetchAndInitial()
-        // let categories = []
-        // for (let i = 1; i <= 10; ++i){
-        //     categories.push({id:i, name:'catalog-'+i})
-        // }
-        // let products = []
-        // for (let i = 1; i <= 20; ++i){
-        //     products.push({id:i, name:'products-'+i, price:'price-'+i, unit:'unit-'+i,cover:'cover-'+i})
-        // }
-        // this.setState({
-        //     categories,
-        //     products,
-
-        // })
     }
     fetchAndInitial() {
         // totalPage: number,
@@ -80,7 +67,7 @@ class MainPage extends Component {
             headers: {
                 //'content-type': 'application/json'
             },
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
             //redirect: 'follow', // manual, *follow, error
             //referrer: 'no-referrer', // *client, no-referrer

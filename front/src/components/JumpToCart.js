@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { ReactDOM } from 'react-dom';
 
 import { server} from '../pages/Const'
-
+import Toast from '../components/Toast'
 
 import { withStyles } from "@material-ui/core/styles";
 import LensIcon from '@material-ui/icons/Lens';
@@ -40,8 +40,9 @@ function elementJump(element) {
     cloneElement.style.display = 'initial'
     
     const nowPosition = element.getBoundingClientRect()
-    cloneElement.style.left = nowPosition.left+'px'
-    cloneElement.style.top = nowPosition.top + 'px'
+    console.log(nowPosition)
+    cloneElement.style.left = nowPosition.left+nowPosition.width/2+'px'
+    cloneElement.style.top = nowPosition.top + nowPosition.height/2+'px'
     cloneElement.style.WebkitTransition ='top 1s, left 0.8s, width 1s, height 1s'
     cloneElement.style.transition = 'top 1s, left 0.8s, width 1s, height 1s'
     cloneElement.style.width = '2vh'
@@ -50,7 +51,10 @@ function elementJump(element) {
     document.body.appendChild(cloneElement)
     setTimeout(
         () => { 
-            const cart = document.getElementsByName('cart')[0]
+            let cart = document.getElementsByName('cart')[0]
+            if (cart == undefined) { 
+                cart = document.getElementsByName('topBarCart')[0]
+            }
             const cartPosition = calAbsPosition(cart)
             console.log(cartPosition)
             cloneElement.style.left = cartPosition.left+cart.offsetWidth/3+'px'
@@ -73,32 +77,28 @@ export function handleToCart(e, productId) {
         count,
 
     })
-    /*
-    网络
-    */
-    // fetch(url, {
-    //     body: bodyData, // must match 'Content-Type' header
-    //     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    //     credentials: 'include', // include, same-origin, *omit
-    //     headers: {
-    //         'content-type': 'application/json'
-    //     },
-    //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    //     mode: 'no-cors', // no-cors, cors, *same-origin
-    //     //redirect: 'follow', // manual, *follow, error
-    //     //referrer: 'no-referrer', // *client, no-referrer
-    // })
-    // .then(response => response.json()) // parses response to JSON 
-    // .then(json => {
-    //     const result = json['result']
-    //     if (!result) { 
-    //         Toast('添加购物车失败', 403)
+    const _token = 'Bearer ' + localStorage.getItem('access_token')
+    fetch(url, {
+        body: bodyData, // must match 'Content-Type' header
+        credentials: 'include', // include, same-origin, *omit
+        headers: {
+            'content-type': 'application/json',
+            'Authorization': _token
+        },
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, cors, *same-origin
+    })
+    .then(response => response.json()) // parses response to JSON 
+    .then(json => {
+        const result = json['result']
+        if (!result) { 
+            Toast('添加购物车失败', 403)
             
-    //     }
-    // }).catch(Toast('网络故障', 403))
+        }
+    }).catch(Toast('网络故障', 403))
     let element = e.target
     console.log(element.tagName)
-    if (element.tagName == 'path') { 
+    if (element.tagName == 'path' || element.tagName == 'FONT') { 
         element = element.parentNode
     }
     elementJump(element)

@@ -42,7 +42,8 @@ export default function OrderCards(props) {
                             address: val.address,
                             status: val.status,
                             products: val.products,
-                            price: val.total_cost
+                            price: val.total_cost,
+                            create_time: val.create_time
                         })
                     }
                 })
@@ -81,9 +82,10 @@ export default function OrderCards(props) {
         const status = event.currentTarget.getAttribute('status')
         const actid = Number(event.currentTarget.getAttribute('actid'))
         const actIndex = GetOrderIndex(actid)
-        const bodyData = JSON.stringify({ order_id: actid })
+        const bodyData = JSON.stringify({ orderid: actid })
         if (status === '已创建') {
             //接受订单
+            //暂时无用，因为显示过滤掉了这个状态的订单
             const url = server + '/api/order/accept'
             fetch(url, {
                 body: bodyData,
@@ -94,9 +96,8 @@ export default function OrderCards(props) {
                 },
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 mode: 'cors', // no-cors, cors, *same-origin
-            }).then(res => res.json())
+            }).then(res => { return res.json() })
                 .then(json => {
-                    console.log(json)
                     if (json.result) {
                         setOrderInfo(prevState => {
                             // 后端没有返回指定订单号的订单接口，自己编码吧
@@ -173,16 +174,23 @@ export default function OrderCards(props) {
                                     <div className='head-text'>{val.status}</div>
                                     <div className='head-text'>￥{val.price}</div>
                                     <div className='button-box'>
-                                        <IconButton className='button'
-                                            variant='text' size='small'
-                                            status={val.status}
-                                            onClick={handleChangeOrderStatus}
-                                            actid={val.orderID}
-                                        >
-                                            {val.status === '待发货' ?
-                                                '接受' : '配送'
-                                            }
-                                        </IconButton>
+                                        {val.status === '待发货' ?
+                                            <IconButton className='button'
+                                                variant='text' size='small'
+                                                status={val.status}
+                                                onClick={handleChangeOrderStatus}
+                                                actid={val.orderID}
+                                            >确认配送</IconButton> : null
+                                        }
+                                    </div>
+                                </div>
+                                <div className='baseline'></div>
+                                <div className='content'>
+                                    <div className='text-add'>
+                                        创建时间: {val.create_time.split(',')[1].split(' ')[3]}-
+                                        {val.create_time.split(',')[1].split(' ')[2]}-
+                                        {val.create_time.split(',')[1].split(' ')[1]}&nbsp;
+                                        {val.create_time.split(',')[1].split(' ')[4]}
                                     </div>
                                 </div>
                                 <div className='baseline'></div>

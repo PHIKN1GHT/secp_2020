@@ -48,7 +48,11 @@ export default function LoginPage(props) {
                         break;
                     // 普通用户
                     case 'customer':
-                        props.history.push({ pathname: '/mainpage' })
+                        let backUrl = '/'
+                        if (props.location.state != undefined) { 
+                            backUrl = props.location.state['backUrl']
+                        }
+                        props.history.push({ pathname: backUrl})
                         break;
                     default: break;
                 }

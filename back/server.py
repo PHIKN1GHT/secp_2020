@@ -38,7 +38,8 @@ services = [
     "service.cart",
     "service.product",
     "service.supplierOrder",
-    "service.order"
+    "service.order",
+    "service.storeproduct"
 #    "service.admin",
 #    "service.indexing",
 #    "service.fake",

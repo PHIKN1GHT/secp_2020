@@ -11,7 +11,7 @@ import './css/OrderDetail.css';
 import './css/AddressManager.css';
 //import './css/OperatorInfo.css';
 import './css/OperatorCustomerOrder.css';
-import './css/OperatorSupplierOrder.css';
+//import './css/OperatorSupplierOrder.css';
 
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
@@ -23,7 +23,6 @@ import OperatorInfoPage from './pages/OperatorInfo';
 import OperatorCustomerOrderPage from './pages/OperatorCustomerOrder';
 import OperatorSupplierOrderPage from './pages/OperatorSupplierOrder';
 
-import ShoppingCart from './pages/ShoppingCart';
 import MainPage from './pages/MainPage';
 import SearchResultPage from './pages/SearchResultPage';
 import SearchPage from './pages/SearchPage';
@@ -42,12 +41,12 @@ function App() {
     <Router>
       <Switch>
 
-
+        
         <Route path='/product/detail/:productId' component={ProductDetailPage} ></Route>
         <Route path='/product/search/:keyword' component={SearchResultPage} ></Route>
         <Route path='/product/search' component={SearchPage} ></Route>
         <Route path='/product/catalogs' component={CatalogsPage} ></Route>
-        <Route path='/shoppingCart' component={ShoppingCart} ></Route>
+        <Route path='/shoppingCart' component={ShoppingCartPage} ></Route>
         {/* <Route path='/product/detail/:product_id' component={ProductView} ></Route> */}
         <Route path='/login' component={LoginPage} ></Route>
         <Route path='/register' component={RegisterPage} ></Route>

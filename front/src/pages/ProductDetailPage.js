@@ -5,6 +5,8 @@ import { server } from './Const'
 import BottomNavBarForProductDetailPage from '../components/BottomNavBarForProductDetailPage'
 import TopBar from '../components/TopBar'
 import Slider from '../components/Slider'
+import {handleToCart} from '../components/JumpToCart'
+import JumpToCart from '../components/JumpToCart'
 
 import { withStyles } from "@material-ui/core/styles";
 import LensIcon from '@material-ui/icons/Lens';
@@ -170,25 +172,32 @@ class ProductDetailPage extends Component {
         // this.props.history.push({ pathname: '/product/search/'+keyword, state: { keyword } })
     
     }
-    handleAddToCart(e, productId) { 
-        if(this.addLock) return 
-        console.log(this.props.location.state)
+    // handleAddToCart(e, productId) { 
+    //     if(this.addLock) return 
+    //     console.log(this.props.location.state)
 
-        let element = e.target
-        console.log(element.tagName)
-        if (element.tagName == 'FONT') { 
-            element = element.parentNode
-        }
-        this.elementJump(element)
+    //     let element = e.target
+    //     console.log(element.tagName)
+    //     if (element.tagName == 'FONT') { 
+    //         element = element.parentNode
+    //     }
+    //     this.elementJump(element)
         
+    // }
+    handleAddToCart(e, productId) { 
+        e.stopPropagation()
+        if(this.addLock) return 
+        handleToCart(e, productId)
     }
 
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox}>
-            <div name='circle' style={{display:'none'}}>
+            <JumpToCart />
+
+            {/* <div name='circle' style={{display:'none'}}>
                 <LensIcon style={{height:'100%', width:'100%'}}  />
-            </div>
+            </div> */}
             {/* 顶部栏 */}
             <TopBar
                 backIconHidden={false}
