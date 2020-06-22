@@ -35,6 +35,8 @@ export default function OrderCards(props) {
                     // 这里过滤
                     // || val.status === '已创建'
                     if (val.status === '待发货') {
+                        const ar = val.create_time.split(',')[1].split(' ')
+                        val.create_time = ar[3] + '-' + ar[2] + '-' + ar[1] + ' ' + ar[4]
                         tmp.push({
                             orderID: val.orderid,
                             receiver: val.receiver,
@@ -187,10 +189,7 @@ export default function OrderCards(props) {
                                 <div className='baseline'></div>
                                 <div className='content'>
                                     <div className='text-add'>
-                                        创建时间: {val.create_time.split(',')[1].split(' ')[3]}-
-                                        {val.create_time.split(',')[1].split(' ')[2]}-
-                                        {val.create_time.split(',')[1].split(' ')[1]}&nbsp;
-                                        {val.create_time.split(',')[1].split(' ')[4]}
+                                        创建时间: {val.create_time}
                                     </div>
                                 </div>
                                 <div className='baseline'></div>
