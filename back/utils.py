@@ -40,13 +40,6 @@ def ensureJson(request):
     if not request.is_json:
         return False, [jsonify({"msg": "Missing JSON in request"}), 400]
     return True, []
-'''
-def ensureParam(request, paramName):
-    param = request.json.get(paramName, None)
-    if not param:
-        return False, [jsonify({"msg": "Missing parameter %s" % paramName}), 400]
-    return True, []
-'''
 
 def ensureParam(request, paramName, trigger=None):
     param = request.json.get(paramName, None)

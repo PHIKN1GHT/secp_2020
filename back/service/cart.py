@@ -16,7 +16,7 @@ def all():
     carts = [{"id":c.product_id, 'count':c.count} for c in carts]
     return jsonify(carts), 200
 
-@bp.route("/add")
+@bp.route("/add", methods=['POST'])
 @jwt_required
 def add():
     current_user = get_jwt_identity()
@@ -33,7 +33,7 @@ def add():
     sess.commit()
     return jsonify(result=True), 200
 
-@bp.route("/del")
+@bp.route("/del", methods=['POST'])
 @jwt_required
 def delete():
     current_user = get_jwt_identity()
