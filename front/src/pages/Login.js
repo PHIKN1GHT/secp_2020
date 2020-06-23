@@ -39,16 +39,17 @@ export default function LoginPage(props) {
                 // 检验账号类型
                 // TODO
                 switch (json['user_type']) {
-                    // 仓库经理
-                    case 'manager':
-                        break;
+                    
+                    
                     // 仓库管理员
                     case 'operator':
                         props.history.push({ pathname: '/operator-customer-order' })
                         break;
                     case 'supplier':
-                        const type = "全部"
-                        props.history.push({ pathname: '/orderManagement', state: {type} })
+                        props.history.push({ pathname: '/orderManagement', state: {type:"全部"} })
+                        break;
+                    case 'manager':
+                        props.history.push({ pathname: '/salesStatistics', state: {type:"全部"} })
                         break;
                     // 普通用户
                     case 'customer':
