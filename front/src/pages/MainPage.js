@@ -4,8 +4,10 @@ import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
 import TopBar from '../components/TopBar';
-import {handleToCart} from '../components/JumpToCart'
+import { handleToCart } from '../components/JumpToCart'
 import JumpToCart from '../components/JumpToCart'
+import Toast from '../components/Toast'
+import { IsLoggedIn } from './Const'
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
@@ -41,7 +43,7 @@ const styles = theme => ({
 
     },
     shoppingIcon: {
-        color:'deepskyblue',
+        color: 'deepskyblue',
     }
 });
 
@@ -80,7 +82,7 @@ class MainPage extends Component {
                 console.log(json)
                 const categories = json['categories']
                 const products = json['products']
-                const totalPage = json['totalPage']
+                const totalPage = json['totalPages']
                 this.setState({
                     categories,
                     products,
@@ -103,23 +105,32 @@ class MainPage extends Component {
         const backUrl = '/'
         this.props.history.push({ pathname: '/product/search', state: { backUrl } })
     }
-    handleAddToCart(e, productId) { 
+    handleAddToCart(e, productId) {
         e.stopPropagation()
         handleToCart(e, productId)
+
+        // IsLoggedIn(['customer'], () => {
+        // }, () => {
+        //         Toast("请先登陆")
+        //         return
+
+        // })
+
     }
-    handleClickProduct(productId) { 
+    handleClickProduct(productId) {
 
         const productArea = document.getElementsByName('productArea')[0]
         const scrollTop = productArea.scrollTop
-        
-        
+
+
         const backUrl = '/'
-        
+
         const record = { scrollTop }
-        this.props.history.push({ 
-            pathname: '/product/detail/'+productId, 
-            state: {productId, record, backUrl}})
-  
+        this.props.history.push({
+            pathname: '/product/detail/' + productId,
+            state: { productId, record, backUrl }
+        })
+
     }
     handleClickCatalog(selectedCatalogId) {
         const scrollTop = 0
@@ -128,7 +139,7 @@ class MainPage extends Component {
             pathname: '/product/catalogs',
             state: { record },
         })
-    
+
     }
     render() {
         const { classes } = this.props;
@@ -149,10 +160,10 @@ class MainPage extends Component {
             </div> */}
             <div name={'productArea'} style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', }}>
                 {/* 目录展示 */}
-                <div className={classes.rowBox} style={{ flexWrap: 'wrap',justifyContent: 'center' }}>
+                <div className={classes.rowBox} style={{ flexWrap: 'wrap', justifyContent: 'center' }}>
                     {this.state.categories.map((catalog) => {
                         return (
-                            <div onClick={() => { this.handleClickCatalog.bind(this)(catalog.id) }} style={{ cursor:'pointer', width: '18vw', height: '18vw', display: 'flex', flexDirection: 'column', alignItems: 'center', margin:'0 10px 10px 10px' }}>
+                            <div onClick={() => { this.handleClickCatalog.bind(this)(catalog.id) }} style={{ cursor: 'pointer', width: '18vw', height: '18vw', display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 10px 10px 10px' }}>
                                 <img style={{ borderRadius: '80%', width: '80%', height: '80%' }} src={catalog.image} />
                                 <span>
                                     {catalog.name}
@@ -162,10 +173,10 @@ class MainPage extends Component {
                     })}
                 </div>
                 {/* 推荐商品 */}
-                <div  className={classes.rowBox} style={{ justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
+                <div className={classes.rowBox} style={{ justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
                     {this.state.products.map((product) => {
                         return (
-                            <div onClick={(e) => { this.handleClickProduct.bind(this)(product.id)}} style={{ cursor:'pointer', borderRadius: '5px', border: "1px solid", margin: '2vh 0 0 0', width: '48vw', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'thistle', }}>
+                            <div onClick={(e) => { this.handleClickProduct.bind(this)(product.id) }} style={{ cursor: 'pointer', borderRadius: '5px', border: "1px solid", margin: '2vh 0 0 0', width: '48vw', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'thistle', }}>
                                 <img style={{ borderRadius: '5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src={product.images[0]} />
                                 <span>
                                     {product.name}

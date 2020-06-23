@@ -85,9 +85,9 @@ export default function UserInfoCard(props) {
                             </div>
                             <div className='baseline'></div>
                             <div className='body'>
-                                <div className='item' type='待付款' onClick={handleJumptoOrdersPage}>
+                                <div className='item' type='已创建' onClick={handleJumptoOrdersPage}>
                                     <ShoppingBasketIcon className='icon' />
-                                    <div className='text'>待付款</div>
+                                    <div className='text'>已创建</div>
                                 </div>
                                 <div className='item' type='待发货' onClick={handleJumptoOrdersPage}>
                                     <AllInboxIcon className='icon' />

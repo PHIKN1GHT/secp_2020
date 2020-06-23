@@ -95,9 +95,11 @@ export function handleToCart(e, productId, unlock) {
     .then(response => response.json()) // parses response to JSON 
     .then(json => {
         const result = json['result']
+        // if (result == undefined) { 
+        //     Toast("请登录", 403)
+        // }
         if (!result) { 
             Toast('添加购物车失败', 403)
-            
         }
     })
     let element = e.target
