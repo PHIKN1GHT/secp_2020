@@ -103,50 +103,14 @@ class CatalogsPage extends Component {
         this.state = {
             selectedCatalogId: -1,
             products: {},
-            catalogs:[],
+            catalogs: [],
+            isReady:false,
         }
         //this.record=undefined
     }
     componentDidMount() { 
         this.fetchAndInitial()
-        //console.log(data)
-        // this.setState({
-        //     selectedCatalogId,
-        //     catalogs,
-        //     products,
-        //     totalPage
-        // })
-        // let catalogs = []
-        // for (let i = 1; i <= 10; ++i){
-        //     catalogs.push({id:i, name:'catalog-'+i})
-        // }
-        // let products = {}
-        // for (let catalog = 1; catalog <= 15; ++catalog){
-        //     for (let i = 1; i <= 20; ++i){
-        //         if (products[catalog] == undefined) {
-        //             products[catalog] = []
-        //         }
-        //         products[catalog].push({id:catalog*100+i, name:'products-'+catalog*100+i, price:'price-'+catalog*100+i, unit:'unit-'+catalog*100+i,cover:'cover-'+catalog*100+i})
-        //     }
-        // }
         
-        // this.setState({
-        //     catalogs,
-        //     products,
-        // })
-        
-        // if (this.props.location.state != undefined) { 
-        //     const record = this.props.location.state['record']
-        //     if (record != undefined) { 
-        //         this.setState(
-        //             { selectedCatalogId: record.selectedCatalogId },
-        //             () => { 
-        //                 const productArea = document.getElementsByName('productArea')[0]
-        //                 productArea.scrollTop = record.scrollTop
-        //             }
-        //         )
-        //     }
-        // }
     }
     fetchProducts(catalogId) { 
         const url = server + '/api/mall/category'
@@ -257,7 +221,8 @@ class CatalogsPage extends Component {
                 catalogs,
                 products,
                 totalPage,
-                nowPage:1,
+                nowPage: 1,
+                isReady:true,
             }, () => { 
                     let record = undefined
                     if (this.props.location.state != undefined) { 
@@ -463,7 +428,9 @@ class CatalogsPage extends Component {
     render() {
         const { classes } = this.props;
         return (
-        <div className={classes.colBox} style={{}}>
+            
+            this.state.isReady ?
+            <div className={classes.colBox} style={{}}>
             {/* document.getElementsByNames不识别svg元素？Yes */}
             {/* <div name='circle' style={{display:'none'}}>
                 <LensIcon name='circleSVG' style={{height:'100%', width:'100%'}}  />
@@ -559,7 +526,11 @@ class CatalogsPage extends Component {
             }
             
                         <BottomNavBarForCustomer />
-        </div>);
+                </div>
+                :
+                null
+            
+        );
     }
 }
 export default withStyles(styles, { withTheme: true })(CatalogsPage);

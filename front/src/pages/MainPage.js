@@ -7,6 +7,7 @@ import TopBar from '../components/TopBar';
 import {handleToCart} from '../components/JumpToCart'
 import JumpToCart from '../components/JumpToCart'
 import Toast from '../components/Toast'
+import { IsLoggedIn} from './Const'
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
@@ -108,6 +109,14 @@ class MainPage extends Component {
     handleAddToCart(e, productId) { 
         e.stopPropagation()
         handleToCart(e, productId)
+
+        // IsLoggedIn(['customer'], () => {
+        // }, () => {
+        //         Toast("请先登陆")
+        //         return
+               
+        // })
+        
     }
     handleClickProduct(productId) { 
 
