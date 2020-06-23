@@ -80,7 +80,7 @@ def createProduct():
     if not dictdata:
         return jsonify({"msg": "Missing dictdata parameter"}), 400
 
-    product = Product(title,category_id,storehouse_id)
+    product = Product(title,category,storehouse_id)
     product.update(dictdata)
     sess.add(product)
     sess.commit()
@@ -128,11 +128,17 @@ def updateProduct():
     #    return jsonify({"msg": "Bad description"}), 401
 
     #product.name=name
-    status = request.json.get('status')
-    if not status:
-        return jsonify({"msg": "Missing status parameter"}), 400
+    # status = request.json.get('status')
+    # if not status:
+    #     return jsonify({"msg": "Missing status parameter"}), 400
+    # product = sess.query(Product).filter_by(id=product_id).first()
+
+    dictdata = request.json.get('dictdata')
+    if not dictdata:
+        return jsonify({"msg": "Missing dictdata parameter"}), 400
+    
     product = sess.query(Product).filter_by(id=product_id).first()
-    product.modify(status)
+    product.update(dictdata)
     sess.commit()
     #if product.removed:
     #    description.removed=True
