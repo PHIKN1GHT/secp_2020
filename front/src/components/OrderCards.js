@@ -144,7 +144,7 @@ export default function OrderCards(props) {
             Toast('催货成功！', 500)
         } else if (status === '待收货') {
             //确认收货
-            const url = server + '/api/order/cancel'
+            const url = server + '/api/order/accept'
             fetch(url, {
                 body: bodyData,
                 credentials: 'include', // include, same-origin, *omit

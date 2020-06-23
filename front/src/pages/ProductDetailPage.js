@@ -7,7 +7,6 @@ import TopBar from '../components/TopBar'
 import Slider from '../components/Slider'
 import { handleToCart } from '../components/JumpToCart'
 import JumpToCart from '../components/JumpToCart'
-import BottomNavBarForProductDetailMM from '../components/BottomNavBarForProductDetailMM'
 
 import { withStyles } from "@material-ui/core/styles";
 import LensIcon from '@material-ui/icons/Lens';
@@ -39,8 +38,6 @@ class ProductDetailPage extends Component {
     componentWillMount() {
         this.backUrl = this.props.location.state['backUrl']
         this.record = this.props.location.state['record']
-        this.mm = this.props.location.state['mm']
-        
 
         this.fetchAndInitial()
         // const index = 0
@@ -199,24 +196,6 @@ class ProductDetailPage extends Component {
         }
         handleToCart(e, productId, unlock)
     }
-    handleChangeProduct(productId) { 
-        const backUrl = this.backUrl
-        const record = this.record
-        
-        // console.log(1111)
-        // return
-        this.props.history.push({ pathname: '/mm/changeProduct/'+productId, state: { record, backUrl}})
-
-        //this.props.history.push({ pathname: '/mm/changeProduct/' + productId, state: {backUrl}})
-        // this.props.history.push({
-        //     pathname: '/mm/changeProduct/' + productId,
-        //     state: {
-        //         backUrl:'backUrl',
-        //         record:'record',
-        //     }
-        // })
-    }
-    
 
     render() {
         const { classes } = this.props;
@@ -258,20 +237,7 @@ class ProductDetailPage extends Component {
                 }
             </div>
             {/* 底部功能条 */}
-            {
-                this.mm ?
-                    <BottomNavBarForProductDetailMM
-                        onClick={
-                            () => { 
-                                this.handleChangeProduct.bind(this)(this.state.product.id)
-                            }
-                        }
-                    />
-                        :
-                    <BottomNavBarForProductDetailPage onClick={(e) => { this.handleAddToCart(e, this.state.product.id) }} />
-                         
-                         
-            }
+            <BottomNavBarForProductDetailPage onClick={(e) => { this.handleAddToCart(e, this.state.product.id) }} />
         </div>);
     }
 }

@@ -212,17 +212,6 @@ class CreateOrderPage extends Component {
         //同步等待
         Promise.all(promise).then((values) => {
             const address = values[0].address
-            if (address.length == 0) { 
-                Toast("请创建收货地址")
-                setTimeout(() => {
-                    this.props.history.push({
-                    pathname:'/address',
-                })
-                    
-                }, 2000);
-                return
-                
-            }
             // let products = []
             // for (let i = 1; i < values.length; ++i){
             //     const image = values[i].images[0]
