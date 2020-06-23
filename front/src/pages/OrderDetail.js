@@ -153,7 +153,7 @@ export default function OrderDetailPage(props) {
                                 orderData.products.map((val, ind) =>
                                     <>
                                         <div className='product' id={val.id} onClick={handleJumpToProductDetail}>
-                                            <img className='prod-img' src={val.dimg}></img>
+                                            <img className='prod-img' src={val.img}></img>
                                             <div className='text'>{val.name}</div>
                                             <div className='text'>{val.count}</div>
                                             <div className='text'>{val.unit}</div>

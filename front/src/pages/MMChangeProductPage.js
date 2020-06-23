@@ -33,16 +33,15 @@ class MMChangeProductPage extends Component {
             detailImages: [],
             product: {},
         }
-
+        
     }
     componentWillMount() {
-        console.log('state', this.props.location)
+        console.log(this.props.location.state)
         this.backUrl = this.props.location.state['backUrl']
         this.record = this.props.location.state['record']
-
+        
         this.mm = this.props.location.state['mm']
         this.productId = this.props.match.params.productId
-        console.log(this.props.location.state.productId)
         this.fetchAndInitial()
     }
     fetchAndInitial() {
@@ -74,30 +73,30 @@ class MMChangeProductPage extends Component {
                 })
             })
     }
-
+    
     handleGoBack() {
         const backUrl = this.backUrl
         const record = this.record
         this.props.history.push({ pathname: backUrl, state: { record, backUrl: record.backUrl } })
     }
-    handleSubmitChange() {
+    handleSubmitChange() { 
 
     }
-
+    
 
     render() {
         const { classes } = this.props;
         return (<div className={classes.colBox}>
-
+            
             {/* 顶部栏 */}
             <TopBar
                 backIconHidden={false}
                 searchHidden={true}
                 fakeSearch={true}
                 onGoBack={this.handleGoBack.bind(this)}
-            />
+               />
             <div style={{ overflowY: 'auto', overflowX: 'hidden', flex: 1, scrollbarWidth: 'none', }}>
-
+               
                 {/* 商品信息 */}
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <span>{this.state.product.name}</span>
@@ -106,11 +105,11 @@ class MMChangeProductPage extends Component {
                         <span>/{this.state.product.unit}</span>
                     </div>
                 </div>
-
+                
             </div>
             {/* 底部功能条 */}
-            <BottomNavBarForMMSubmitChange onClick={this.handleSubmitChange.bind(this)} />
-
+            <BottomNavBarForMMSubmitChange onClick={this.handleSubmitChange.bind(this)}/>
+            
         </div>);
     }
 }

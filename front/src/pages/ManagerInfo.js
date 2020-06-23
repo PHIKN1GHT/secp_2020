@@ -42,7 +42,7 @@ export default function ManagerInfoCard(props) {
     }, [])
     const [loggedIn, setL] = useState(false)
     useEffect(() => {
-        IsLoggedIn(['customer'], () => {
+        IsLoggedIn(['manager'], () => {
             setL(true)
         }, () => {
             setL(false)

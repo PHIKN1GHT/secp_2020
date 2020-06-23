@@ -4,10 +4,10 @@ import { ReactDOM } from 'react-dom';
 
 import BottomNavBarForCustomer from '../components/BottomNavBarForCustomer'
 import TopBar from '../components/TopBar';
-import { handleToCart } from '../components/JumpToCart'
+import {handleToCart} from '../components/JumpToCart'
 import JumpToCart from '../components/JumpToCart'
 import Toast from '../components/Toast'
-import { IsLoggedIn } from './Const'
+import { IsLoggedIn} from './Const'
 
 import { withStyles } from "@material-ui/core/styles";
 import IconButton from '@material-ui/core/IconButton';
@@ -43,7 +43,7 @@ const styles = theme => ({
 
     },
     shoppingIcon: {
-        color: 'deepskyblue',
+        color:'deepskyblue',
     }
 });
 
@@ -87,6 +87,7 @@ class MainPage extends Component {
                     categories,
                     products,
                     totalPage,
+                    nowPage:1,
                 }, () => {
                     if (this.props.location.state != undefined) {
                         const record = this.props.location.state['record']
@@ -105,7 +106,7 @@ class MainPage extends Component {
         const backUrl = '/'
         this.props.history.push({ pathname: '/product/search', state: { backUrl } })
     }
-    handleAddToCart(e, productId) {
+    handleAddToCart(e, productId) { 
         e.stopPropagation()
         handleToCart(e, productId)
 
@@ -113,24 +114,23 @@ class MainPage extends Component {
         // }, () => {
         //         Toast("请先登陆")
         //         return
-
+               
         // })
-
+        
     }
-    handleClickProduct(productId) {
+    handleClickProduct(productId) { 
 
         const productArea = document.getElementsByName('productArea')[0]
         const scrollTop = productArea.scrollTop
-
-
+        
+        
         const backUrl = '/'
-
+        
         const record = { scrollTop }
-        this.props.history.push({
-            pathname: '/product/detail/' + productId,
-            state: { productId, record, backUrl }
-        })
-
+        this.props.history.push({ 
+            pathname: '/product/detail/'+productId, 
+            state: {productId, record, backUrl}})
+  
     }
     handleClickCatalog(selectedCatalogId) {
         const scrollTop = 0
@@ -138,6 +138,59 @@ class MainPage extends Component {
         this.props.history.push({
             pathname: '/product/catalogs',
             state: { record },
+        })
+    
+    }
+    handleMore() { 
+        if (this.state.nowPage == this.state.totalPage) { 
+            Toast("没有更多商品")
+            return
+        }
+        this.setState((preState) => { 
+            let nowPage = preState.nowPage+1
+            return {nowPage}
+        }, () => {
+                const url = server + '/api/mall/homepage'
+                const page = this.state.nowPage
+                const bodyData = JSON.stringify({
+                    page
+                })
+            fetch(url, {
+                body: bodyData, // must match 'Content-Type' header
+                //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'include', // include, same-origin, *omit
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, cors, *same-origin
+                //redirect: 'follow', // manual, *follow, error
+                //referrer: 'no-referrer', // *client, no-referrer
+            })
+                .then(response => { console.log(response); return response.json() }) // parses response to JSON 
+                .then(json => {
+                    console.log(json)
+                    const categories = json['categories']
+                    let products = JSON.parse(JSON.stringify(this.state.products)) 
+                    products = products.concat(json['products'])
+                    const totalPage = json['totalPage']
+                    this.setState({
+                        categories,
+                        products,
+                        totalPage,
+                        nowPage:1,
+                    }, () => {
+                        if (this.props.location.state != undefined) {
+                            const record = this.props.location.state['record']
+                            if (record != undefined) {
+                                const productArea = document.getElementsByName('productArea')[0]
+                                productArea.scrollTop = record.scrollTop
+                            }
+                        }
+                    }
+                    )
+                })    
+                
         })
 
     }
@@ -160,10 +213,10 @@ class MainPage extends Component {
             </div> */}
             <div name={'productArea'} style={{ flex: 1, overflowY: 'auto', scrollbarWidth: 'none', }}>
                 {/* 目录展示 */}
-                <div className={classes.rowBox} style={{ flexWrap: 'wrap', justifyContent: 'center' }}>
+                <div className={classes.rowBox} style={{ flexWrap: 'wrap',justifyContent: 'center' }}>
                     {this.state.categories.map((catalog) => {
                         return (
-                            <div onClick={() => { this.handleClickCatalog.bind(this)(catalog.id) }} style={{ cursor: 'pointer', width: '18vw', height: '18vw', display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 10px 10px 10px' }}>
+                            <div onClick={() => { this.handleClickCatalog.bind(this)(catalog.id) }} style={{ cursor:'pointer', width: '18vw', height: '18vw', display: 'flex', flexDirection: 'column', alignItems: 'center', margin:'0 10px 10px 10px' }}>
                                 <img style={{ borderRadius: '80%', width: '80%', height: '80%' }} src={catalog.image} />
                                 <span>
                                     {catalog.name}
@@ -173,10 +226,10 @@ class MainPage extends Component {
                     })}
                 </div>
                 {/* 推荐商品 */}
-                <div className={classes.rowBox} style={{ justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
+                <div  className={classes.rowBox} style={{ justifyContent: 'space-evenly', flexWrap: 'wrap' }}>
                     {this.state.products.map((product) => {
                         return (
-                            <div onClick={(e) => { this.handleClickProduct.bind(this)(product.id) }} style={{ cursor: 'pointer', borderRadius: '5px', border: "1px solid", margin: '2vh 0 0 0', width: '48vw', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'thistle', }}>
+                            <div onClick={(e) => { this.handleClickProduct.bind(this)(product.id)}} style={{ cursor:'pointer', borderRadius: '5px', border: "1px solid", margin: '2vh 0 0 0', width: '48vw', display: 'flex', flexDirection: 'column', alignItems: 'center', borderColor: 'thistle', }}>
                                 <img style={{ borderRadius: '5px 5px 0 0', width: '100%', maxHeight: (50 * 0.9) + 'vw' }} src={product.images[0]} />
                                 <span>
                                     {product.name}
@@ -197,9 +250,22 @@ class MainPage extends Component {
                         )
                     })}
                 </div>
+                <div onClick={this.handleMore.bind(this)}
+                    style={{
+                        width: '100vw',
+                        textAlign: 'center',
+                        backgroundColor: 'thistle',
+                        cursor: 'pointer',
+                    }}
+                >
+                    <font style={{color:'white'}}>加载更多</font>
+                </div>
+
             </div>
             <BottomNavBarForCustomer />
-        </div>);
+            
+            </div>
+        );
     }
 }
 export default withStyles(styles, { withTheme: true })(MainPage);
