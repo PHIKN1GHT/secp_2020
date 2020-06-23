@@ -37,29 +37,18 @@ def allOrder():
                 # addr=sess.query(Address).filter_by(id=virorder.address_id).first()
                 # orders.append((virorder.id, virorder.createTime, suborders, addr.receiver, addr.phonenumber, addr.address, status))
 
-                addr = sess.query(Address).filter_by(owner_id=virorder.creator_id).first()
-                if addr:
-                    orders.append({
-                        'orderid': virorder.id,
-                        'create_time': virorder.createTime,
-                        'products': suborders,
-                        'status': virorder.status(),
-                        'receiver': addr.receiver,
-                        'phonenumber': addr.phonenumber,
-                        'address':addr.address,
-                        'total_cost': str(virorder.cost()),
-                    })
-                else:
-                    orders.append({
-                        'orderid': virorder.id,
-                        'create_time': virorder.createTime,
-                        'products': suborders,
-                        'status': virorder.status(),
-                        'receiver': 'UKNOWN',
-                        'phonenumber': 'UKNOWN',
-                        'address': 'UKNOWN',
-                        'total_cost': str(virorder.cost()),
-                    })
+                #addr = sess.query(Address).filter_by(owner_id=virorder.creator_id).first()
+                
+                orders.append({
+                    'orderid': virorder.id,
+                    'create_time': virorder.createTime,
+                    'products': suborders,
+                    'status': virorder.status(),
+                    'receiver': virorder.receiver,
+                    'phonenumber': virorder.phonenumber,
+                    'address': virorder.address,
+                    'total_cost': str(virorder.cost()),
+                })
         orders.sort(key=lambda x:x['create_time'],reverse=True)
         return jsonify(orders), 200
     
@@ -153,39 +142,6 @@ def deliverOrder():
     sess.commit()
     return jsonify(result=True), 200
 
-'''
-# 管理员为订单配货
-@bp.route("/deliver", methods=['POST'])
-@jwt_required
-def deliverOrder():
-    sess = DBSession()
-    current_user = get_jwt_identity()
-
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
-
-    if current_user:
-        user = sess.query(User).filter_by(id=current_user).first()
-        if user.isOperator:
-            order_id = request.json.get('order_id')
-            if not order_id:
-                return jsonify({"msg": "Missing order_id parameter"}), 400
-
-            order = sess.query(Order).filter_by(id=order_id,accepted=True,delivered=False,virtual=True).first()
-            if not order:
-                return jsonify({"msg": "Bad order_id"}), 401
-            
-            order.delivered = True
-            sess.commit()
-            return jsonify(isDelivered=True), 200
-
-        else:
-            return jsonify({"msg": "No Permission"}), 403
-    else:
-        return jsonify({"msg": "Please login"}), 401
-
-'''
-
 @bp.route("/create", methods=['POST'])
 @jwt_required
 def createOrder():
@@ -197,12 +153,19 @@ def createOrder():
 
     user = sess.query(User).filter_by(id=current_user).first()
     ids = request.json.get('ids')
+
     if not ids:
         return jsonify({"msg": "Missing ids parameter"}), 400
+
+
+    receiver = request.json.get('receiver', '')
+    phonenumber = request.json.get('phonenumber', '')
+    address = request.json.get('address', '')
 
     carts = sess.query(Cart).filter_by(creator_id=current_user,removed=False).all()
 
     vir = Order(current_user)
+    vir.setAddress(address, receiver, phonenumber)
     sess.add(vir)
     sess.commit()
 

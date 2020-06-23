@@ -72,7 +72,7 @@ from flask_cors import CORS
 def loadBlueprint(app, service, prefix=""):
     service_module = importlib.import_module(service)
     CORS(service_module.bp, supports_credentials=True)
-    app.register_blueprint(service_module.bp, url_prefix='/api/'+prefix)
+    app.register_blueprint(service_module.bp, url_prefix=prefix)
 
 FONT = ImageFont.truetype(os.path.join('resource', 'Courier.ttf'), 28)
 SOURCE = list(string.ascii_letters)

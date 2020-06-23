@@ -102,11 +102,11 @@ def add_order():
     for num in range(0,10):
         creator_id=random.randint(5,14)
         storehouse_id=random.randint(1,2)
-        order=Order(creator_id,storehouse_id)
+        order=Order(creator_id)
         db.session.add(order)
         db.session.commit()
         for num1 in range(0,5):
-            subord=Order(creator_id,storehouse_id)
+            subord=Order(creator_id)
             product_id=random.randint(1,800)
             product = Product.query.filter_by(id=product_id).first()
             subord.fill(product_id,random.randint(1,10),product.price,order.id)
@@ -116,12 +116,12 @@ def add_order():
     for num in range(0,10):
         creator_id=random.randint(5,14)
         storehouse_id=random.randint(1,2)
-        order=Order(creator_id,storehouse_id)
+        order=Order(creator_id)
         order.paid=True
         db.session.add(order)
         db.session.commit()
         for num1 in range(0,5):
-            subord=Order(creator_id,storehouse_id)
+            subord=Order(creator_id)
             product_id=random.randint(1,800)
             product = Product.query.filter_by(id=product_id).first()
             subord.fill(product_id,random.randint(1,10),product.price,order.id)
@@ -131,13 +131,13 @@ def add_order():
     for num in range(0,10):
         creator_id=random.randint(5,14)
         storehouse_id=random.randint(1,2)
-        order=Order(creator_id,storehouse_id)
+        order=Order(creator_id)
         order.paid=True
         order.accepted=True
         db.session.add(order)
         db.session.commit()
         for num1 in range(0,5):
-            subord=Order(creator_id,storehouse_id)
+            subord=Order(creator_id)
             product_id=random.randint(1,800)
             product = Product.query.filter_by(id=product_id).first()
             subord.fill(product_id,random.randint(1,10),product.price,order.id)
@@ -147,14 +147,14 @@ def add_order():
     for num in range(0,10):
         creator_id=random.randint(5,14)
         storehouse_id=random.randint(1,2)
-        order=Order(creator_id,storehouse_id)
+        order=Order(creator_id)
         order.paid=True
         order.accepted=True
         order.delivered=True
         db.session.add(order)
         db.session.commit()
         for num1 in range(0,5):
-            subord=Order(creator_id,storehouse_id)
+            subord=Order(creator_id)
             product_id=random.randint(1,800)
             product = Product.query.filter_by(id=product_id).first()
             subord.fill(product_id,random.randint(1,10),product.price,order.id)
@@ -164,7 +164,7 @@ def add_order():
     for num in range(0,10):
         creator_id=random.randint(5,14)
         storehouse_id=random.randint(1,2)
-        order=Order(creator_id,storehouse_id)
+        order=Order(creator_id)
         order.paid=True
         order.accepted=True
         order.delivered=True
@@ -172,7 +172,7 @@ def add_order():
         db.session.add(order)
         db.session.commit()
         for num1 in range(0,5):
-            subord=Order(creator_id,storehouse_id)
+            subord=Order(creator_id)
             product_id=random.randint(1,800)
             product = Product.query.filter_by(id=product_id).first()
             subord.fill(product_id,random.randint(1,10),product.price,order.id)
@@ -182,12 +182,12 @@ def add_order():
     for num in range(0,10):
         creator_id=random.randint(5,14)
         storehouse_id=random.randint(1,2)
-        order=Order(creator_id,storehouse_id)
+        order=Order(creator_id)
         order.cancelled=True
         db.session.add(order)
         db.session.commit()
         for num1 in range(0,5):
-            subord=Order(creator_id,storehouse_id)
+            subord=Order(creator_id)
             product_id=random.randint(1,800)
             product = Product.query.filter_by(id=product_id).first()
             subord.fill(product_id,random.randint(1,10),product.price,order.id)
@@ -269,10 +269,10 @@ if __name__ == '__main__':
     #add_supplierOrder()
     #add_storehouse()
     #add_catagories()
-    add_initial_accounts()
+    #add_initial_accounts()
     #add_products()
     #init_database()
-    # add_order()
+    add_order()
     # add_products()
     # create_catagories()
     # print(Category.all())

@@ -26,6 +26,10 @@ class Order(db.Model):
     cancelled = db.Column(db.Boolean, unique=False, nullable=False, default=False)
     belonging_id = db.Column(db.BigInteger, db.ForeignKey("order.id"), nullable=True)
     belonging = db.relationship('Order', foreign_keys='Order.belonging_id')
+    receiver = db.Column(db.String(32), unique=False, nullable=True, default="")
+    phonenumber = db.Column(db.String(32), unique=False, nullable=True, default="")
+    address = db.Column(db.String(64), unique=False, nullable=True, default="")
+
     # address_id = db.Column(db.BigInteger, db.ForeignKey("address.id"), nullable=True)
     # address = db.relationship('Order', foreign_keys='Order.address_id')
 
@@ -33,6 +37,7 @@ class Order(db.Model):
         self.creator_id = creator_id
         self.virtual = virtual
         self.createTime = datetime.datetime.now()
+        self.setAddress('','','')
     
     def fill(self, product_id, count, monoprice, belonging_id=None):
         self.virtual = False
@@ -40,6 +45,11 @@ class Order(db.Model):
         self.count = count
         self.monoprice = monoprice
         self.belonging_id = belonging_id
+
+    def setAddress(self, address, receiver, phonenumber):
+        self.address = address
+        self.receiver = receiver
+        self.phonenumber = phonenumber
 
     def cost(self):
         if not self.virtual:

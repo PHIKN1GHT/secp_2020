@@ -52,7 +52,7 @@ inDebugging = lambda: app.debug or app.config['TESTING']
 
 def loadBlueprints(app):
     for service in services:
-        loadBlueprint(app, service, service.split('.')[-1])
+        loadBlueprint(app, service, '/api/' + service.split('.')[-1])
     loadBlueprint(app, "service.system")
 
 if __name__ == '__main__':
