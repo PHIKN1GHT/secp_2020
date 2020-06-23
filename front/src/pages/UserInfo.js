@@ -6,6 +6,7 @@ import AirportShuttleIcon from '@material-ui/icons/AirportShuttle';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import CancelIcon from '@material-ui/icons/Cancel';
 import { server, IsLoggedIn } from './Const';
 import Toast from '../components/Toast';
 export default function UserInfoCard(props) {
@@ -99,6 +100,10 @@ export default function UserInfoCard(props) {
                                 <div className='item' type='已收货' onClick={handleJumptoOrdersPage}>
                                     <CheckCircleRoundedIcon className='icon' />
                                     <div className='text'>已收货</div>
+                                </div>
+                                <div className='item' type='已撤销' onClick={handleJumptoOrdersPage}>
+                                    <CancelIcon className='icon' />
+                                    <div className='text'>已撤销</div>
                                 </div>
                             </div>
                         </div>

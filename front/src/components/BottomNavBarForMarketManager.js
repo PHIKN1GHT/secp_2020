@@ -9,9 +9,11 @@ export default function BottomNavBarForMarketManager(props) {
     return (
         <BottomNavBar props={[
             { icon: <HomeIcon />, text: '统计 ', url: '/mm/statistics' },
-            { icon: <DehazeIcon />, text: '查询 ', url: '/mm/query' },
+            { icon: <DehazeIcon />, text: '查询 ', url: '/mm/' },
             { icon: <DehazeIcon />, text: '协商 ', url: '/' },
             { icon: <DehazeIcon />, text: '我的 ', url: '/' },
+
+
         ]} />
     )
 }

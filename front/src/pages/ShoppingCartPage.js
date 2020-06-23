@@ -446,7 +446,7 @@ class ShoppingCartPage extends Component {
                                                 <span>{product.name}</span>
                                                 <div>
                                                     <span>￥{product.price}</span>
-                                                    <span>/{product.unit}</span>
+                                                    <span>/{product.count}{product.unit}</span>
                                                 </div>
                                                 {/* 改变数量 */}
                                                 <div className={classes.rbCorner}>

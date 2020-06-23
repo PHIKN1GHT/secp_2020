@@ -256,8 +256,7 @@ class CatalogsPage extends Component {
                 selectedCatalogId,
                 catalogs,
                 products,
-                totalPage,
-                nowPage:1,
+                totalPage
             }, () => { 
                     let record = undefined
                     if (this.props.location.state != undefined) { 
@@ -333,7 +332,6 @@ class CatalogsPage extends Component {
     handleSelectCatalog(e) { 
         this.setState({
             selectedCatalogId: e.target.id,
-            nowPage:1,
         }, this.fetchProducts(this.state.selectedCatalogId))
         const productArea = document.getElementsByName('productArea')[0]
         productArea.scrollTop = 0
@@ -411,54 +409,6 @@ class CatalogsPage extends Component {
         e.stopPropagation()
         handleToCart(e, productId)
     }
-    handleMore() { 
-        if (this.state.nowPage == this.state.totalPage) { 
-            Toast("没有更多商品")
-            return
-        }
-        this.setState((preState) => { 
-            let nowPage = preState.nowPage+1
-            return {nowPage}
-        }, () => {
-            const url = server + '/api/mall/category'
-            const catalog = this.state.selectedCatalogId
-            const page = this.state.nowPage+1
-            const bodyData = JSON.stringify({
-                catalog,
-                page,
-            })
-            fetch(url, {
-                body: bodyData, // must match 'Content-Type' header
-                credentials: 'include', // include, same-origin, *omit
-                headers: {
-                    'content-type': 'application/json'
-                },
-                method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, cors, *same-origin
-            })
-            .then(response => response.json()) // parses response to JSON 
-            .then(json => {
-                const totalPage = json['totalPage']
-                let products = JSON.parse(JSON.stringify(this.state.products))
-                products = products.concat(json['products'])
-                this.setState((preState) => { 
-                    return {
-                        nowPage: preState.nowPage + 1,
-                        products,
-                        totalPage,
-                    }
-                })
-                    
-
-                
-
-                
-            })
-                
-                
-        })
-
-    }
 
     render() {
         const { classes } = this.props;
@@ -487,7 +437,7 @@ class CatalogsPage extends Component {
                     {
                         this.state.catalogs.map((catalog) => { 
                             return (
-                                <div style={{width:'20vw', height:'6vh'}}>
+                                <div style={{width:'15vw', height:'6vh'}}>
                                     <button onClick={this.handleSelectCatalog.bind(this)} id={catalog.id}
                                         style={{
                                             width: '100%',
@@ -544,16 +494,6 @@ class CatalogsPage extends Component {
                         </div>
                         )
                     })}
-                <div onClick={this.handleMore.bind(this)}
-                    style={{
-                        width: '100%',
-                        textAlign: 'center',
-                        backgroundColor: 'thistle',
-                        cursor: 'pointer',
-                    }}
-                >
-                    <font style={{color:'white'}}>加载更多</font>
-                </div>
                 </div>
             </div>    
             }
