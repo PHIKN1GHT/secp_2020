@@ -82,7 +82,7 @@ class MainPage extends Component {
                 console.log(json)
                 const categories = json['categories']
                 const products = json['products']
-                const totalPage = json['totalPage']
+                const totalPage = json['totalPages']
                 this.setState({
                     categories,
                     products,

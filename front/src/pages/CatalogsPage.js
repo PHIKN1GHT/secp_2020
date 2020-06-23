@@ -131,7 +131,7 @@ class CatalogsPage extends Component {
             })
             .then(response => response.json()) // parses response to JSON 
             .then(json => {
-                const totalPage = json['totalPage']
+                const totalPage = json['totalPages']
                 const products = json['products']
                 this.setState({ 
                     totalPage,
@@ -191,7 +191,7 @@ class CatalogsPage extends Component {
             })
             .then(response => response.json()) // parses response to JSON 
             .then(json => {
-                const totalPage = json['totalPage']
+                const totalPage = json['totalPages']
                 const products = json['products']
                 return {totalPage, products}
 
